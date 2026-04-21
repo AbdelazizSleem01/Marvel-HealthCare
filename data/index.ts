@@ -1,0 +1,668 @@
+import { Company, Branch, Accreditation, TherapeuticArea, Product, Testimonial } from "@/types";
+
+export const companies: Company[] = [
+  {
+    id: "bait-alebdaa",
+    name: "Bait Alebdaa",
+    tagline: "Creative Excellence",
+    year: "2015",
+    country: "UAE",
+    flag: "AE",
+    description: "A premier creative agency redefining healthcare communication in the UAE with award-winning design and strategy.",
+    color: "from-primary-500 to-secondary-400",
+    icon: "✦",
+  },
+  {
+    id: "tebzone",
+    name: "TebZone",
+    tagline: "Digital Health Platform",
+    year: "2022",
+    country: "Egypt",
+    flag: "EG",
+    description: "Cutting-edge digital health platform connecting medical professionals with innovative solutions and resources.",
+    color: "from-primary-500 to-secondary-400",
+    icon: "⬡",
+  },
+  {
+    id: "med-add",
+    name: "Med-ADD",
+    tagline: "Medical Education",
+    year: "2019",
+    country: "KSA",
+    flag: "SA",
+    description: "Accredited medical education and professional development solutions powered by AI and cutting-edge technology.",
+    color: "from-primary-500 to-secondary-400",
+    icon: "◈",
+  },
+  {
+    id: "med-vi",
+    name: "Med-Vi",
+    tagline: "Visual Intelligence",
+    year: "2025",
+    country: "Egypt",
+    flag: "EG",
+    description: "AI-driven medical visualization and augmented reality solutions for next-generation clinical communication.",
+    color: "from-primary-500 to-secondary-400",
+    icon: "◉",
+  },
+  {
+    id: "med-lab",
+    name: "Med-Lab",
+    tagline: "Innovation Lab",
+    year: "2026",
+    country: "Egypt",
+    flag: "EG",
+    description: "The R&D powerhouse of Marvel Group — incubating breakthrough technologies for the future of healthcare.",
+    color: "from-primary-500 to-secondary-400",
+    icon: "⬢",
+  },
+  {
+    id: "meduscript",
+    name: "Meduscript",
+    tagline: "Medical Writing",
+    year: "2018",
+    country: "Egypt",
+    flag: "EG",
+    description: "Expert medical writing and regulatory documentation services meeting global pharmaceutical standards.",
+    color: "from-primary-500 to-secondary-400",
+    icon: "⊕",
+  },
+];
+
+export const branches: Branch[] = [
+  {
+    country: "Egypt",
+    city: "Cairo",
+    flag: "EG",
+    companyName: "Marvel",
+    address: "New Cairo, Cairo Governorate",
+    established: "2015",
+    phone: "+20 100 000 0000",
+  },
+  {
+    country: "Saudi Arabia",
+    city: "Riyadh",
+    flag: "SA",
+    companyName: "Med-Add",
+    address: "King Fahd Road, Riyadh",
+    established: "2019",
+    phone: "+966 50 000 0000",
+  },
+  {
+    country: "UAE",
+    city: "Dubai",
+    flag: "AE",
+    companyName: "Bait Al Ebdaa",
+    address: "Business Bay, Dubai",
+    established: "2015",
+    phone: "+971 50 000 0000",
+  },
+];
+
+export const accreditations: Accreditation[] = [
+  {
+    name: "Continuing Professional Development — UK",
+    shortName: "CPD-UK",
+    country: "United Kingdom",
+    flag: "🇬🇧",
+    description: "Internationally recognized accreditation for continuing professional development programs, ensuring the highest standards of educational excellence in medical training.",
+    color: "from-primary-500 to-secondary-400",
+  },
+  {
+    name: "Dubai Health Authority",
+    shortName: "DHA",
+    country: "UAE",
+    flag: "🇦🇪",
+    description: "Official recognition from the Dubai Health Authority, validating our medical education programs for healthcare professionals in the UAE.",
+    color: "from-primary-500 to-secondary-400",
+  },
+  {
+    name: "Saudi Commission for Health Specialties",
+    shortName: "SCFHS",
+    country: "Saudi Arabia",
+    flag: "🇸🇦",
+    description: "Accredited by SCFHS, enabling healthcare professionals in Saudi Arabia to earn CME credits through our certified programs.",
+    color: "from-primary-500 to-secondary-400",
+  },
+  {
+    name: "Royal College of Surgeons of Edinburgh",
+    shortName: "RCSEd",
+    country: "United Kingdom",
+    flag: "🇬🇧",
+    description: "Partnership with one of the world's oldest surgical colleges, ensuring surgical education meets the highest global standards.",
+    color: "from-primary-500 to-secondary-400",
+  },
+];
+
+export const therapeuticAreas: TherapeuticArea[] = [
+  { name: "Diabetes & Endocrinology", icon: "🩺", color: "text-primary-400" },
+  { name: "Orthopedics", icon: "🦴", color: "text-secondary-400" },
+  { name: "Internal Medicine", icon: "🫀", color: "text-primary-500" },
+  { name: "Cardiology", icon: "❤️", color: "text-secondary-500" },
+  { name: "Oncology", icon: "🔬", color: "text-primary-400" },
+  { name: "Neurology", icon: "🧠", color: "text-secondary-400" },
+  { name: "Dermatology", icon: "✨", color: "text-primary-500" },
+  { name: "Ophthalmology", icon: "👁️", color: "text-secondary-500" },
+  { name: "Pulmonology", icon: "🫁", color: "text-primary-400" },
+  { name: "Gastroenterology", icon: "💊", color: "text-secondary-400" },
+  { name: "Rheumatology", icon: "🦾", color: "text-primary-500" },
+  { name: "Women's Health", icon: "🌸", color: "text-secondary-500" },
+];
+
+export const products: Product[] = [
+  {
+    name: "AREEP",
+    tagline: "AI-Powered Medical Rep Training",
+    description: "Revolutionize pharmaceutical sales force training with adaptive AI simulations, real-world scenario modeling, and performance analytics that drive measurable results.",
+    features: ["AI Role-play Simulations", "Performance Analytics", "Compliance Tracking", "Multi-language Support"],
+    color: "from-primary-500 to-secondary-400",
+    status: "live",
+  },
+  {
+    name: "MAHER",
+    tagline: "Medical Assessment & HCP Engagement",
+    description: "A comprehensive platform for medical education, HCP engagement, and knowledge assessment with CPD-accredited modules and interactive case studies.",
+    features: ["CPD-Accredited Modules", "Interactive Cases", "HCP Analytics", "Certificate Generation"],
+    color: "from-primary-500 to-secondary-400",
+    status: "live",
+  },
+  {
+    name: "DynaSync",
+    tagline: "Dynamic Content Management",
+    description: "Intelligent omni-channel content management system for pharma brands, enabling personalized HCP engagement across digital and physical touchpoints.",
+    features: ["Omni-channel CMS", "Personalization Engine", "Regulatory Compliance", "Real-time Analytics"],
+    color: "from-primary-500 to-secondary-400",
+    status: "beta",
+  },
+  {
+    name: "WaselMail",
+    tagline: "Healthcare Communication Platform",
+    description: "Specialized email and communication platform built exclusively for healthcare communications with medical-grade compliance, automation, and HCP segmentation.",
+    features: ["Healthcare Compliance", "Smart Segmentation", "Automation Flows", "Delivery Analytics"],
+    color: "from-primary-500 to-secondary-400",
+    status: "live",
+  },
+];
+
+export const testimonials: Testimonial[] = [
+  {
+    name: "Dr. Sarah Al-Rashidi",
+    title: "Medical Director",
+    company: "Novartis Gulf",
+    review: "Marvel Group transformed our HCP engagement strategy completely. Their creative intelligence paired with medical precision is unlike anything we've experienced in 15 years of pharma marketing.",
+    rating: 5,
+    country: "UAE",
+  },
+  {
+    name: "Ahmed Khalil",
+    title: "Brand Manager",
+    company: "Pfizer MENA",
+    review: "The AREEP platform revolutionized how we train our medical reps. ROI was visible within 3 months. The Marvel team is truly elite.",
+    rating: 5,
+    country: "Egypt",
+  },
+  {
+    name: "Dr. Mohammed Al-Ghamdi",
+    title: "Learning & Development Director",
+    company: "Saudi Pharma Group",
+    review: "Outstanding medical education content. CPD-accredited, scientifically rigorous, and beautifully designed. Marvel Group sets the gold standard.",
+    rating: 5,
+    country: "KSA",
+  },
+];
+
+export const projectCategories = [
+  { id: "all", label: "All Work" },
+  { id: "medical", label: "Medical" },
+  { id: "video", label: "Videos" },
+  { id: "social", label: "Social Media" },
+  { id: "artwork", label: "Artwork & Concepts" },
+  { id: "elearning", label: "eLearning & SCORM" },
+  { id: "activities", label: "Online Activities" },
+  { id: "ai", label: "AI & Automation" },
+];
+
+export const stats = [
+  { value: 100, suffix: "+", label: "Pharma Clients" },
+  { value: 15, suffix: "+", label: "Years Experience" },
+  { value: 3, suffix: "", label: "Countries" },
+  { value: 500, suffix: "+", label: "Projects Delivered" },
+];
+
+export const navItems = [
+  { label: "Home", href: "/" },
+  { label: "Work", href: "/work" },
+  { label: "Products", href: "/products" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
+
+// ============================================================================
+// NEW SECTIONS DATA
+// ============================================================================
+
+// 1. IN NUMBERS - Big Statistics
+export const bigNumbers = [
+  { value: 60, suffix: "k+", label: "Candidates & Trainees", color: "from-primary-500 to-secondary-400" },
+  { value: 1, suffix: "k+", label: "Employees", color: "from-primary-500 to-secondary-400" },
+  { value: 150, suffix: "+", label: "Projects Delivered", color: "from-primary-500 to-secondary-400" },
+  { value: 90, suffix: "+", label: "Advisory Boards", color: "from-primary-500 to-secondary-400" },
+  { value: 12, suffix: "+", label: "Years Experience", color: "from-primary-500 to-secondary-400" },
+  { value: 30, suffix: "+", label: "Active Clients", color: "from-primary-500 to-secondary-400" },
+];
+
+// 2. DETAILED SERVICES BREAKDOWN
+export const detailedServices = [
+  {
+    id: "cme",
+    name: "CME",
+    icon: "RiGraduationCapLine",
+    color: "from-primary-500 to-secondary-400",
+    subServices: [
+      { name: "Curriculum Design", description: "Comprehensive CME program structuring" },
+      { name: "Content Development", description: "Medical education content creation" },
+      { name: "Slide Decks", description: "Professional presentation materials" },
+      { name: "Gamification", description: "Case studies, patient profiles, interactivity" },
+      { name: "Speakers", description: "Expert faculty management" },
+      { name: "Accreditation", description: "CPD, DHA, SCFHS certificates" },
+      { name: "Endorsed Materials", description: "Officially recognized content" },
+    ],
+  },
+  {
+    id: "research",
+    name: "Research & Writing",
+    icon: "RiFileTextLine",
+    color: "from-primary-500 to-secondary-400",
+    subServices: [
+      { name: "Advisory Boards", description: "KOL engagement and management" },
+      { name: "Manuscripts", description: "Scientific publication writing" },
+      { name: "PMS Protocols", description: "Post-marketing surveillance" },
+      { name: "CRF Writing", description: "Case report form design" },
+      { name: "Statistics", description: "Data analysis and reporting" },
+      { name: "Translation", description: "Medical content localization" },
+      { name: "Publishing", description: "Journal submission support" },
+    ],
+  },
+  {
+    id: "elearning",
+    name: "eLearning",
+    icon: "RiComputerLine",
+    color: "from-primary-500 to-secondary-400",
+    subServices: [
+      { name: "LMS Integration", description: "Learning management systems" },
+      { name: "SCORM Packages", description: "Standard compliant modules" },
+      { name: "xAPI Packages", description: "Advanced tracking capabilities" },
+      { name: "Interactive Modules", description: "Engaging digital content" },
+      { name: "Assessments", description: "Quizzes and evaluations" },
+      { name: "Certificates", description: "Automated certification" },
+    ],
+  },
+  {
+    id: "artwork",
+    name: "Artwork & Marketing",
+    icon: "RiPaletteLine",
+    color: "from-primary-500 to-secondary-400",
+    subServices: [
+      { name: "Brand Identity", description: "Visual branding systems" },
+      { name: "Print Materials", description: "Brochures, leaflets, posters" },
+      { name: "Digital Assets", description: "Social media, banners, ads" },
+      { name: "3D Medical Illustrations", description: "Anatomical visualizations" },
+      { name: "Infographics", description: "Data visualization" },
+      { name: "Packaging", description: "Product packaging design" },
+    ],
+  },
+  {
+    id: "training",
+    name: "Training",
+    icon: "RiTeamLine",
+    color: "from-primary-500 to-secondary-400",
+    subServices: [
+      { name: "Workshops", description: "Hands-on training sessions" },
+      { name: "Webinars", description: "Virtual educational events" },
+      { name: "TOT Programs", description: "Training of trainers" },
+      { name: "Rep Training", description: "Medical representative packages" },
+      { name: "Role Play", description: "Interactive scenarios" },
+      { name: "Certification", description: "Competency validation" },
+    ],
+  },
+  {
+    id: "it",
+    name: "IT Solutions",
+    icon: "RiCodeBoxLine",
+    color: "from-primary-500 to-secondary-400",
+    subServices: [
+      { name: "Web Development", description: "Custom websites and portals" },
+      { name: "Mobile Apps", description: "iOS and Android applications" },
+      { name: "CRM Systems", description: "Customer relationship management" },
+      { name: "Analytics", description: "Data dashboards and insights" },
+      { name: "Cloud Solutions", description: "Scalable infrastructure" },
+      { name: "API Integration", description: "System connectivity" },
+    ],
+  },
+  {
+    id: "visuals",
+    name: "Visuals, Videos & VR",
+    icon: "RiMovieLine",
+    color: "from-primary-500 to-secondary-400",
+    subServices: [
+      { name: "Video Production", description: "Corporate and medical videos" },
+      { name: "Animation", description: "2D/3D medical animations" },
+      { name: "VR Training", description: "Immersive simulations" },
+      { name: "Motion Graphics", description: "Dynamic visual content" },
+      { name: "Live Streaming", description: "Virtual event production" },
+      { name: "Interactive Video", description: "Clickable video experiences" },
+    ],
+  },
+  {
+    id: "events",
+    name: "Event Management",
+    icon: "RiCalendarEventLine",
+    color: "from-primary-500 to-secondary-400",
+    subServices: [
+      { name: "Virtual Events", description: "Online conferences and summits" },
+      { name: "Hybrid Events", description: "Blended physical-digital events" },
+      { name: "Live Polling", description: "Real-time audience engagement" },
+      { name: "Registration", description: "Attendee management" },
+      { name: "Booth Design", description: "Exhibition stands" },
+      { name: "Event Tech", description: "AV and digital solutions" },
+    ],
+  },
+];
+
+// 3. CREATIVE LETTER NAVIGATION
+export const creativeLetters = [
+  {
+    letter: "C",
+    category: "CME & Education",
+    description: "Continuing Medical Education programs with global accreditation",
+    services: [
+      { name: "Curriculum Design", icon: "RiDraftLine" },
+      { name: "Content Development", icon: "RiFileTextLine" },
+      { name: "Accreditation", icon: "RiAwardLine" }
+    ],
+    color: "from-primary-500 to-secondary-400",
+  },
+  {
+    letter: "R",
+    category: "Research & Writing",
+    description: "Scientific research support and medical writing services",
+    services: [
+      { name: "Manuscripts", icon: "RiBookLine" },
+      { name: "Advisory Boards", icon: "RiTeamLine" },
+      { name: "Publishing", icon: "RiArticleLine" }
+    ],
+    color: "from-primary-500 to-secondary-400",
+  },
+  {
+    letter: "E",
+    category: "eLearning",
+    description: "Digital learning solutions for healthcare professionals",
+    services: [
+      { name: "LMS", icon: "RiComputerLine" },
+      { name: "SCORM", icon: "RiDatabaseLine" },
+      { name: "Interactive Modules", icon: "RiRefreshLine" }
+    ],
+    color: "from-primary-500 to-secondary-400",
+  },
+  {
+    letter: "A",
+    category: "Artwork & Marketing",
+    description: "Creative medical marketing and visual communication",
+    services: [
+      { name: "Brand Identity", icon: "RiPaletteLine" },
+      { name: "Print & Digital", icon: "RiPrinterLine" },
+      { name: "3D Illustrations", icon: "RiBox3Line" }
+    ],
+    color: "from-primary-500 to-secondary-400",
+  },
+  {
+    letter: "T",
+    category: "Training",
+    description: "Comprehensive healthcare professional training programs",
+    services: [
+      { name: "Workshops", icon: "RiPresentationLine" },
+      { name: "Webinars", icon: "RiVideoLine" },
+      { name: "TOT Programs", icon: "RiUserStarLine" }
+    ],
+    color: "from-primary-500 to-secondary-400",
+  },
+  {
+    letter: "I",
+    category: "IT Solutions",
+    description: "Technology infrastructure and digital platforms",
+    services: [
+      { name: "Web & Mobile", icon: "RiSmartphoneLine" },
+      { name: "CRM", icon: "RiCustomerServiceLine" },
+      { name: "Analytics", icon: "RiBarChartLine" }
+    ],
+    color: "from-primary-500 to-secondary-400",
+  },
+  {
+    letter: "V",
+    category: "Visuals & Video",
+    description: "Multimedia production including VR and interactive content",
+    services: [
+      { name: "Video Production", icon: "RiMovieLine" },
+      { name: "VR Training", icon: "RiGlassesLine" },
+      { name: "Animation", icon: "RiBrushLine" }
+    ],
+    color: "from-primary-500 to-secondary-400",
+  },
+  {
+    letter: "E",
+    category: "Event Management",
+    description: "End-to-end healthcare event solutions",
+    services: [
+      { name: "Virtual Events", icon: "RiLiveLine" },
+      { name: "Hybrid Events", icon: "RiStackLine" },
+      { name: "Live Polling", icon: "RiSurveyLine" }
+    ],
+    color: "from-primary-500 to-secondary-400",
+  },
+];
+
+// 4. FEATURED SERVICES (Premium)
+export const featuredServices = [
+  {
+    id: "accreditation",
+    name: "Accreditation Services",
+    description: "CPD-UK, DHA, SCFHS, and RCSEd accredited programs with seamless certification workflow",
+    icon: "RiAwardLine",
+    color: "from-primary-500 to-secondary-400",
+    badge: "Certified",
+  },
+  {
+    id: "standalone",
+    name: "Standalone Services",
+    description: "Modular solutions that integrate with existing systems without disruption",
+    icon: "RiPuzzleLine",
+    color: "from-primary-500 to-secondary-400",
+    badge: "Flexible",
+  },
+  {
+    id: "concepts",
+    name: "Concepts & DA",
+    description: "Detailing aids and creative concepts that drive HCP engagement",
+    icon: "RiLightbulbLine",
+    color: "from-primary-500 to-secondary-400",
+    badge: "Creative",
+  },
+  {
+    id: "pms",
+    name: "Post-Marketing Surveillance",
+    description: "Comprehensive PMS protocols, CRF design, and safety monitoring",
+    icon: "RiShieldCheckLine",
+    color: "from-primary-500 to-secondary-400",
+    badge: "Compliant",
+  },
+  {
+    id: "digital",
+    name: "Digital Solutions",
+    description: "AI-driven platforms, chatbots, and automated healthcare workflows",
+    icon: "RiCpuLine",
+    color: "from-primary-500 to-secondary-400",
+    badge: "AI-Powered",
+  },
+  {
+    id: "advisory",
+    name: "Advisory Board Services",
+    description: "KOL management, strategic insights, and expert engagement programs",
+    icon: "RiUserStarLine",
+    color: "from-primary-500 to-secondary-400",
+    badge: "Elite",
+  },
+];
+
+// 5. MARKET CHALLENGES & SOLUTIONS
+export const marketChallenges = [
+  {
+    id: "hcp-activation",
+    challenge: "HCP Activation",
+    solution: "Engage healthcare professionals with interactive digital platforms",
+    tools: ["AI Chatbots", "WhatsApp Campaigns", "VR Education"],
+    icon: "RiUserAddLine",
+  },
+  {
+    id: "geographic",
+    challenge: "Geographic Limitations",
+    solution: "Reach remote HCPs through virtual and hybrid event solutions",
+    tools: ["Virtual Events", "Live Streaming", "eLearning LMS"],
+    icon: "RiMapPinLine",
+  },
+  {
+    id: "cost",
+    challenge: "Cost Effectiveness",
+    solution: "Reduce costs while maintaining quality through digital transformation",
+    tools: ["Automated Workflows", "Digital Assets", "SCORM Modules"],
+    icon: "RiMoneyDollarCircleLine",
+  },
+  {
+    id: "time",
+    challenge: "Time Restrictions",
+    solution: "Flexible, on-demand learning and micro-learning formats",
+    tools: ["Mobile Learning", "Micro-modules", "Self-paced Courses"],
+    icon: "RiTimeLine",
+  },
+  {
+    id: "rep-performance",
+    challenge: "Rep Performance",
+    solution: "AI-powered training and real-time performance tracking",
+    tools: ["Rep Assistant", "AI Coaching", "Visit Tracking"],
+    icon: "RiLineChartLine",
+  },
+];
+
+// 6. INTERNAL PROGRAMS & TOOLS
+export const internalTools = [
+  {
+    id: "rep-assistant",
+    name: "Rep Assistant",
+    description: "AI-powered WhatsApp bot for medical representatives with instant knowledge access",
+    icon: "RiWhatsappLine",
+    color: "from-primary-500 to-secondary-400",
+    platform: "WhatsApp",
+  },
+  {
+    id: "repbot",
+    name: "RepBot",
+    description: "Telegram bot for streamlined rep communication and resource sharing",
+    icon: "RiTelegramLine",
+    color: "from-primary-500 to-secondary-400",
+    platform: "Telegram",
+  },
+  {
+    id: "visit-tracker",
+    name: "Visit Tracking System",
+    description: "Real-time medical rep visit monitoring with GPS and reporting",
+    icon: "RiMapPinUserLine",
+    color: "from-primary-500 to-secondary-400",
+    platform: "Web & Mobile",
+  },
+  {
+    id: "cds",
+    name: "Clinical Decision Support",
+    description: "AI-driven CDS system for evidence-based clinical recommendations",
+    icon: "RiStethoscopeLine",
+    color: "from-primary-500 to-secondary-400",
+    platform: "Web Platform",
+  },
+  {
+    id: "live-voting",
+    name: "Live Voting System",
+    description: "Interactive polling and Q&A for events and advisory boards",
+    icon: "RiSurveyLine",
+    color: "from-primary-500 to-secondary-400",
+    platform: "Event Tech",
+  },
+];
+
+// 7. EDUCATIONAL PROGRAMS
+export const educationalPrograms = [
+  {
+    id: "workshops",
+    name: "Hands-on Workshops",
+    description: "Practical, interactive training sessions with expert facilitators",
+    icon: "RiToolsLine",
+    features: ["Small Groups", "Expert Trainers", "Practical Exercises", "Certification"],
+  },
+  {
+    id: "webinars",
+    name: "Virtual Webinars",
+    description: "Live and on-demand educational sessions with global reach",
+    icon: "RiVideoLine",
+    features: ["Live Streaming", "Q&A Sessions", "Recordings", "CME Credits"],
+  },
+  {
+    id: "newsletters",
+    name: "Medical Newsletters",
+    description: "Curated medical content delivered to HCPs regularly",
+    icon: "RiMailLine",
+    features: ["Weekly Updates", "Clinical Insights", "Drug Updates", "Mobile Friendly"],
+  },
+  {
+    id: "tot",
+    name: "Training of Trainers",
+    description: "Certification program for internal trainers and educators",
+    icon: "RiUserFollowLine",
+    features: ["Train-the-Trainer", "Leadership Skills", "Assessment Tools", "TOT Certificate"],
+  },
+  {
+    id: "rep-packages",
+    name: "Medical Rep Training",
+    description: "Comprehensive training packages for pharmaceutical sales teams",
+    icon: "RiBriefcaseLine",
+    features: ["Product Knowledge", "Selling Skills", "Role Play", "Assessment"],
+  },
+];
+
+// 8. SEGMENTED CLIENTS (Advanced Client List)
+export const segmentedClients = {
+  pharma: [
+    { id: "1", name: "Novartis", country: "Switzerland", flag: "CH", category: "pharma" as const },
+    { id: "2", name: "Pfizer", country: "USA", flag: "US", category: "pharma" as const },
+    { id: "3", name: "AstraZeneca", country: "UK", flag: "GB", category: "pharma" as const },
+    { id: "4", name: "Sanofi", country: "France", flag: "FR", category: "pharma" as const },
+    { id: "5", name: "Roche", country: "Switzerland", flag: "CH", category: "pharma" as const },
+    { id: "6", name: "GSK", country: "UK", flag: "GB", category: "pharma" as const },
+    { id: "7", name: "Bayer", country: "Germany", flag: "DE", category: "pharma" as const },
+    { id: "8", name: "MSD", country: "USA", flag: "US", category: "pharma" as const },
+    { id: "9", name: "EIPICO", country: "Egypt", flag: "EG", category: "pharma" as const },
+    { id: "10", name: "Hikma", country: "Jordan", flag: "JO", category: "pharma" as const },
+  ],
+  vendors: [
+    { id: "11", name: "AWS", country: "USA", flag: "US", category: "vendor" as const },
+    { id: "12", name: "Adobe", country: "USA", flag: "US", category: "vendor" as const },
+    { id: "13", name: "Salesforce", country: "USA", flag: "US", category: "vendor" as const },
+    { id: "14", name: "Microsoft", country: "USA", flag: "US", category: "vendor" as const },
+    { id: "15", name: "Google Cloud", country: "USA", flag: "US", category: "vendor" as const },
+    { id: "16", name: "Veeva", country: "USA", flag: "US", category: "vendor" as const },
+  ],
+  societies: [
+    { id: "17", name: "ESC", country: "Europe", flag: "EU", category: "society" as const },
+    { id: "18", name: "ADA", country: "USA", flag: "US", category: "society" as const },
+    { id: "19", name: "ESMO", country: "Europe", flag: "EU", category: "society" as const },
+    { id: "20", name: "EULAR", country: "Europe", flag: "EU", category: "society" as const },
+    { id: "21", name: "Saudi Heart Association", country: "KSA", flag: "SA", category: "society" as const },
+    { id: "22", name: "Egyptian Cardiology Society", country: "Egypt", flag: "EG", category: "society" as const },
+  ],
+};

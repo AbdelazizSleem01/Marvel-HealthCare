@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body { font-family: 'Inter', sans-serif; overflow-x: hidden; transition: background-color 0.3s ease, color 0.3s ease; padding-top: 3.5rem; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; letter-spacing: -0.02em; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(18, 122, 138, 0.5); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(18, 122, 138, 0.8); }
+::selection { background: rgba(18, 122, 138, 0.3); color: inherit; }
+
+/* Glass effect - auto switches based on theme */
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+.dark .glass {
+  background: rgba(7, 20, 40, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Glass light - always light */
+.glass-light {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+.dark .glass-light {
+  background: rgb(8, 25, 45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Glass dark - always dark */
+.glass-dark {
+  background: rgba(0, 30, 75, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.dark .glass-dark {
+  background: rgba(1, 26, 63, 0.336);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.gradient-text { background: linear-gradient(135deg, #127A8A, #E1B15E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.gradient-text-warm { background: linear-gradient(135deg, #127A8A, #E1B15E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+.section-padding { padding: 6rem 0; }
+@media (max-width: 768px) { .section-padding { padding: 4rem 0; } }
+
+.container-custom { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+@media (min-width: 1024px) { .container-custom { padding: 0 2.5rem; } }
+
+.hero-grid { background-image: linear-gradient(rgba(18,122,138,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(18,122,138,0.05) 1px, transparent 1px); background-size: 60px 60px; }
+
+.hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.hover-lift:hover { transform: translateY(-6px); }
+
+@keyframes borderRotate { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+.border-gradient { background: linear-gradient(270deg, #127A8A, #4D9DA9, #E1B15E, #127A8A); background-size: 400% 400%; animation: borderRotate 4s ease infinite; }
+
+@keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+@keyframes fadeUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 20px rgba(18,122,138,0.3); } 50% { box-shadow: 0 0 40px rgba(18,122,138,0.6); } }
+
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-marquee { animation: marquee 35s linear infinite; }
+.animate-fade-up { animation: fadeUp 0.6s ease-out forwards; }
+.animate-pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
+
+.masonry-grid { columns: 3; column-gap: 1.5rem; }
+@media (max-width: 1024px) { .masonry-grid { columns: 2; } }
+@media (max-width: 640px) { .masonry-grid { columns: 1; } }
+.masonry-item { break-inside: avoid; margin-bottom: 1.5rem; }
