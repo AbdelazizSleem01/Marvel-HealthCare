@@ -81,7 +81,7 @@ export default function ChatWidget() {
       {/* Chat Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-24 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg ${
+        className={`fixed bottom-24 left-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg ${
           isOpen
             ? "bg-red-500 hover:bg-red-600 rotate-90"
             : "bg-primary-500 hover:bg-primary-600"
@@ -97,7 +97,7 @@ export default function ChatWidget() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-40 right-6 z-50 w-80 h-96 glass-dark rounded-2xl shadow-2xl border border-border-dark overflow-hidden flex flex-col">
+        <div className="fixed bottom-40 left-6 z-50 w-80 h-96 glass-dark rounded-2xl shadow-2xl border border-border-dark overflow-hidden flex flex-col">
           {/* Header */}
           <div className="bg-primary-500 px-4 py-3 flex items-center gap-3 shrink-0">
             <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">

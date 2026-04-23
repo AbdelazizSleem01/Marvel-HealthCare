@@ -60,7 +60,8 @@ export default function Footer() {
                 alt="Marvel Group Logo"
                 width={100}
                 height={60}
-                className="object-contain"
+                className="object-contain w-auto h-auto"
+                loading="lazy"
               />
             </Link>
             <p className="text-muted-light dark:text-muted-dark text-sm leading-relaxed mb-6 max-w-xs">

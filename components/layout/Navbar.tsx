@@ -32,9 +32,9 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-            ? "bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-md shadow-lg py-2"
-            : "bg-transparent py-3"
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent ${scrolled
+            ? "bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-md shadow-lg py-2 border-border-light dark:border-border-dark"
+            : "bg-surface-light/50 dark:bg-surface-dark/50 backdrop-blur-sm py-3 border-white/5 dark:border-white/5"
           }`}
       >
         <div className="container-custom flex items-center justify-between h-14">
@@ -45,7 +45,9 @@ export default function Navbar() {
               alt="Marvel Group Logo"
               width={80}
               height={60}
-              className="object-contain"
+              className="object-contain w-auto h-auto"
+              loading="eager"
+              priority
             />
           </Link>
 

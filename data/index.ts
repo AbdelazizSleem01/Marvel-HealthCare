@@ -1,4 +1,4 @@
-import { Company, Branch, Accreditation, TherapeuticArea, Product, Testimonial } from "@/types";
+import { Company, Branch, Accreditation, TherapeuticArea, Product, Testimonial, SegmentedClients } from "@/types";
 
 export const companies: Company[] = [
   {
@@ -11,6 +11,7 @@ export const companies: Company[] = [
     description: "A premier creative agency redefining healthcare communication in the UAE with award-winning design and strategy.",
     color: "from-primary-500 to-secondary-400",
     icon: "✦",
+    logo: "/marvel-images/Bait.png",
   },
   {
     id: "tebzone",
@@ -22,6 +23,7 @@ export const companies: Company[] = [
     description: "Cutting-edge digital health platform connecting medical professionals with innovative solutions and resources.",
     color: "from-primary-500 to-secondary-400",
     icon: "⬡",
+    logo: "/marvel-images/TebZone.png",
   },
   {
     id: "med-add",
@@ -33,6 +35,7 @@ export const companies: Company[] = [
     description: "Accredited medical education and professional development solutions powered by AI and cutting-edge technology.",
     color: "from-primary-500 to-secondary-400",
     icon: "◈",
+    logo: "/marvel-images/MED ADD.png",
   },
   {
     id: "med-vi",
@@ -44,6 +47,7 @@ export const companies: Company[] = [
     description: "AI-driven medical visualization and augmented reality solutions for next-generation clinical communication.",
     color: "from-primary-500 to-secondary-400",
     icon: "◉",
+    logo: "/marvel-images/MedVi.png",
   },
   {
     id: "med-lab",
@@ -55,6 +59,7 @@ export const companies: Company[] = [
     description: "The R&D powerhouse of Marvel Group — incubating breakthrough technologies for the future of healthcare.",
     color: "from-primary-500 to-secondary-400",
     icon: "⬢",
+    logo: "/marvel-images/medlab-logo-1.png",
   },
   {
     id: "meduscript",
@@ -66,6 +71,7 @@ export const companies: Company[] = [
     description: "Expert medical writing and regulatory documentation services meeting global pharmaceutical standards.",
     color: "from-primary-500 to-secondary-400",
     icon: "⊕",
+    logo: "/marvel-images/PDC.png",
   },
 ];
 
@@ -636,33 +642,34 @@ export const educationalPrograms = [
 ];
 
 // 8. SEGMENTED CLIENTS (Advanced Client List)
-export const segmentedClients = {
+export const segmentedClients: SegmentedClients = {
   pharma: [
-    { id: "1", name: "Novartis", country: "Switzerland", flag: "CH", category: "pharma" as const },
-    { id: "2", name: "Pfizer", country: "USA", flag: "US", category: "pharma" as const },
-    { id: "3", name: "AstraZeneca", country: "UK", flag: "GB", category: "pharma" as const },
-    { id: "4", name: "Sanofi", country: "France", flag: "FR", category: "pharma" as const },
-    { id: "5", name: "Roche", country: "Switzerland", flag: "CH", category: "pharma" as const },
-    { id: "6", name: "GSK", country: "UK", flag: "GB", category: "pharma" as const },
-    { id: "7", name: "Bayer", country: "Germany", flag: "DE", category: "pharma" as const },
+    { id: "1", name: "Novartis", country: "Switzerland", flag: "CH", category: "pharma" as const, logo: "/marvel-images/Novo.png" },
+    { id: "2", name: "Pfizer", country: "USA", flag: "US", category: "pharma" as const, logo: "/marvel-images/Pfizer-Logo.png" },
+    { id: "3", name: "AstraZeneca", country: "UK", flag: "GB", category: "pharma" as const, logo: "/marvel-images/Astra Zeneca.png" },
+    { id: "4", name: "Sanofi", country: "France", flag: "FR", category: "pharma" as const, logo: "/marvel-images/sanofi.jfif" },
+    { id: "5", name: "Roche", country: "Switzerland", flag: "CH", category: "pharma" as const, logo: "/marvel-images/Roche.png" },
+    { id: "6", name: "GSK", country: "UK", flag: "GB", category: "pharma" as const, logo: "/marvel-images/GSK.png" },
+    { id: "7", name: "Bayer", country: "Germany", flag: "DE", category: "pharma" as const, logo: "/marvel-images/Bayer.png" },
     { id: "8", name: "MSD", country: "USA", flag: "US", category: "pharma" as const },
-    { id: "9", name: "EIPICO", country: "Egypt", flag: "EG", category: "pharma" as const },
-    { id: "10", name: "Hikma", country: "Jordan", flag: "JO", category: "pharma" as const },
+    { id: "9", name: "EIPICO", country: "Egypt", flag: "EG", category: "pharma" as const, logo: "/marvel-images/Eipico.png" },
+    { id: "10", name: "Marcyrl", country: "Egypt", flag: "EG", category: "pharma" as const, logo: "/marvel-images/Marcyrl.svg" },
+    { id: "11", name: "Hikma", country: "Jordan", flag: "JO", category: "pharma" as const, logo: "/marvel-images/hikma.png" },
   ],
   vendors: [
-    { id: "11", name: "AWS", country: "USA", flag: "US", category: "vendor" as const },
-    { id: "12", name: "Adobe", country: "USA", flag: "US", category: "vendor" as const },
-    { id: "13", name: "Salesforce", country: "USA", flag: "US", category: "vendor" as const },
-    { id: "14", name: "Microsoft", country: "USA", flag: "US", category: "vendor" as const },
-    { id: "15", name: "Google Cloud", country: "USA", flag: "US", category: "vendor" as const },
-    { id: "16", name: "Veeva", country: "USA", flag: "US", category: "vendor" as const },
+    { id: "12", name: "AWS", country: "USA", flag: "US", category: "vendor" as const },
+    { id: "13", name: "Adobe", country: "USA", flag: "US", category: "vendor" as const },
+    { id: "14", name: "Salesforce", country: "USA", flag: "US", category: "vendor" as const },
+    { id: "15", name: "Microsoft", country: "USA", flag: "US", category: "vendor" as const },
+    { id: "16", name: "Google Cloud", country: "USA", flag: "US", category: "vendor" as const },
+    { id: "17", name: "Veeva", country: "USA", flag: "US", category: "vendor" as const },
   ],
   societies: [
-    { id: "17", name: "ESC", country: "Europe", flag: "EU", category: "society" as const },
-    { id: "18", name: "ADA", country: "USA", flag: "US", category: "society" as const },
-    { id: "19", name: "ESMO", country: "Europe", flag: "EU", category: "society" as const },
-    { id: "20", name: "EULAR", country: "Europe", flag: "EU", category: "society" as const },
-    { id: "21", name: "Saudi Heart Association", country: "KSA", flag: "SA", category: "society" as const },
-    { id: "22", name: "Egyptian Cardiology Society", country: "Egypt", flag: "EG", category: "society" as const },
+    { id: "18", name: "ESC", country: "Europe", flag: "EU", category: "society" as const },
+    { id: "19", name: "ADA", country: "USA", flag: "US", category: "society" as const },
+    { id: "20", name: "ESMO", country: "Europe", flag: "EU", category: "society" as const },
+    { id: "21", name: "EULAR", country: "Europe", flag: "EU", category: "society" as const },
+    { id: "22", name: "Saudi Heart Association", country: "KSA", flag: "SA", category: "society" as const, logo: "/marvel-images/SHA.png" },
+    { id: "23", name: "Egyptian Cardiology Society", country: "Egypt", flag: "EG", category: "society" as const, logo: "/marvel-images/EgSC.png" },
   ],
 };

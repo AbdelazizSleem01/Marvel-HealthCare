@@ -8,6 +8,7 @@ export interface Company {
   description: string;
   color: string;
   icon: string;
+  logo?: string;
 }
 
 export interface Project {
@@ -106,4 +107,19 @@ export interface SiteSettings {
   _id?: string;
   key: string;
   value: string | number | boolean | object;
+}
+
+export interface SegmentedClient {
+  id: string;
+  name: string;
+  country: string;
+  flag: string;
+  category: "pharma" | "vendor" | "society";
+  logo?: string;
+}
+
+export interface SegmentedClients {
+  pharma: SegmentedClient[];
+  vendors: SegmentedClient[];
+  societies: SegmentedClient[];
 }
