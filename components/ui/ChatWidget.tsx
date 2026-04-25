@@ -31,8 +31,15 @@ function getBotResponse(userMessage: string): string {
   return botResponses.default;
 }
 
-export default function ChatWidget() {
+export default function ChatWidget({ externalOpen, inline = false }: { externalOpen?: boolean, inline?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (externalOpen !== undefined) {
+      setIsOpen(externalOpen);
+    }
+  }, [externalOpen]);
+
   const [messages, setMessages] = useState<Message[]>([
     { id: 1, text: "Hi there! 👋 How can we help you today?", sender: "bot", timestamp: new Date() }
   ]);
@@ -52,7 +59,6 @@ export default function ChatWidget() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    // Add user message
     const userMsg: Message = {
       id: Date.now(),
       text: input,
@@ -63,7 +69,6 @@ export default function ChatWidget() {
     setInput("");
     setIsTyping(true);
 
-    // Simulate bot typing and response
     setTimeout(() => {
       const botMsg: Message = {
         id: Date.now() + 1,
@@ -76,16 +81,78 @@ export default function ChatWidget() {
     }, 1000);
   };
 
+  const chatContent = (
+    <div className={`${inline ? "w-full h-[75vh]" : "fixed bottom-24 right-6 z-50 w-80 h-96"} glass-dark backdrop-blur-lg rounded-2xl shadow-2xl border border-border-dark overflow-hidden flex flex-col`}>
+      {/* Header */}
+      <div className="bg-primary-500 px-4 py-3 flex items-center gap-3 shrink-0">
+        <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+          <RiMessage3Line size={20} className="text-white" />
+        </div>
+        <div>
+          <h4 className="text-white font-semibold text-sm">Marvel Support</h4>
+          <p className="text-white/70 text-xs">Online</p>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-surface-dark/30">
+        {messages.map((msg) => (
+          <div
+            key={msg.id}
+            className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+          >
+            <div
+              className={`max-w-[85%] px-3 py-2 rounded-2xl text-sm ${msg.sender === "user"
+                  ? "bg-primary-500 text-white rounded-br-md"
+                  : "bg-surface-dark border border-border-dark text-text-dark rounded-bl-md"
+                }`}
+            >
+              {msg.text}
+            </div>
+          </div>
+        ))}
+        {isTyping && (
+          <div className="flex justify-start">
+            <div className="bg-surface-dark border border-border-dark text-muted-dark px-3 py-2 rounded-2xl rounded-bl-md text-sm">
+              <span className="animate-pulse">Typing...</span>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input */}
+      <form onSubmit={handleSubmit} className="p-3 bg-surface-dark/50 border-t border-border-dark flex gap-2 shrink-0">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type a message..."
+          className="flex-1 bg-surface-dark border border-border-dark rounded-lg px-3 py-2 text-sm text-text-dark placeholder:text-muted-dark focus:outline-none focus:border-primary-500"
+        />
+        <button
+          type="submit"
+          disabled={!input.trim() || isTyping}
+          className="w-10 h-10 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg flex items-center justify-center transition-colors"
+          aria-label="Send message"
+        >
+          <RiSendPlaneLine size={18} className="text-white" />
+        </button>
+      </form>
+    </div>
+  );
+
+  if (inline) return chatContent;
+
   return (
     <>
       {/* Chat Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-24 left-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg ${
-          isOpen
+        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg ${isOpen
             ? "bg-red-500 hover:bg-red-600 rotate-90"
             : "bg-primary-500 hover:bg-primary-600"
-        }`}
+          }`}
         aria-label={isOpen ? "Close chat" : "Open chat"}
       >
         {isOpen ? (
@@ -96,67 +163,7 @@ export default function ChatWidget() {
       </button>
 
       {/* Chat Window */}
-      {isOpen && (
-        <div className="fixed bottom-40 left-6 z-50 w-80 h-96 glass-dark rounded-2xl shadow-2xl border border-border-dark overflow-hidden flex flex-col">
-          {/* Header */}
-          <div className="bg-primary-500 px-4 py-3 flex items-center gap-3 shrink-0">
-            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-              <RiMessage3Line size={20} className="text-white" />
-            </div>
-            <div>
-              <h4 className="text-white font-semibold text-sm">Marvel Support</h4>
-              <p className="text-white/70 text-xs">Online</p>
-            </div>
-          </div>
-
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-surface-dark/30">
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[85%] px-3 py-2 rounded-2xl text-sm ${
-                    msg.sender === "user"
-                      ? "bg-primary-500 text-white rounded-br-md"
-                      : "bg-surface-dark border border-border-dark text-text-dark rounded-bl-md"
-                  }`}
-                >
-                  {msg.text}
-                </div>
-              </div>
-            ))}
-            {isTyping && (
-              <div className="flex justify-start">
-                <div className="bg-surface-dark border border-border-dark text-muted-dark px-3 py-2 rounded-2xl rounded-bl-md text-sm">
-                  <span className="animate-pulse">Typing...</span>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Input */}
-          <form onSubmit={handleSubmit} className="p-3 bg-surface-dark/50 border-t border-border-dark flex gap-2 shrink-0">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type a message..."
-              className="flex-1 bg-surface-dark border border-border-dark rounded-lg px-3 py-2 text-sm text-text-dark placeholder:text-muted-dark focus:outline-none focus:border-primary-500"
-            />
-            <button
-              type="submit"
-              disabled={!input.trim() || isTyping}
-              className="w-10 h-10 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg flex items-center justify-center transition-colors"
-              aria-label="Send message"
-            >
-              <RiSendPlaneLine size={18} className="text-white" />
-            </button>
-          </form>
-        </div>
-      )}
+      {isOpen && chatContent}
     </>
   );
 }

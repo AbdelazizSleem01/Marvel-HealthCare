@@ -22,6 +22,7 @@ import { useTheme } from "next-themes";
 import ReactCountryFlag from "react-country-flag";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import type { Company, SegmentedClient } from "@/types";
+import ChatWidget from "@/components/ui/ChatWidget";
 
 const SPRING_CONFIG = { type: "spring" as const, damping: 30, stiffness: 260 };
 
@@ -314,7 +315,6 @@ export default function CompaniesSection() {
                     { id: "accreds", onClick: () => handleStateChange(setShowAccreditations, true), icon: RiAwardLine, label: "Accreds", color: "primary", isActive: showAccreditations },
                     { id: "reviews", onClick: () => handleStateChange(setShowTestimonials, true), icon: RiTeamLine, label: "Reviews", color: "primary", isActive: showTestimonials },
                     { id: "people", onClick: () => handleStateChange(setShowPeople, true), icon: RiGroupLine, label: "People Behind", color: "primary", isActive: showPeople },
-                    { id: "chat", onClick: () => handleStateChange(setShowChat, true), icon: RiMessage3Line, label: "AI Chat", color: "primary", isActive: showChat },
                     { id: "whatsapp", href: "https://wa.me/201000000000", icon: RiWhatsappLine, label: "WhatsApp", color: "secondary", isActive: false },
                     { id: "theme", onClick: () => setTheme(theme === "dark" ? "light" : "dark"), icon: mounted ? (theme === "dark" ? RiSunLine : RiMoonLine) : RiSunLine, label: mounted ? (theme === "dark" ? "Light" : "Dark") : "Theme", color: "primary", isActive: false },
                     { id: "contact", href: "/contact", icon: RiMailLine, label: "Contact", color: "primary", isActive: false },
@@ -329,8 +329,8 @@ export default function CompaniesSection() {
                           whileHover={{ scale: 1.1, y: -2 }}
                           whileTap={{ scale: 0.95 }}
                           className={`w-9 h-9 lg:w-11 lg:h-11 rounded-xl flex items-center justify-center border transition-all ${active
-                              ? "bg-primary-500 text-white border-primary-400 shadow-[0_0_15px_rgba(18,122,138,0.4)]"
-                              : `bg-gradient-to-br ${isSecondary ? "from-secondary-500/20 to-secondary-600/20 text-secondary-500" : "from-primary-500/20 to-secondary-500/20 text-primary-500"} border-border-light dark:border-white/5 group-hover:border-primary-500/30`
+                            ? "bg-primary-500 text-white border-primary-400 shadow-[0_0_15px_rgba(18,122,138,0.4)]"
+                            : `bg-gradient-to-br ${isSecondary ? "from-secondary-500/20 to-secondary-600/20 text-secondary-500" : "from-primary-500/20 to-secondary-500/20 text-primary-500"} border-border-light dark:border-white/5 group-hover:border-primary-500/30`
                             }`}
                         >
                           <Icon size={20} className="lg:size-22" />
@@ -948,18 +948,7 @@ export default function CompaniesSection() {
 
       {/* ─── Task 10: Floating Chat Widget ─── */}
       {!isMobile && (
-        <motion.button
-          initial={{ scale: 0, y: 20 }}
-          animate={{ scale: 1, y: 0 }}
-          whileHover={{ scale: 1.1, y: -4 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => setShowChat(true)}
-          className="fixed bottom-5 right-5 z-[60] w-14 h-14 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 text-white shadow-2xl shadow-primary-500/30 flex items-center justify-center group"
-        >
-          <div className="absolute inset-0 rounded-full bg-primary-400 animate-ping opacity-20 group-hover:opacity-40 transition-opacity" />
-          <RiMessage3Line size={24} className="relative z-10" />
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-surface-dark rounded-full shadow-sm" />
-        </motion.button>
+        <ChatWidget externalOpen={showChat} />
       )}
     </section>
   );
@@ -2145,7 +2134,7 @@ function TestimonialsInfoView({ activeTestimonial, setActiveTestimonial, onClose
 function PeopleBehindView({ onClose }: { onClose: () => void }) {
   const categories = ["Medical", "Administrative", "IT", "Creative"];
   const [activeCat, setActiveCat] = useState("Medical");
-  
+
   const team = [
     { name: "Dr. Sarah Ahmed", role: "Medical Director", cat: "Medical", img: "https://i.pravatar.cc/150?u=sarah1" },
     { name: "Dr. Khaled Omar", role: "Clinical Consultant", cat: "Medical", img: "https://i.pravatar.cc/150?u=khaled" },
@@ -2160,49 +2149,48 @@ function PeopleBehindView({ onClose }: { onClose: () => void }) {
 
   return (
     <BoxWrapper title="The Force Behind" subtitle="Our Talented Team" onClose={onClose} icon={RiGroupLine}>
-       <div className="flex flex-col h-full">
-         {/* Category Tabs */}
-         <div className="flex gap-2 mb-8  pb-2 custom-scrollbar">
-           {categories.map(cat => (
-             <button
-               key={cat}
-               onClick={() => setActiveCat(cat)}
-               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                 activeCat === cat 
-                   ? "bg-primary-500 text-white shadow-lg shadow-primary-500/30" 
-                   : "bg-surface-light/80 dark:bg-surface-dark/80 text-text-light/70 dark:text-text-dark/70 border border-border-light/50 dark:border-white/10 hover:bg-primary-500/10 hover:text-primary-500 transition-all"
-               }`}
-             >
-               {cat}
-             </button>
-           ))}
-         </div>
+      <div className="flex flex-col h-full">
+        {/* Category Tabs */}
+        <div className="flex gap-2 mb-8  pb-2 custom-scrollbar">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCat(cat)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${activeCat === cat
+                ? "bg-primary-500 text-white shadow-lg shadow-primary-500/30"
+                : "bg-surface-light/80 dark:bg-surface-dark/80 text-text-light/70 dark:text-text-dark/70 border border-border-light/50 dark:border-white/10 hover:bg-primary-500/10 hover:text-primary-500 transition-all"
+                }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
 
-         {/* Team Grid */}
-         <div className="grid grid-cols-2 gap-4">
-           <AnimatePresence mode="wait">
-             {filteredTeam.map((person, i) => (
-               <motion.div
-                 key={person.name}
-                 initial={{ opacity: 0, scale: 0.9, y: 10 }}
-                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                 exit={{ opacity: 0, scale: 0.9, y: -10 }}
-                 transition={{ delay: i * 0.05 }}
-                 className="group p-4 rounded-2xl bg-surface-light/40 dark:bg-surface-dark/40 border border-border-light/50 dark:border-white/10 hover:border-primary-500/30 transition-all text-center"
-               >
-                 <div className="relative w-16 h-16 mx-auto mb-3">
-                   <div className="absolute inset-0 bg-primary-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                   <div className="relative w-full h-full rounded-full border-2 border-primary-500/20 group-hover:border-primary-500 transition-all overflow-hidden">
-                     <img src={person.img} alt={person.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
-                   </div>
-                 </div>
-                 <h5 className="font-bold text-[13px] text-text-light dark:text-text-dark leading-tight">{person.name}</h5>
-                 <p className="text-[9px] text-primary-500 font-bold uppercase tracking-wider mt-1">{person.role}</p>
-               </motion.div>
-             ))}
-           </AnimatePresence>
-         </div>
-       </div>
+        {/* Team Grid */}
+        <div className="grid grid-cols-2 gap-4">
+          <AnimatePresence>
+            {filteredTeam.map((person, i) => (
+              <motion.div
+                key={person.name}
+                initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                transition={{ delay: i * 0.05 }}
+                className="group p-4 rounded-2xl bg-surface-light/40 dark:bg-surface-dark/40 border border-border-light/50 dark:border-white/10 hover:border-primary-500/30 transition-all text-center"
+              >
+                <div className="relative w-16 h-16 mx-auto mb-3">
+                  <div className="absolute inset-0 bg-primary-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative w-full h-full rounded-full border-2 border-primary-500/20 group-hover:border-primary-500 transition-all overflow-hidden">
+                    <img src={person.img} alt={person.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                  </div>
+                </div>
+                <h5 className="font-bold text-[13px] text-text-light dark:text-text-dark leading-tight">{person.name}</h5>
+                <p className="text-[9px] text-primary-500 font-bold uppercase tracking-wider mt-1">{person.role}</p>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </div>
     </BoxWrapper>
   );
 }
@@ -2210,15 +2198,8 @@ function PeopleBehindView({ onClose }: { onClose: () => void }) {
 function ChatInfoView({ onClose }: { onClose: () => void }) {
   return (
     <BoxWrapper title="AI Support" subtitle="Always Online" onClose={onClose} icon={RiMessage3Line}>
-      <div className="flex flex-col h-full space-y-4">
-        <div className="flex-1 p-4 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light/50 flex flex-col justify-center items-center text-center">
-          <div className="w-16 h-16 rounded-full bg-primary-500/10 flex items-center justify-center mb-4">
-            <RiMessage3Line className="text-primary-500" size={32} />
-          </div>
-          <h4 className="font-bold text-text-light dark:text-text-dark">How can we help?</h4>
-          <p className="text-xs text-muted-light dark:text-muted-dark mt-2">Our AI assistant is ready to answer your questions about Marvel Group.</p>
-        </div>
-        <button onClick={() => { /* Real chat logic would go here */ }} className="w-full py-3 rounded-2xl bg-primary-500 text-white font-bold shadow-lg">Start Conversation</button>
+      <div className="h-[450px]">
+        <ChatWidget inline={true} />
       </div>
     </BoxWrapper>
   );
