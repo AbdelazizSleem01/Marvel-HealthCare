@@ -6,16 +6,19 @@ import { companies, segmentedClients } from "@/data";
 import {
   RiCloseLine, RiArrowRightLine, RiMailLine, RiSettings4Line, RiServiceLine,
   RiStarLine, RiStackLine, RiGraduationCapLine, RiFileTextLine, RiComputerLine,
-  RiPaletteLine, RiUserSettingsLine, RiCodeBoxLine, RiArrowRightSLine, RiCheckLine,
+  RiPaletteLine, RiUserSettingsLine, RiCodeBoxLine, RiCheckLine,
   RiVideoLine, RiCalendarEventLine, RiBuildingLine, RiGlobalLine, RiBriefcaseLine,
   RiAwardLine, RiShieldCheckLine, RiTeamLine, RiDoubleQuotesL, RiStarFill,
   RiWhatsappLine, RiMessage3Line, RiSendPlaneLine, RiHeartPulseLine, RiMicroscopeLine,
   RiBrainLine, RiEyeLine, RiCapsuleLine, RiWomenLine, RiStethoscopeLine, RiVirusLine,
-  RiUserHeartLine, RiFirstAidKitLine, RiHospitalLine, RiHealthBookLine,
-  RiArrowLeftSLine, RiGlobeLine, RiMenuLine, RiArrowUpSLine
+  RiUserHeartLine, RiFirstAidKitLine, RiHospitalLine, RiHealthBookLine, RiArrowUpSLine,
+  RiSunLine, RiMoonLine,
+  RiArrowLeftLine,
+  RiGroupLine
 } from "react-icons/ri";
 import Link from "next/link";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 import ReactCountryFlag from "react-country-flag";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import type { Company, SegmentedClient } from "@/types";
@@ -89,25 +92,31 @@ function getOrbitConfig(bp: "mobile" | "tablet" | "desktop") {
   }
   return {
     positions: [
-      { angle: -90, distance: 200 },
-      { angle: -30, distance: 200 },
-      { angle: 30, distance: 200 },
-      { angle: 90, distance: 200 },
-      { angle: 150, distance: 200 },
-      { angle: -150, distance: 200 },
+      { angle: -90, distance: 130 },
+      { angle: -30, distance: 130 },
+      { angle: 30, distance: 130 },
+      { angle: 90, distance: 130 },
+      { angle: 150, distance: 130 },
+      { angle: -150, distance: 130 },
     ],
-    ringSize1: 390,
-    ringSize2: 430,
-    glowSize: 330,
-    centerSize: 128,
-    nodeSize: 64,
-    logoSize: 70,
+    ringSize1: 260,
+    ringSize2: 300,
+    glowSize: 220,
+    centerSize: 110,
+    nodeSize: 54,
+    logoSize: 60,
   };
 }
 
 export default function CompaniesSection() {
   const bp = useBreakpoint();
   const isMobile = bp === "mobile";
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const isTablet = bp === "tablet";
 
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
@@ -117,20 +126,38 @@ export default function CompaniesSection() {
   const [showTestimonials, setShowTestimonials] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [showExpertise, setShowExpertise] = useState(false);
+  const [showPeople, setShowPeople] = useState(false);
   const [activeTab, setActiveTab] = useState<"comprehensive" | "featured" | "products">("comprehensive");
   const [selectedCountry, setSelectedCountry] = useState<(typeof COUNTRIES)[0] | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [rotation, setRotation] = useState(0);
-  const [activeClientTab, setActiveClientTab] = useState<"pharma" | "vendors" | "societies">("pharma");
+  const [activeClientTab, setActiveClientTab] = useState<"all" | "pharma" | "vendors" | "societies">("all");
   const [activeTestimonial, setActiveTestimonial] = useState(0);
-  const [showLeftSidebar, setShowLeftSidebar] = useState(true);
   const [showRightPanel, setShowRightPanel] = useState(true);
   const [hoveredOrbit, setHoveredOrbit] = useState<string | null>(null);
   const [showMobileNetwork, setShowMobileNetwork] = useState(false);
   const [showMobileLeft, setShowMobileLeft] = useState(false);
   const [showMobileRight, setShowMobileRight] = useState(false);
+
+  // Unified state reset for desktop dynamic box
+  const resetDesktopStates = () => {
+    setSelectedCompany(null);
+    setSelectedClient(null);
+    setSelectedCountry(null);
+    setShowServices(false);
+    setShowExpertise(false);
+    setShowAccreditations(false);
+    setShowTestimonials(false);
+    setShowChat(false);
+    setShowPeople(false);
+  };
+
+  const handleStateChange = (setter: (val: any) => void, val: any) => {
+    if (!isMobile) resetDesktopStates();
+    setter(val);
+  };
 
   // Must be defined before useTransform calls that depend on it
   const orbitConfig = getOrbitConfig(bp);
@@ -200,10 +227,8 @@ export default function CompaniesSection() {
   // Auto-hide sidebars on mobile
   useEffect(() => {
     if (isMobile) {
-      setShowLeftSidebar(false);
       setShowRightPanel(false);
     } else {
-      setShowLeftSidebar(true);
       setShowRightPanel(true);
     }
   }, [isMobile]);
@@ -211,10 +236,10 @@ export default function CompaniesSection() {
   return (
     <section
       ref={containerRef}
-      className={`${isMobile ? "min-h-[85vh] pt-36" : "min-h-screen"} bg-bg-light dark:bg-bg-dark relative overflow-hidden flex items-center justify-center`}
+      className={`${isMobile ? "min-h-[85vh] pt-40 overflow-hidden " : "h-screen overflow-hidden"} bg-bg-light dark:bg-bg-dark relative flex items-center justify-center`}
     >
       {/* ─── Animated Background ─── */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none w-full ">
         <motion.div
           className="absolute w-[300px] h-[300px] md:w-[650px] md:h-[650px] rounded-full blur-3xl"
           style={{
@@ -270,101 +295,97 @@ export default function CompaniesSection() {
       </div>
 
       {/* ─── Main Layout ─── */}
-      <motion.div layout className={`relative z-10 w-full max-w-7xl mx-auto px-2 sm:px-4 flex ${isMobile ? "flex-col items-center" : "gap-4 lg:gap-8"}`}>
+      <motion.div layout className={`relative z-10 w-full max-w-7xl mx-auto px-2 sm:px-4 flex ${isMobile ? "flex-col items-center" : "items-center justify-start gap-4 lg:gap-8"}`}>
 
-        {/* Left Sidebar toggle (desktop/tablet only) */}
+        {/* ─── Desktop/Tablet: Bottom Toolbar ─── */}
         {!isMobile && (
-          <AnimatePresence mode="wait">
-            {!showLeftSidebar && (
-              <motion.button
-                key="left-toggle"
-                initial={{ opacity: 0, x: -24, scale: 0.8 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: -24, scale: 0.8 }}
-                whileHover={{ scale: 1.12 }}
-                whileTap={{ scale: 0.94 }}
-                onClick={() => setShowLeftSidebar(true)}
-                className="absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-40 w-12 h-12 lg:w-14 lg:h-14 rounded-2xl glass-light dark:glass-dark border border-border-light dark:border-border-dark shadow-2xl flex items-center justify-center hover:bg-surface-light dark:hover:bg-surface-dark transition-all group"
-              >
-                <div className="relative">
-                  <div className="absolute inset-0 bg-primary-500/20 blur-md rounded-full group-hover:bg-primary-500/40 transition-all" />
-                  <RiSettings4Line size={24} className="text-primary-500 relative z-10" />
-                </div>
-              </motion.button>
-            )}
-          </AnimatePresence>
-        )}
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5, type: "spring", stiffness: 100 }}
+            className="fixed bottom-0 left-0 right-0 z-50 px-6 pointer-events-none"
+          >
+            <div className="max-w-4xl mx-auto w-full pointer-events-auto">
+              <div className="rounded-t-2xl glass-light dark:glass-dark border-x border-t border-border-light dark:border-border-dark/50 shadow-2xl overflow-hidden backdrop-blur-xl">
+                <div className="flex items-center justify-around p-2 lg:p-3">
+                  {[
+                    { id: "services", onClick: () => handleStateChange(setShowServices, true), icon: RiSettings4Line, label: "Services", color: "primary", isActive: showServices },
+                    { id: "expertise", onClick: () => handleStateChange(setShowExpertise, true), icon: RiHeartPulseLine, label: "Expertise", color: "primary", isActive: showExpertise },
+                    { id: "accreds", onClick: () => handleStateChange(setShowAccreditations, true), icon: RiAwardLine, label: "Accreds", color: "primary", isActive: showAccreditations },
+                    { id: "reviews", onClick: () => handleStateChange(setShowTestimonials, true), icon: RiTeamLine, label: "Reviews", color: "primary", isActive: showTestimonials },
+                    { id: "people", onClick: () => handleStateChange(setShowPeople, true), icon: RiGroupLine, label: "People Behind", color: "primary", isActive: showPeople },
+                    { id: "chat", onClick: () => handleStateChange(setShowChat, true), icon: RiMessage3Line, label: "AI Chat", color: "primary", isActive: showChat },
+                    { id: "whatsapp", href: "https://wa.me/201000000000", icon: RiWhatsappLine, label: "WhatsApp", color: "secondary", isActive: false },
+                    { id: "theme", onClick: () => setTheme(theme === "dark" ? "light" : "dark"), icon: mounted ? (theme === "dark" ? RiSunLine : RiMoonLine) : RiSunLine, label: mounted ? (theme === "dark" ? "Light" : "Dark") : "Theme", color: "primary", isActive: false },
+                    { id: "contact", href: "/contact", icon: RiMailLine, label: "Contact", color: "primary", isActive: false },
+                  ].map((item, idx) => {
+                    const Icon = item.icon;
+                    const isSecondary = item.color === "secondary";
+                    const active = item.isActive;
 
-        {/* ─── Left Sidebar (Desktop/Tablet) ─── */}
-        {!isMobile && (
-          <AnimatePresence>
-            {showLeftSidebar && (
-              <motion.div
-                layout
-                initial={{ opacity: 0, x: -80, scale: 0.92 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: -80, scale: 0.92 }}
-                transition={SPRING_CONFIG}
-                className="w-[70px] lg:w-22 flex flex-col gap-4 py-8 relative shrink-0"
-              >
-                <motion.button
-                  onClick={() => setShowLeftSidebar(false)}
-                  whileHover={{ scale: 1.1 }}
-                  className="absolute -right-4 lg:-right-5 top-1/2 -translate-y-1/2 w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-md flex items-center justify-center hover:bg-primary-500 hover:text-white transition-all z-50 group"
-                >
-                  <RiArrowLeftSLine size={16} className="group-hover:scale-110 transition-transform" />
-                </motion.button>
-
-                <div className="rounded-2xl glass-light dark:glass-dark border border-border-light dark:border-border-dark shadow-xl overflow-hidden">
-                  <div className="flex flex-col gap-1 pl-2 lg:pl-3 pt-3 pb-3 pr-1 max-h-[73vh] overflow-y-auto custom-scrollbar">
-                    {[
-                      { id: "services", onClick: () => setShowServices(true), icon: RiSettings4Line, label: "Services" },
-                      { id: "accreds", onClick: () => setShowAccreditations(true), icon: RiAwardLine, label: "Accreds" },
-                      { id: "contact", href: "/contact", icon: RiMailLine, label: "Contact" },
-                      { id: "reviews", onClick: () => setShowTestimonials(true), icon: RiTeamLine, label: "Reviews" },
-                      { id: "expertise", onClick: () => setShowExpertise(true), icon: RiHeartPulseLine, label: "Expertise" },
-                      { id: "divider", type: "divider" },
-                      { id: "chat", onClick: () => setShowChat(true), icon: RiMessage3Line, label: "Chat" },
-                      { id: "whatsapp", href: "https://wa.me/201000000000", icon: RiWhatsappLine, label: "WhatsApp", color: "secondary" },
-                    ].map((item, idx) => {
-                      const Icon = item.icon;
-                      return (
-                        <motion.div key={item.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.06 + 0.2 }}>
-                          {item.type === "divider" ? (
-                            <div className="h-px bg-border-light dark:bg-border-dark mx-1 my-1" />
-                          ) : item.href ? (
-                            <Link href={item.href} target={item.id === "whatsapp" ? "_blank" : undefined} className="group flex flex-col items-center gap-1 p-1.5 rounded-lg hover:bg-surface-light dark:hover:bg-surface-dark border border-transparent hover:border-primary-500/20 transition-all duration-300">
-                              <motion.div whileHover={{ scale: 1.15, rotate: 5 }} whileTap={{ scale: 0.92 }} className={`w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-gradient-to-br ${item.color === "secondary" ? "from-secondary-500/20 to-secondary-600/20" : "from-primary-500/20 to-secondary-500/20"} flex items-center justify-center`}>
-                                {Icon && <Icon size={18} className={`${item.color === "secondary" ? "text-secondary-500" : "text-primary-500"}`} />}
-                              </motion.div>
-                              <span className="text-[8px] lg:text-[9px] font-medium text-text-light dark:text-text-dark leading-tight">{item.label}</span>
-                            </Link>
-                          ) : (
-                            <button onClick={item.onClick} className="group flex flex-col items-center gap-1 p-1.5 rounded-lg hover:bg-surface-light dark:hover:bg-surface-dark border border-transparent hover:border-primary-500/20 transition-all duration-300 w-full">
-                              <motion.div whileHover={{ scale: 1.15, rotate: 5 }} whileTap={{ scale: 0.92 }} className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center">
-                                {Icon && <Icon size={18} className="text-primary-500" />}
-                              </motion.div>
-                              <span className="text-[8px] lg:text-[9px] font-medium text-text-light dark:text-text-dark leading-tight">{item.label}</span>
-                            </button>
-                          )}
+                    const content = (
+                      <>
+                        <motion.div
+                          whileHover={{ scale: 1.1, y: -2 }}
+                          whileTap={{ scale: 0.95 }}
+                          className={`w-9 h-9 lg:w-11 lg:h-11 rounded-xl flex items-center justify-center border transition-all ${active
+                              ? "bg-primary-500 text-white border-primary-400 shadow-[0_0_15px_rgba(18,122,138,0.4)]"
+                              : `bg-gradient-to-br ${isSecondary ? "from-secondary-500/20 to-secondary-600/20 text-secondary-500" : "from-primary-500/20 to-secondary-500/20 text-primary-500"} border-border-light dark:border-white/5 group-hover:border-primary-500/30`
+                            }`}
+                        >
+                          <Icon size={20} className="lg:size-22" />
                         </motion.div>
-                      );
-                    })}
-                  </div>
+                        <span className={`text-[9px] lg:text-[10px] font-bold uppercase tracking-wide transition-all ${active ? "text-primary-500 opacity-100" : "text-text-light dark:text-text-dark opacity-80 group-hover:opacity-100 group-hover:text-primary-500"
+                          }`}>
+                          {item.label}
+                        </span>
+                      </>
+                    );
+
+                    return (
+                      <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6 + idx * 0.05 }}
+                        className="flex-1"
+                      >
+                        {item.href ? (
+                          <Link
+                            href={item.href}
+                            target={item.id === "whatsapp" ? "_blank" : undefined}
+                            className="group flex flex-col items-center gap-1.5 py-1.5 px-1 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-xl transition-all duration-300"
+                          >
+                            {content}
+                          </Link>
+                        ) : (
+                          <button
+                            onClick={item.onClick}
+                            className="group flex flex-col items-center gap-1.5 py-1.5 px-1 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-xl transition-all duration-300 w-full"
+                          >
+                            {content}
+                          </button>
+                        )}
+                      </motion.div>
+                    );
+                  })}
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
+            </div>
+          </motion.div>
         )}
+
+
+
 
         {/* ─── Center Orbital ─── */}
         <motion.div
           layout
           transition={SPRING_CONFIG}
-          className={`flex-1 relative flex items-center justify-center ${isMobile ? "min-h-[55vh] -mt-20" : "min-h-[80vh] mt-14"}`}
+          className={`relative flex items-center justify-center ${isMobile ? "flex-1 min-h-[55vh] -mt-20" : "w-[400px] min-h-[80vh] -ml-12"}`}
         >
           {/* Countries flags row */}
-          <div className={`absolute left-1/2 -translate-x-1/2 z-30 ${isMobile ? "-top-12" : "-top-8"}`}>
+          <div className={`absolute left-1/2 -translate-x-1/2 z-30 ${isMobile ? "-top-12" : "top-2"}`}>
             <div className={`flex items-center justify-center ${isMobile ? "gap-6" : "gap-8 lg:gap-12"}`}>
               {COUNTRIES.map((country, idx) => (
                 <motion.button
@@ -377,17 +398,15 @@ export default function CompaniesSection() {
                   }}
                   whileHover={{ scale: 1.18 }}
                   whileTap={{ scale: 0.92 }}
-                  onClick={() => setSelectedCountry(country)}
+                  onClick={() => {
+                    if (isMobile) {
+                      setSelectedCountry(country);
+                    } else {
+                      handleStateChange(setSelectedCountry, country);
+                    }
+                  }}
                   className="group relative flex items-center justify-center transition-all duration-300"
                 >
-                  <div className="absolute inset-[-8px] md:inset-[-10px] pointer-events-none rounded-full opacity-100 group-hover:opacity-0 transition-opacity duration-300">
-                    <div className="absolute inset-0 animate-[spin_3s_linear_infinite]">
-                      <div className="absolute inset-0 rounded-full" style={{ background: "conic-gradient(from 0deg, transparent 60%, rgba(18, 122, 138, 0.45) 100%)", maskImage: "radial-gradient(transparent 65%, black 67%)", WebkitMaskImage: "radial-gradient(transparent 65%, black 67%)" }} />
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                        <div className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-primary-500 shadow-[0_0_8px_#127A8A]" />
-                      </div>
-                    </div>
-                  </div>
                   <div className={`${isMobile ? "w-12 h-9" : "w-12 h-10"} rounded-lg overflow-hidden shadow-lg border-2 border-transparent group-hover:border-primary-500/60 transition-all duration-300 relative z-10`}>
                     <ReactCountryFlag countryCode={country.flag} svg style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   </div>
@@ -478,24 +497,28 @@ export default function CompaniesSection() {
               const x = Math.cos(angleRad) * position.distance;
               const y = Math.sin(angleRad) * position.distance;
               const isHovered = hoveredOrbit === company.id;
+              const isActive = selectedCompany?.id === company.id;
               const half = orbitConfig.nodeSize / 2;
 
               return (
                 <div
                   key={company.id}
-                  className="absolute left-1/2 top-1/2 cursor-pointer group"
+                  className={`absolute left-1/2 top-1/2 transition-all duration-300 ${isHovered ? "z-[60]" : "z-20"}`}
                   style={{
-                    transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                    transition: "transform 0.1s linear",
-                    zIndex: 10 + index,
+                    width: orbitConfig.nodeSize,
+                    height: orbitConfig.nodeSize,
+                    transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`,
                   }}
-                  onMouseEnter={() => !isMobile && setHoveredOrbit(company.id)}
-                  onMouseLeave={() => !isMobile && setHoveredOrbit(null)}
-                  onClick={() => setSelectedCompany(company)}
                 >
-                  <div className="relative" style={{ top: isMobile ? -8 : -16 }}>
+                  <div
+                    className="relative w-full h-full cursor-pointer"
+                    style={{ top: isMobile ? -8 : -16 }}
+                    onMouseEnter={() => setHoveredOrbit(company.id)}
+                    onMouseLeave={() => setHoveredOrbit(null)}
+                    onClick={() => handleStateChange(setSelectedCompany, company)}
+                  >
                     <motion.div
-                      animate={isHovered ? { opacity: 0.5, scale: 1.2 } : { opacity: 0, scale: 1 }}
+                      animate={(isHovered || isActive) ? { opacity: 0.6, scale: 1.2 } : { opacity: 0, scale: 1 }}
                       transition={{ duration: 0.25 }}
                       className={`absolute inset-0 bg-gradient-to-br ${company.color} rounded-full blur-xl`}
                     />
@@ -503,7 +526,7 @@ export default function CompaniesSection() {
                       whileHover={{ scale: 1.18 }}
                       whileTap={{ scale: 0.92 }}
                       style={{ width: orbitConfig.nodeSize, height: orbitConfig.nodeSize }}
-                      className={`relative rounded-full glass-light dark:glass-dark border-2 ${isHovered ? "border-primary-500/60" : "border-transparent"} flex items-center justify-center shadow-lg transition-all duration-300`}
+                      className={`relative rounded-full glass-light dark:glass-dark border-2 ${(isHovered || isActive) ? "border-primary-500 shadow-[0_0_15px_rgba(18,122,138,0.5)]" : "border-transparent"} flex items-center justify-center shadow-lg transition-all duration-300`}
                     >
                       {company.logo ? (
                         <Image src={company.logo} alt={company.name} width={isMobile ? 26 : 40} height={isMobile ? 26 : 40} className="object-contain w-auto h-auto" />
@@ -518,10 +541,16 @@ export default function CompaniesSection() {
                     {!isMobile && (
                       <AnimatePresence>
                         {isHovered && (
-                          <motion.div initial={{ opacity: 0, y: 4, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 4, scale: 0.9 }} transition={{ duration: 0.18 }} className="absolute left-1/2 -translate-x-1/2 -top-14 pointer-events-none z-50">
-                            <div className="bg-surface-light dark:bg-surface-dark px-3 py-1.5 rounded-xl shadow-xl border border-border-light dark:border-border-dark whitespace-nowrap">
-                              <span className="text-sm font-semibold text-text-light dark:text-text-dark">{company.name}</span>
-                              <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 bg-surface-light dark:bg-surface-dark rotate-45 border-r border-b border-border-light dark:border-border-dark" />
+                          <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.8 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                            className="absolute left-1/2 -translate-x-1/2 -top-16 pointer-events-none z-[100]"
+                          >
+                            <div className="bg-surface-light/95 dark:bg-surface-dark/95 backdrop-blur-md px-4 py-2 rounded-2xl shadow-2xl border border-primary-500/30 whitespace-nowrap">
+                              <span className="text-sm font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">{company.name}</span>
+                              <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-4 h-4 bg-surface-light dark:bg-surface-dark rotate-45 border-r border-b border-primary-500/30" />
                             </div>
                           </motion.div>
                         )}
@@ -533,6 +562,34 @@ export default function CompaniesSection() {
             })}
           </div>
         </motion.div>
+
+        {/* ─── Dynamic Content Box (Desktop Replacement) ─── */}
+        {!isMobile && (
+          <DynamicContentBox
+            selectedClient={selectedClient}
+            selectedCompany={selectedCompany}
+            selectedCountry={selectedCountry}
+            showServices={showServices}
+            showExpertise={showExpertise}
+            showAccreditations={showAccreditations}
+            showTestimonials={showTestimonials}
+            showChat={showChat}
+            showPeople={showPeople}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            activeTestimonial={activeTestimonial}
+            setActiveTestimonial={setActiveTestimonial}
+            setSelectedClient={setSelectedClient}
+            setSelectedCompany={setSelectedCompany}
+            setSelectedCountry={setSelectedCountry}
+            setShowServices={setShowServices}
+            setShowExpertise={setShowExpertise}
+            setShowAccreditations={setShowAccreditations}
+            setShowTestimonials={setShowTestimonials}
+            setShowChat={setShowChat}
+            setShowPeople={setShowPeople}
+          />
+        )}
 
         {/* ─── Mobile: Buttons & Panels BELOW Orbital ─── */}
         {isMobile && (
@@ -599,7 +656,7 @@ export default function CompaniesSection() {
                             <span className="text-[9px] font-medium text-text-light dark:text-text-dark text-center leading-tight">{item.label}</span>
                           </Link>
                         ) : (
-                          <button key={item.id} onClick={() => { item.onClick?.(); setShowMobileLeft(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-surface-light dark:hover:bg-surface-dark transition-colors">
+                          <button key={item.id} onClick={() => { handleStateChange(item.onClick as any, true); setShowMobileLeft(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-surface-light dark:hover:bg-surface-dark transition-colors">
                             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center">
                               <item.icon size={18} className="text-primary-500" />
                             </div>
@@ -642,23 +699,31 @@ export default function CompaniesSection() {
                       ))}
                     </div>
                     <div className="space-y-2 max-h-[40vh] overflow-y-auto">
-                      {segmentedClients[activeClientTab]?.slice(0, 5).map((client, idx) => (
-                        <motion.button key={client.id} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.05 }} onClick={() => { setSelectedClient(client); setShowMobileRight(false); }} className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark active:border-primary-500/40 transition-all text-left">
-                          <div className="w-9 h-9 rounded-lg bg-white dark:bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
-                            {client.logo ? <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-0.5" /> : <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-[10px] font-bold">{client.name.slice(0, 2).toUpperCase()}</div>}
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h4 className="font-medium text-xs text-text-light dark:text-text-dark truncate">{client.name}</h4>
-                            <p className="text-[10px] text-muted-light dark:text-muted-dark flex items-center gap-1">
-                              <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-3" /> {client.country}
-                            </p>
-                          </div>
-                          <RiArrowRightLine size={12} className="text-muted-light dark:text-muted-dark shrink-0" />
-                        </motion.button>
-                      ))}
+                      {(() => {
+                        const list = activeClientTab === "all"
+                          ? [...segmentedClients.pharma, ...segmentedClients.vendors, ...segmentedClients.societies]
+                          : segmentedClients[activeClientTab];
+                        return list?.slice(0, 5).map((client: any, idx: number) => (
+                          <motion.button key={client.id} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.05 }} onClick={() => { handleStateChange(setSelectedClient, client); setShowMobileRight(false); }} className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark active:border-primary-500/40 transition-all text-left">
+                            <div className="w-9 h-9 rounded-lg bg-white dark:bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+                              {client.logo ? <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-0.5" /> : <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-[10px] font-bold">{client.name.slice(0, 2).toUpperCase()}</div>}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <h4 className="font-medium text-xs text-text-light dark:text-text-dark truncate">{client.name}</h4>
+                              <p className="text-[10px] text-muted-light dark:text-muted-dark flex items-center gap-1">
+                                <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-3" /> {client.country}
+                              </p>
+                            </div>
+                            <RiArrowRightLine size={12} className="text-muted-light dark:text-muted-dark shrink-0" />
+                          </motion.button>
+                        ));
+                      })()}
                     </div>
                     <p className="text-[10px] text-center text-muted-light dark:text-muted-dark mt-2 pt-2 border-t border-border-light dark:border-border-dark">
-                      {segmentedClients[activeClientTab]?.length || 0} {activeClientTab === "pharma" ? "Pharma Partners" : activeClientTab === "vendors" ? "Tech Vendors" : "Medical Societies"}
+                      {activeClientTab === "all"
+                        ? (segmentedClients.pharma.length + segmentedClients.vendors.length + segmentedClients.societies.length)
+                        : (segmentedClients[activeClientTab]?.length || 0)}{" "}
+                      {activeClientTab === "all" ? "Total Partners" : activeClientTab === "pharma" ? "Pharma Partners" : activeClientTab === "vendors" ? "Tech Vendors" : "Medical Societies"}
                     </p>
                   </div>
                 </motion.div>
@@ -696,56 +761,88 @@ export default function CompaniesSection() {
             {showRightPanel && (
               <motion.div
                 layout
-                initial={{ opacity: 0, x: 80, scale: 0.92 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: 80, scale: 0.92 }}
+                initial={{ opacity: 0, x: 80 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 80 }}
                 transition={SPRING_CONFIG}
-                className="w-56 lg:w-64 flex flex-col gap-4 py-8 relative shrink-0"
+                className="fixed right-4 top-[5%] -translate-y-1/2 z-40 flex items-center h-[80vh] rounded-2xl overflow-hidden shadow-2xl"
               >
-                <motion.button onClick={() => setShowRightPanel(false)} whileHover={{ scale: 1.1 }} className="absolute -left-5 lg:-left-6 top-1/2 -translate-y-1/2 w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-md flex items-center justify-center hover:bg-secondary-500 hover:text-white transition-all z-50 group">
-                  <RiArrowRightSLine size={16} className="group-hover:scale-110 transition-transform" />
-                </motion.button>
+                {/* Vertical Tabs Sidebar */}
+                <div className="flex flex-col gap-1 p-1.5 glass-light dark:glass-dark border-y border-l border-border-light/50 dark:border-border-dark/50 rounded-l-2xl shadow-xl z-10 relative">
+                  <motion.button
+                    onClick={() => setShowRightPanel(false)}
+                    whileHover={{ scale: 1.1 }}
+                    className="w-8 h-8 mb-2 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-md flex items-center justify-center hover:bg-secondary-500 hover:text-white transition-all group"
+                  >
+                    <RiArrowRightLine size={16} className="group-hover:scale-110 transition-transform" />
+                  </motion.button>
 
-                <div className="rounded-2xl glass-light dark:glass-dark border border-border-light dark:border-border-dark shadow-xl overflow-hidden">
-                  <div className="flex flex-col gap-3 lg:gap-4 p-3 lg:p-4 max-h-[73vh] overflow-y-auto custom-scrollbar">
-                    <div className="flex gap-1 p-1 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark">
-                      {[
-                        { id: "pharma", label: "Pharma", icon: RiBriefcaseLine },
-                        { id: "vendors", label: "Tech", icon: RiComputerLine },
-                        { id: "societies", label: "Medical", icon: RiBuildingLine },
-                      ].map((tab) => (
-                        <motion.button key={tab.id} onClick={() => setActiveClientTab(tab.id as any)} whileTap={{ scale: 0.95 }} className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg text-[10px] lg:text-xs font-medium transition-all ${activeClientTab === tab.id ? "bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-sm" : "text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark"}`}>
-                          <tab.icon size={11} /> {tab.label}
+                  {[
+                    { id: "all", label: "All", icon: RiGlobalLine },
+                    { id: "pharma", label: "Pharma", icon: RiBriefcaseLine },
+                    { id: "vendors", label: "Companies", icon: RiComputerLine },
+                    { id: "societies", label: "Societies", icon: RiBuildingLine },
+                  ].map((tab) => (
+                    <motion.button
+                      key={tab.id}
+                      onClick={() => setActiveClientTab(tab.id as any)}
+                      whileHover={{ x: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`flex flex-col items-center gap-2 py-4 px-2 rounded-xl transition-all duration-300 ${activeClientTab === tab.id ? "bg-gradient-to-b from-primary-500 to-secondary-500 text-white shadow-lg" : "text-muted-light dark:text-muted-dark hover:text-primary-500"}`}
+                    >
+                      <tab.icon size={18} />
+                      <span className="text-[10px] font-bold uppercase tracking-widest [writing-mode:vertical-lr] rotate-180">
+                        {tab.label}
+                      </span>
+                    </motion.button>
+                  ))}
+                </div>
+
+                {/* Client Logos List */}
+                <div className="w-16 lg:w-20 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-2xl border-y border-r border-border-light/50 dark:border-border-dark/50 rounded-r-2xl py-6 flex flex-col gap-4 items-center max-h-[85vh] overflow-y-auto custom-scrollbar relative">
+                  <AnimatePresence mode="popLayout">
+                    {(() => {
+                      const list = activeClientTab === "all"
+                        ? [...segmentedClients.pharma, ...segmentedClients.vendors, ...segmentedClients.societies]
+                        : segmentedClients[activeClientTab];
+
+                      return list?.map((client, idx) => (
+                        <motion.button
+                          key={client.id}
+                          layout
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 20 }}
+                          transition={{ delay: idx * 0.03 }}
+                          whileHover={{ scale: 1.12, x: -3 }}
+                          whileTap={{ scale: 0.92 }}
+                          onClick={() => setSelectedClient(client)}
+                          className="group relative flex items-center justify-center"
+                        >
+                          <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-white dark:bg-white flex items-center justify-center overflow-hidden shadow-sm border border-border-light/50 dark:border-border-dark/20 group-hover:border-primary-500/50 transition-all">
+                            {client.logo ? (
+                              <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-1.5" />
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-[10px] font-bold">
+                                {client.name.slice(0, 2).toUpperCase()}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Hover Tooltip */}
+                          <div className="absolute right-full mr-4 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 z-50">
+                            <div className="bg-surface-light dark:bg-surface-dark px-3 py-2 rounded-xl shadow-2xl border border-border-light dark:border-border-dark whitespace-nowrap">
+                              <div className="font-bold text-sm text-text-light dark:text-text-dark">{client.name}</div>
+                              <div className="text-[10px] text-muted-light dark:text-muted-dark flex items-center gap-1 mt-0.5">
+                                <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-2.5" /> {client.country}
+                              </div>
+                              <div className="absolute right-[-6px] top-1/2 -translate-y-1/2 w-3 h-3 bg-surface-light dark:bg-surface-dark rotate-45 border-r border-t border-border-light dark:border-border-dark" />
+                            </div>
+                          </div>
                         </motion.button>
-                      ))}
-                    </div>
-
-                    <div className="flex-1 overflow-y-auto max-h-[55vh] lg:max-h-[60vh] space-y-1.5 lg:space-y-2 pr-1">
-                      <AnimatePresence mode="popLayout">
-                        {segmentedClients[activeClientTab]?.map((client, idx) => (
-                          <motion.button key={client.id} layout initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ delay: idx * 0.04 + 0.1 }} whileHover={{ x: 3 }} whileTap={{ scale: 0.97 }} onClick={() => setSelectedClient(client)} className="w-full flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary-500/40 transition-all duration-300 group text-left">
-                            <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-lg bg-white dark:bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                              {client.logo ? <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-0.5 lg:p-1" /> : <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-[10px] lg:text-xs font-bold">{client.name.slice(0, 2).toUpperCase()}</div>}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <h4 className="font-medium text-xs lg:text-sm text-text-light dark:text-text-dark truncate group-hover:text-primary-500 transition-colors">{client.name}</h4>
-                              <p className="text-[10px] lg:text-xs text-muted-light dark:text-muted-dark flex items-center gap-1">
-                                <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-3" /> {client.country}
-                              </p>
-                            </div>
-                            <RiArrowRightLine size={12} className="text-muted-light dark:text-muted-dark group-hover:text-primary-500 transition-colors shrink-0" />
-                          </motion.button>
-                        ))}
-                      </AnimatePresence>
-                    </div>
-
-                    <div className="pt-2 lg:pt-3 border-t border-border-light dark:border-border-dark">
-                      <p className="text-[10px] lg:text-xs text-center text-muted-light dark:text-muted-dark">
-                        {segmentedClients[activeClientTab]?.length || 0}{" "}
-                        {activeClientTab === "pharma" ? "Pharma Partners" : activeClientTab === "vendors" ? "Tech Vendors" : "Medical Societies"}
-                      </p>
-                    </div>
-                  </div>
+                      ));
+                    })()}
+                  </AnimatePresence>
                 </div>
               </motion.div>
             )}
@@ -772,7 +869,7 @@ export default function CompaniesSection() {
               className="absolute bottom-0 left-0 right-0 max-h-[80vh] bg-bg-light dark:bg-bg-dark rounded-t-3xl border-t border-border-light dark:border-border-dark shadow-2xl overflow-hidden flex flex-col"
             >
               {/* Drawer handle */}
-              <div className="flex items-center justify-center pt-3 pb-2">
+              <div className="flex items-center justify-center pb-2">
                 <div className="w-10 h-1 rounded-full bg-border-light dark:bg-border-dark" />
               </div>
 
@@ -801,27 +898,33 @@ export default function CompaniesSection() {
 
                 {/* Client List */}
                 <div className="space-y-2">
-                  {segmentedClients[activeClientTab]?.map((client, idx) => (
-                    <motion.button
-                      key={client.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.03 }}
-                      onClick={() => { setSelectedClient(client); setShowMobileNetwork(false); }}
-                      className="w-full flex items-center gap-3 p-3 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark active:border-primary-500/40 transition-all text-left"
-                    >
-                      <div className="w-10 h-10 rounded-lg bg-white dark:bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
-                        {client.logo ? <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-1" /> : <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-xs font-bold">{client.name.slice(0, 2).toUpperCase()}</div>}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h4 className="font-medium text-sm text-text-light dark:text-text-dark truncate">{client.name}</h4>
-                        <p className="text-xs text-muted-light dark:text-muted-dark flex items-center gap-1">
-                          <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-3" /> {client.country}
-                        </p>
-                      </div>
-                      <RiArrowRightLine size={14} className="text-muted-light dark:text-muted-dark shrink-0" />
-                    </motion.button>
-                  ))}
+                  {(() => {
+                    const list = activeClientTab === "all"
+                      ? [...segmentedClients.pharma, ...segmentedClients.vendors, ...segmentedClients.societies]
+                      : segmentedClients[activeClientTab];
+                    return list?.map((client: any, idx: number) => (
+
+                      <motion.button
+                        key={client.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.03 }}
+                        onClick={() => { setSelectedClient(client); setShowMobileNetwork(false); }}
+                        className="w-full flex items-center gap-3 p-3 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark active:border-primary-500/40 transition-all text-left"
+                      >
+                        <div className="w-10 h-10 rounded-lg bg-white dark:bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+                          {client.logo ? <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-1" /> : <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-xs font-bold">{client.name.slice(0, 2).toUpperCase()}</div>}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-medium text-sm text-text-light dark:text-text-dark truncate">{client.name}</h4>
+                          <p className="text-xs text-muted-light dark:text-muted-dark flex items-center gap-1">
+                            <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-3" /> {client.country}
+                          </p>
+                        </div>
+                        <RiArrowRightLine size={14} className="text-muted-light dark:text-muted-dark shrink-0" />
+                      </motion.button>
+                    ));
+                  })()}
                 </div>
               </div>
             </motion.div>
@@ -829,17 +932,35 @@ export default function CompaniesSection() {
         )}
       </AnimatePresence>
 
-      {/* ─── Modals ─── */}
-      <AnimatePresence>
-        {selectedCompany && <CompanyModal company={selectedCompany} onClose={() => setSelectedCompany(null)} />}
-        {selectedClient && <ClientWorkPopup client={selectedClient} onClose={() => setSelectedClient(null)} />}
-        {selectedCountry && <CountryModal country={selectedCountry} onClose={() => setSelectedCountry(null)} />}
-        {showServices && <ServicesModal activeTab={activeTab} setActiveTab={setActiveTab} onClose={() => setShowServices(false)} />}
-        {showAccreditations && <AccreditationsModal onClose={() => setShowAccreditations(false)} />}
-        {showTestimonials && <TestimonialsModal activeTestimonial={activeTestimonial} setActiveTestimonial={setActiveTestimonial} onClose={() => setShowTestimonials(false)} />}
-        {showChat && <ChatModal onClose={() => setShowChat(false)} />}
-        {showExpertise && <ExpertiseModal onClose={() => setShowExpertise(false)} />}
-      </AnimatePresence>
+      {/* ─── Modals (Mobile Only) ─── */}
+      {isMobile && (
+        <AnimatePresence>
+          {selectedCompany && <CompanyModal company={selectedCompany} onClose={() => setSelectedCompany(null)} />}
+          {selectedClient && <ClientWorkPopup client={selectedClient} onClose={() => setSelectedClient(null)} />}
+          {selectedCountry && <CountryModal country={selectedCountry} onClose={() => setSelectedCountry(null)} />}
+          {showServices && <ServicesModal activeTab={activeTab} setActiveTab={setActiveTab} onClose={() => setShowServices(false)} />}
+          {showAccreditations && <AccreditationsModal onClose={() => setShowAccreditations(false)} />}
+          {showTestimonials && <TestimonialsModal activeTestimonial={activeTestimonial} setActiveTestimonial={setActiveTestimonial} onClose={() => setShowTestimonials(false)} />}
+          {showChat && <ChatModal onClose={() => setShowChat(false)} />}
+          {showExpertise && <ExpertiseModal onClose={() => setShowExpertise(false)} />}
+        </AnimatePresence>
+      )}
+
+      {/* ─── Task 10: Floating Chat Widget ─── */}
+      {!isMobile && (
+        <motion.button
+          initial={{ scale: 0, y: 20 }}
+          animate={{ scale: 1, y: 0 }}
+          whileHover={{ scale: 1.1, y: -4 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => setShowChat(true)}
+          className="fixed bottom-5 right-5 z-[60] w-14 h-14 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 text-white shadow-2xl shadow-primary-500/30 flex items-center justify-center group"
+        >
+          <div className="absolute inset-0 rounded-full bg-primary-400 animate-ping opacity-20 group-hover:opacity-40 transition-opacity" />
+          <RiMessage3Line size={24} className="relative z-10" />
+          <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-surface-dark rounded-full shadow-sm" />
+        </motion.button>
+      )}
     </section>
   );
 }
@@ -1487,5 +1608,618 @@ function ExpertiseModal({ onClose }: { onClose: () => void }) {
         </div>
       </div>
     </ModalBackdrop>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Dynamic Content Box (Desktop Center-Right Panel)
+// ─────────────────────────────────────────────
+function DynamicContentBox({
+  selectedClient, selectedCompany, selectedCountry,
+  showServices, showExpertise, showAccreditations, showTestimonials, showChat, showPeople,
+  activeTab, setActiveTab, activeTestimonial, setActiveTestimonial,
+  setSelectedClient, setSelectedCompany, setSelectedCountry,
+  setShowServices, setShowExpertise, setShowAccreditations, setShowTestimonials, setShowChat, setShowPeople
+}: any) {
+  return (
+    <div className="flex-1 min-w-[600px] max-w-3xl z-20 h-[70vh] flex flex-col -mt-16 -ml-14">
+      <AnimatePresence mode="wait">
+        {(() => {
+          if (selectedClient) return <ClientInfoView key="client" client={selectedClient} onClose={() => setSelectedClient(null)} />;
+          if (selectedCompany) return <CompanyInfoView key="company" company={selectedCompany} onClose={() => setSelectedCompany(null)} />;
+          if (selectedCountry) return <CountryInfoView key="country" country={selectedCountry} onClose={() => setSelectedCountry(null)} />;
+          if (showServices) return <ServicesInfoView key="services" activeTab={activeTab} setActiveTab={setActiveTab} onClose={() => setShowServices(false)} />;
+          if (showExpertise) return <ExpertiseInfoView key="expertise" onClose={() => setShowExpertise(false)} />;
+          if (showAccreditations) return <AccreditationsInfoView key="accreds" onClose={() => setShowAccreditations(false)} />;
+          if (showTestimonials) return <TestimonialsInfoView key="reviews" activeTestimonial={activeTestimonial} setActiveTestimonial={setActiveTestimonial} onClose={() => setShowTestimonials(false)} />;
+          if (showPeople) return <PeopleBehindView key="people" onClose={() => setShowPeople(false)} />;
+          if (showChat) return <ChatInfoView key="chat" onClose={() => setShowChat(false)} />;
+
+          return <AboutMarvelView key="about" />;
+        })()}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Unified Desktop Views (Dashboard Style)
+// ─────────────────────────────────────────────
+
+function BoxWrapper({ children, onClose, title, subtitle, icon: Icon, color = "from-primary-500 to-secondary-500" }: { children: React.ReactNode, onClose?: () => void, title: string, subtitle?: string, icon?: any, color?: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 30, scale: 0.98 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      exit={{ opacity: 0, x: -20, scale: 0.98 }}
+      className="flex-1 flex flex-col glass-light dark:glass-dark rounded-3xl border border-border-light/30 dark:border-border-dark/30 shadow-2xl overflow-hidden backdrop-blur-2xl"
+    >
+      <div className="p-5 border-b border-border-light/20 dark:border-border-dark/20 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          {Icon && (
+            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-lg overflow-hidden ${typeof Icon === 'string' ? 'p-2' : ''}`}>
+              {typeof Icon === 'string' ? (
+                <Image src={Icon} alt={title} height={40} width={40} className="w-full h-full object-contain" />
+              ) : (
+                <Icon size={24} />
+              )}
+            </div>
+          )}
+          <div>
+            <h3 className="text-xl font-bold text-text-light dark:text-text-dark">{title}</h3>
+            {subtitle && <p className="text-sm text-muted-light dark:text-muted-dark">{subtitle}</p>}
+          </div>
+        </div>
+        {onClose && (
+          <motion.button
+            whileHover={{ scale: 1.1, rotate: 90 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={onClose}
+            className="w-10 h-10 rounded-xl bg-surface-light dark:bg-surface-dark flex items-center justify-center text-muted-light dark:text-muted-dark hover:bg-red-500 hover:text-white transition-all shadow-sm"
+          >
+            <RiCloseLine size={20} />
+          </motion.button>
+        )}
+      </div>
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-5">
+        {children}
+      </div>
+    </motion.div>
+  );
+}
+
+function AboutMarvelView() {
+  const timeline = [
+    { year: "2015", event: "Founded in Cairo & UAE." },
+    { year: "2019", event: "Med-ADD launched in KSA." },
+    { year: "2021", event: "50+ Pharma clients reached." },
+    { year: "2023", event: "100+ Brands milestone." },
+    { year: "2025", event: "AI-driven medical comms era." },
+  ];
+
+  return (
+    <BoxWrapper title="Marvel Group" subtitle="Where Medicine Meets Mastery" icon="/Logo.png">
+      <div className="space-y-8">
+        <p className="text-lg text-text-light dark:text-text-dark leading-relaxed font-medium">
+          Marvel Group is the MENA region's most trusted <span className="text-primary-500">med-tech ecosystem</span>, powering healthcare innovation since 2015.
+        </p>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="p-4 rounded-2xl bg-primary-500/5 border border-primary-500/10">
+            <div className="text-2xl font-bold text-primary-500">500+</div>
+            <div className="text-xs text-muted-light dark:text-muted-dark uppercase tracking-wider mt-1">Projects Delivered</div>
+          </div>
+          <div className="p-4 rounded-2xl bg-secondary-500/5 border border-secondary-500/10">
+            <div className="text-2xl font-bold text-secondary-500">100+</div>
+            <div className="text-xs text-muted-light dark:text-muted-dark uppercase tracking-wider mt-1">Global Brands</div>
+          </div>
+        </div>
+
+        <div>
+          <h4 className="text-xs font-bold text-muted-light dark:text-muted-dark uppercase tracking-widest mb-4 flex items-center gap-2">
+            <RiStackLine size={14} className="text-primary-500" /> Our Evolution
+          </h4>
+          <div className="space-y-4">
+            {timeline.map((item, i) => (
+              <div key={i} className="flex gap-4 items-start group">
+                <div className="w-8 h-8 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light/50 flex items-center justify-center text-[10px] font-bold text-primary-500 shrink-0 group-hover:bg-primary-500 group-hover:text-white transition-colors">
+                  {item.year.slice(2)}
+                </div>
+                <div className="text-sm text-text-light dark:text-text-dark pt-1.5">{item.event}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-5 rounded-2xl glass-light dark:glass-dark border border-primary-500/20">
+          <p className="text-sm italic text-muted-light dark:text-muted-dark leading-relaxed">
+            "Our mission is to elevate healthcare communication across MENA — combining clinical expertise and cutting-edge technology."
+          </p>
+        </div>
+      </div>
+    </BoxWrapper>
+  );
+}
+
+function ClientInfoView({ client, onClose }: { client: SegmentedClient, onClose: () => void }) {
+  const categoryColors: Record<string, string> = { pharma: "from-primary-500 to-secondary-500", vendor: "from-secondary-500 to-primary-500", society: "from-primary-400 to-secondary-400" };
+  const color = categoryColors[client.category] || categoryColors.pharma;
+
+  return (
+    <BoxWrapper title={client.name} subtitle={`${client.country} Partner`} onClose={onClose} color={color}>
+      <div className="flex items-center gap-6 mb-6 p-4 rounded-2xl bg-white shadow-inner border border-border-light/50">
+        <div className="w-20 h-20 rounded-xl bg-white flex items-center justify-center overflow-hidden p-2 shrink-0">
+          {client.logo ? <Image src={client.logo} alt={client.name} width={80} height={80} className="w-full h-full object-contain" /> : <div className={`w-full h-full rounded-lg bg-gradient-to-br ${color} flex items-center justify-center text-white text-2xl font-bold`}>{client.name.slice(0, 2).toUpperCase()}</div>}
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <ReactCountryFlag countryCode={client.flag} svg className="!w-4 !h-3" />
+            <span className="text-sm font-medium text-muted-light dark:text-muted-dark">{client.country}</span>
+          </div>
+          <div className="px-3 py-1 rounded-full bg-primary-500/10 text-primary-500 text-[10px] font-bold uppercase tracking-wider inline-block">{client.category}</div>
+        </div>
+      </div>
+
+      <h4 className="text-xs font-bold text-muted-light dark:text-muted-dark uppercase tracking-widest mb-4">Strategic Work</h4>
+      <div className="grid grid-cols-1 gap-4">
+        {[
+          { title: "Brand Strategy", desc: "Comprehensive brand positioning and market entry.", year: "2024", type: "Strategy" },
+          { title: "Medical Education", desc: "CME-accredited specialist training programs.", year: "2023", type: "Education" },
+          { title: "Digital Platform", desc: "Interactive portal for HCP engagement.", year: "2023", type: "Digital" }
+        ].map((work, i) => (
+          <div key={i} className="group p-4 rounded-2xl bg-surface-light/40 dark:bg-surface-dark/40 border border-border-light/50 dark:border-white/10 hover:border-primary-500/40 transition-all">
+            <div className="flex items-start gap-4">
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-white font-bold text-[10px] shrink-0 opacity-80 group-hover:opacity-100`}>
+                {work.type.slice(0, 2).toUpperCase()}
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] font-bold text-primary-500">{work.year}</span>
+                  <span className="text-[10px] font-medium text-muted-light dark:text-muted-dark">{work.type}</span>
+                </div>
+                <h5 className="font-bold text-sm text-text-light dark:text-text-dark">{work.title}</h5>
+                <p className="text-xs text-muted-light dark:text-muted-dark mt-1 leading-relaxed">{work.desc}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </BoxWrapper>
+  );
+}
+
+function CompanyInfoView({ company, onClose }: { company: Company, onClose: () => void }) {
+  return (
+    <BoxWrapper title={company.name} subtitle={company.tagline} onClose={onClose} color={company.color}>
+      <div className={`h-32 rounded-2xl bg-gradient-to-r ${company.color} relative overflow-hidden mb-6`}>
+        <div className="absolute inset-0 bg-black/10" />
+        <div className="absolute bottom-4 left-4 flex items-center gap-3">
+          <div className="w-14 h-14 rounded-xl bg-white flex items-center justify-center shadow-xl p-2">
+            {company.logo ? <img src={company.logo} alt={company.name} className="w-full h-full object-contain" /> : <span className="text-2xl">{company.icon}</span>}
+          </div>
+          <div>
+            <div className="text-white font-bold text-lg leading-tight">{company.name}</div>
+            <div className="text-white/80 text-xs flex items-center gap-1.5">
+              <ReactCountryFlag countryCode={company.flag} svg /> {company.country} · Est. {company.year}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p className="text-sm text-text-light dark:text-text-dark leading-relaxed mb-6">
+        {company.description || "Leading the healthcare industry with innovative solutions and medical excellence."}
+      </p>
+
+      <div className="space-y-4">
+        <h4 className="text-xs font-bold text-muted-light dark:text-muted-dark uppercase tracking-widest">Key Focus Areas</h4>
+        <div className="grid grid-cols-2 gap-3">
+          {["Medical Writing", "Clinical Data", "Digital Health", "Creative Comms"].map(area => (
+            <div key={area} className="flex items-center gap-2 p-3 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10">
+              <RiCheckLine className="text-primary-500" size={14} />
+              <span className="text-xs font-medium text-text-light dark:text-text-dark">{area}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-8">
+        <Link href="/contact" className={`flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-gradient-to-r ${company.color} text-white text-sm font-bold shadow-lg`}>
+          Partner with {company.name} <RiArrowRightLine size={16} />
+        </Link>
+      </div>
+    </BoxWrapper>
+  );
+}
+
+function CountryInfoView({ country, onClose }: { country: any, onClose: () => void }) {
+  return (
+    <BoxWrapper title={country.name} subtitle={`Regional Hub: ${country.city}`} onClose={onClose} icon={RiGlobalLine}>
+      <div className="relative h-40 rounded-2xl overflow-hidden mb-6 group">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-secondary-500/20 group-hover:scale-105 transition-transform duration-700" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-24 h-16 rounded-xl overflow-hidden shadow-2xl border-4 border-white/50">
+            <ReactCountryFlag countryCode={country.flag} svg style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          </div>
+        </div>
+      </div>
+
+      <h4 className="text-sm font-bold text-text-light dark:text-text-dark mb-3">About our presence</h4>
+      <p className="text-sm text-muted-light dark:text-muted-dark leading-relaxed mb-6">
+        {country.description}
+      </p>
+
+      <div className="grid grid-cols-3 gap-3 mb-8">
+        {Object.entries(country.stats).map(([label, val]: any) => (
+          <div key={label} className="text-center p-3 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10">
+            <div className="text-lg font-bold text-primary-500">{val}</div>
+            <div className="text-[9px] text-muted-light dark:text-muted-dark uppercase font-bold tracking-tighter">{label}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="space-y-3">
+        <h4 className="text-xs font-bold text-muted-light dark:text-muted-dark uppercase tracking-widest">Active Entities</h4>
+        <div className="flex flex-wrap gap-2">
+          {country.companies.map((c: string) => (
+            <span key={c} className="px-3 py-1.5 rounded-lg bg-primary-500/5 border border-border-light/50 dark:border-white/10 text-xs font-medium text-text-light dark:text-text-dark">{c}</span>
+          ))}
+        </div>
+      </div>
+    </BoxWrapper>
+  );
+}
+
+function ServicesInfoView({ activeTab, setActiveTab, onClose }: { activeTab: "comprehensive" | "featured" | "products", setActiveTab: (t: any) => void, onClose: () => void }) {
+  const [selectedService, setSelectedService] = useState("cme");
+
+  useEffect(() => {
+    if (activeTab === "comprehensive") setSelectedService("cme");
+    else if (activeTab === "featured") setSelectedService("accreditation");
+  }, [activeTab]);
+
+  const comprehensiveServices = [
+    { id: "cme", icon: RiGraduationCapLine, title: "CME", services: [{ name: "Curriculum Design", desc: "Comprehensive CME program structuring" }, { name: "Content Development", desc: "Medical education content creation" }, { name: "Slide Decks", desc: "Professional presentation materials" }, { name: "Gamification", desc: "Case studies, patient profiles, interactivity" }, { name: "Speakers", desc: "Expert faculty management" }, { name: "Accreditation", desc: "CPD, DHA, SCFHS certificates" }, { name: "Endorsed Materials", desc: "Officially recognized content" }] },
+    { id: "research", icon: RiFileTextLine, title: "Research", services: [{ name: "Study Design", desc: "Clinical and observational research" }, { name: "Data Analysis", desc: "Statistical and qualitative analysis" }, { name: "Manuscript Writing", desc: "Peer-reviewed publication support" }, { name: "Literature Review", desc: "Comprehensive evidence synthesis" }, { name: "Abstracts & Posters", desc: "Conference submission support" }] },
+    { id: "elearning", icon: RiComputerLine, title: "eLearning", services: [{ name: "LMS Development", desc: "Learning management systems" }, { name: "Interactive Modules", desc: "Engaging digital content" }, { name: "VR Training", desc: "Virtual reality medical simulations" }, { name: "Mobile Apps", desc: "Healthcare education apps" }, { name: "Assessment Tools", desc: "Online testing & certification" }] },
+    { id: "artwork", icon: RiPaletteLine, title: "Marketing", services: [{ name: "Brand Identity", desc: "Logo and visual system design" }, { name: "Marketing Campaigns", desc: "Multi-channel promotion strategies" }, { name: "Medical Illustration", desc: "Anatomical and scientific art" }, { name: "Video Production", desc: "Educational and promotional videos" }, { name: "Social Media", desc: "Digital marketing management" }] },
+    { id: "training", icon: RiUserSettingsLine, title: "Training", services: [{ name: "Workshops", desc: "Hands-on skill development" }, { name: "Certification Programs", desc: "Professional credentials" }, { name: "On-site Training", desc: "In-person education delivery" }, { name: "Train-the-Trainer", desc: "Faculty development programs" }] },
+    { id: "it", icon: RiCodeBoxLine, title: "IT", services: [{ name: "Custom Software", desc: "Bespoke healthcare applications" }, { name: "CRM Systems", desc: "Customer relationship platforms" }, { name: "Data Analytics", desc: "Healthcare intelligence dashboards" }, { name: "AI Integration", desc: "Machine learning solutions" }] },
+    { id: "visuals", icon: RiVideoLine, title: "Visuals", services: [{ name: "3D Medical Animation", desc: "Complex medical concepts visualization" }, { name: "VR Training", desc: "Virtual reality medical simulations" }, { name: "Video Production", desc: "Professional healthcare videos" }, { name: "Interactive Media", desc: "Engaging digital experiences" }, { name: "Motion Graphics", desc: "Animated medical illustrations" }] },
+    { id: "events", icon: RiCalendarEventLine, title: "Events", services: [{ name: "Conference Planning", desc: "Full-service medical conferences" }, { name: "Virtual Events", desc: "Online webinars & summits" }, { name: "Hybrid Events", desc: "In-person + digital combined" }, { name: "Exhibition Booths", desc: "Trade show presence design" }, { name: "Speaker Management", desc: "Keynote & panel coordination" }] },
+  ];
+
+  const featuredServices = [
+    { id: "accreditation", icon: RiStarLine, title: "Accreditation", badge: "Certified", color: "from-primary-500 to-secondary-400", description: "Comprehensive accreditation programs recognized worldwide", features: [{ name: "CPD-UK", desc: "UK Continuous Professional Development" }, { name: "DHA Approved", desc: "Dubai Health Authority accredited" }, { name: "SCFHS Certified", desc: "Saudi Commission for Health Specialties" }, { name: "RCSEd Endorsed", desc: "Royal College of Surgeons of Edinburgh" }, { name: "CME Credits", desc: "Continuing Medical Education credits" }, { name: "Global Recognition", desc: "Internationally accepted certificates" }] },
+    { id: "standalone", icon: RiStackLine, title: "Standalone", badge: "Flexible", color: "from-secondary-400 to-primary-500", description: "Flexible solutions that integrate seamlessly", features: [{ name: "Modular Design", desc: "Pick and choose what you need" }, { name: "Easy Integration", desc: "Works with existing workflows" }, { name: "Scalable", desc: "Grows with your organization" }, { name: "Customizable", desc: "Tailored to your requirements" }, { name: "Quick Deployment", desc: "Fast implementation timeline" }, { name: "Cost Effective", desc: "Pay for what you use" }] },
+    { id: "digital", icon: RiComputerLine, title: "Digital", badge: "Innovative", color: "from-primary-500 to-secondary-400", description: "Cutting-edge AI-driven platforms", features: [{ name: "AI Integration", desc: "Machine learning powered tools" }, { name: "Automation", desc: "Streamlined workflows" }, { name: "Analytics Dashboard", desc: "Real-time data insights" }, { name: "Cloud Based", desc: "Secure cloud infrastructure" }, { name: "Mobile Ready", desc: "Works on all devices" }, { name: "API Access", desc: "Connect with other systems" }] },
+  ];
+
+  const products = [
+    { id: "tebzone", letter: "T", title: "TebZone", subtitle: "Healthcare E-commerce", description: "Healthcare marketplace connecting patients and suppliers.", status: "LIVE", features: ["Medicine Marketplace", "Prescription Upload", "Real-time Tracking", "Secure Payments"] },
+    { id: "medadd", letter: "M", title: "Med-ADD", subtitle: "Medical Advertising", description: "Pharmaceutical sales force training with adaptive AI.", status: "LIVE", features: ["AI Role-play", "Performance Analytics", "Compliance Tracking", "Interactive Modules"] },
+    { id: "medvi", letter: "V", title: "Med-Vi", subtitle: "Video & VR Training", description: "Medical education and HCP engagement platform.", status: "LIVE", features: ["CPD-Accredited", "Interactive Cases", "HCP Analytics", "VR Simulations"] },
+    { id: "medlab", letter: "L", title: "Med-Lab", subtitle: "Lab Management", description: "Next-gen laboratory information management system.", status: "Coming Soon", features: ["Sample Tracking", "QC Management", "Reports Dashboard", "LIMS Integration"] },
+  ];
+
+  const tabs = [
+    { id: "comprehensive", label: "Services", icon: RiServiceLine },
+    { id: "featured", label: "Featured", icon: RiStarLine },
+    { id: "products", label: "Products", icon: RiStackLine },
+  ];
+
+  return (
+    <BoxWrapper title="Services & Products" subtitle="Expert Solutions" onClose={onClose} icon={RiSettings4Line}>
+      <div className="flex gap-2 mb-6 p-1 bg-surface-light/80 dark:bg-surface-dark/40 rounded-2xl border border-border-light/50 dark:border-white/10">
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as any)}
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all ${activeTab === tab.id ? "bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg" : "text-muted-light dark:text-muted-dark hover:bg-primary-500/5"}`}
+          >
+            <tab.icon size={14} /> {tab.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex-1 overflow-hidden flex flex-col">
+        <AnimatePresence mode="wait">
+          {activeTab === "comprehensive" && (
+            <motion.div key="comprehensive" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col gap-6">
+              <div className="grid grid-cols-4 gap-2">
+                {comprehensiveServices.map((service) => (
+                  <button key={service.id} onClick={() => setSelectedService(service.id)} className={`flex flex-col items-center gap-2 p-2 rounded-xl transition-all ${selectedService === service.id ? "bg-primary-500/10 border border-primary-500/20" : "bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10 hover:border-primary-500/10"}`}>
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${selectedService === service.id ? "bg-gradient-to-br from-primary-500 to-secondary-500 text-white shadow-md" : "bg-black/5 dark:bg-white/5 text-muted-light dark:text-muted-dark"}`}><service.icon size={18} /></div>
+                    <span className={`text-[10px] font-bold ${selectedService === service.id ? "text-primary-500" : "text-text-light dark:text-text-dark"}`}>{service.title}</span>
+                  </button>
+                ))}
+              </div>
+
+              {(() => {
+                const service = comprehensiveServices.find(s => s.id === selectedService);
+                if (!service) return null;
+                return (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-2xl bg-primary-500/5 border border-primary-500/10">
+                    {service.services.map((item, i) => (
+                      <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-white/50 dark:bg-black/20 border border-white/50 dark:border-white/5">
+                        <RiCheckLine className="text-primary-500 shrink-0 mt-0.5" size={14} />
+                        <div><h5 className="font-bold text-xs text-text-light dark:text-text-dark">{item.name}</h5><p className="text-[10px] text-muted-light dark:text-muted-dark mt-0.5 leading-relaxed">{item.desc}</p></div>
+                      </div>
+                    ))}
+                  </motion.div>
+                );
+              })()}
+            </motion.div>
+          )}
+
+          {activeTab === "featured" && (
+            <motion.div key="featured" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
+              {featuredServices.map((service, i) => (
+                <div key={service.id} className="p-5 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10 hover:border-secondary-500/30 transition-all group">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${service.color} flex items-center justify-center text-white shadow-lg`}><service.icon size={22} /></div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-bold text-base text-text-light dark:text-text-dark">{service.title}</h4>
+                        <span className="px-2 py-0.5 rounded-full bg-secondary-500/10 text-secondary-500 text-[9px] font-bold uppercase tracking-wider">{service.badge}</span>
+                      </div>
+                      <p className="text-xs text-muted-light dark:text-muted-dark mt-0.5">{service.description}</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {service.features.map((f, j) => (
+                      <div key={j} className="flex items-center gap-2 p-2 rounded-lg bg-black/5 dark:bg-white/5">
+                        <RiStarFill className="text-secondary-500 shrink-0" size={10} />
+                        <span className="text-[10px] font-medium text-text-light dark:text-text-dark">{f.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          )}
+
+          {activeTab === "products" && (
+            <motion.div key="products" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="grid grid-cols-2 gap-4">
+              {products.map((p) => (
+                <div key={p.id} className="group relative p-5 rounded-3xl bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10 hover:border-primary-500/50 transition-all overflow-hidden">
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-primary-500/5 rounded-bl-full flex items-center justify-center font-display font-bold text-2xl text-primary-500/20">{p.letter}</div>
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h4 className="font-bold text-sm text-text-light dark:text-text-dark">{p.title}</h4>
+                      <span className={`px-2 py-0.5 rounded-full text-[8px] font-bold ${p.status === "LIVE" ? "bg-green-500/10 text-green-500" : "bg-orange-500/10 text-orange-500"}`}>{p.status}</span>
+                    </div>
+                    <p className="text-[10px] text-muted-light dark:text-muted-dark mb-4 leading-relaxed line-clamp-2">{p.description}</p>
+                    <div className="space-y-1.5">
+                      {p.features.slice(0, 3).map((f, k) => (
+                        <div key={k} className="flex items-center gap-2 text-[9px] text-text-light dark:text-text-dark font-medium">
+                          <RiCheckLine size={12} className="text-primary-500" /> {f}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </BoxWrapper>
+  );
+}
+
+function ExpertiseInfoView({ onClose }: { onClose: () => void }) {
+  const therapeuticAreas = [
+    { name: "Diabetes", icon: RiStethoscopeLine, color: "from-primary-500 to-primary-400", desc: "Diabetes care & endocrine solutions" },
+    { name: "Orthopedics", icon: RiFirstAidKitLine, color: "from-secondary-500 to-secondary-400", desc: "Musculoskeletal health" },
+    { name: "Internal Medicine", icon: RiHospitalLine, color: "from-primary-600 to-primary-500", desc: "Primary care expertise" },
+    { name: "Cardiology", icon: RiHeartPulseLine, color: "from-secondary-600 to-secondary-500", desc: "Cardiovascular health" },
+    { name: "Oncology", icon: RiMicroscopeLine, color: "from-primary-500 to-primary-400", desc: "Cancer care & research" },
+    { name: "Neurology", icon: RiBrainLine, color: "from-secondary-500 to-secondary-400", desc: "Brain health solutions" },
+    { name: "Dermatology", icon: RiVirusLine, color: "from-primary-600 to-primary-500", desc: "Skin health conditions" },
+    { name: "Ophthalmology", icon: RiEyeLine, color: "from-secondary-600 to-secondary-500", desc: "Eye care expertise" },
+    { name: "Pulmonology", icon: RiHealthBookLine, color: "from-primary-500 to-primary-400", desc: "Respiratory health" },
+    { name: "Gastroenterology", icon: RiCapsuleLine, color: "from-secondary-500 to-secondary-400", desc: "Digestive health" },
+    { name: "Rheumatology", icon: RiUserHeartLine, color: "from-primary-600 to-primary-500", desc: "Autoimmune diseases" },
+    { name: "Women's Health", icon: RiWomenLine, color: "from-secondary-600 to-secondary-500", desc: "Women's wellness" },
+  ];
+
+  return (
+    <BoxWrapper title="Medical Expertise" subtitle="Therapeutic Mastery" onClose={onClose} icon={RiHeartPulseLine}>
+      <div className="grid grid-cols-2 gap-4">
+        {therapeuticAreas.map((area, i) => (
+          <motion.div key={area.name} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }} className="group p-3 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10 hover:border-primary-500/30 transition-all">
+            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${area.color} flex items-center justify-center mb-3 text-white shadow-lg`}>
+              <area.icon size={20} />
+            </div>
+            <h4 className="font-bold text-sm text-text-light dark:text-text-dark mb-1">{area.name}</h4>
+            <p className="text-[10px] text-muted-light dark:text-muted-dark leading-relaxed">{area.desc}</p>
+          </motion.div>
+        ))}
+      </div>
+    </BoxWrapper>
+  );
+}
+
+function AccreditationsInfoView({ onClose }: { onClose: () => void }) {
+  const accreditations = [
+    { shortName: "CPD-UK", fullName: "Continuous Professional Development", country: "United Kingdom", logo: null, color: "from-primary-500 to-primary-600", description: "World-recognized standard for professional learning and development." },
+    { shortName: "SCFHS", fullName: "Saudi Commission for Health Specialties", country: "Saudi Arabia", logo: null, color: "from-green-500 to-green-600", description: "Official healthcare regulatory authority in the Kingdom of Saudi Arabia." },
+    { shortName: "RCSEd", fullName: "Royal College of Surgeons of Edinburgh", country: "United Kingdom", logo: null, color: "from-blue-600 to-blue-700", description: "One of the oldest and most prestigious medical organizations globally." },
+    { shortName: "DHA", fullName: "Dubai Health Authority", country: "UAE", logo: null, color: "from-secondary-500 to-secondary-600", description: "Regulating the healthcare sector in the Emirate of Dubai." },
+  ];
+
+  return (
+    <BoxWrapper title="Global Recognition" subtitle="Our Accreditations" onClose={onClose} icon={RiAwardLine}>
+      <div className="space-y-4">
+        {accreditations.map((acc, i) => (
+          <motion.div key={acc.shortName} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} className="flex gap-5 p-5 rounded-3xl bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10 hover:border-primary-500/30 transition-all">
+            <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${acc.color} flex items-center justify-center text-white font-display font-bold text-xl shadow-lg shrink-0`}>
+              {acc.shortName.slice(0, 2)}
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <h4 className="font-bold text-base text-text-light dark:text-text-dark">{acc.shortName}</h4>
+                <span className="text-[10px] font-medium text-muted-light dark:text-muted-dark px-2 py-0.5 bg-black/5 dark:bg-white/5 rounded-full">{acc.country}</span>
+              </div>
+              <p className="text-xs font-medium text-primary-500 mb-2">{acc.fullName}</p>
+              <p className="text-[11px] text-muted-light dark:text-muted-dark leading-relaxed">{acc.description}</p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </BoxWrapper>
+  );
+}
+
+function TestimonialsInfoView({ activeTestimonial, setActiveTestimonial, onClose }: { activeTestimonial: number, setActiveTestimonial: (i: number) => void, onClose: () => void }) {
+  const testimonials = [
+    { name: "Dr. Sarah Johnson", role: "Medical Director", company: "Global Pharma Corp", image: "https://i.pravatar.cc/150?u=sarah", text: "Marvel Group has been instrumental in our medical education strategy. Their attention to clinical detail and creative delivery is unmatched in the MENA region.", rating: 5 },
+    { name: "Ahmed Mansour", role: "Marketing Lead", company: "BioHealth Solutions", image: "https://i.pravatar.cc/150?u=ahmed", text: "The TebZone platform revolutionized how we connect with patients and providers. Their technical expertise is truly cutting-edge.", rating: 5 },
+    { name: "Prof. Elena Rossi", role: "Scientific Advisory Board", company: "Medical Society of Europe", image: "https://i.pravatar.cc/150?u=elena", text: "Working with Marvel on our CME programs ensured high engagement and perfect accreditation compliance. A true partner in education.", rating: 5 },
+  ];
+  const t = testimonials[activeTestimonial] || testimonials[0];
+
+  return (
+    <BoxWrapper title="Success Stories" subtitle="What Partners Say" onClose={onClose} icon={RiTeamLine}>
+      <div className="flex flex-col h-full min-h-[450px]">
+        <div className="flex-1 flex flex-col items-center justify-center text-center px-4">
+          <motion.div
+            key={activeTestimonial}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative z-10"
+          >
+            <div className="relative w-20 h-20 mx-auto mb-6">
+              <div className="absolute inset-0 bg-primary-500/20 blur-2xl rounded-full" />
+              <div className="relative w-full h-full rounded-full border-4 border-white dark:border-surface-dark shadow-2xl overflow-hidden">
+                <img src={t.image} alt={t.name} className="w-full h-full object-cover" />
+              </div>
+            </div>
+
+            <RiDoubleQuotesL className="text-primary-500/20 mx-auto mb-4" size={40} />
+
+            <p className="text-base md:text-lg text-text-light dark:text-text-dark italic leading-relaxed mb-6 max-w-lg">
+              "{t.text}"
+            </p>
+
+            <div className="flex items-center justify-center gap-1 mb-4">
+              {[...Array(5)].map((_, i) => <RiStarFill key={i} className="text-secondary-500" size={16} />)}
+            </div>
+
+            <h4 className="font-bold text-lg text-text-light dark:text-text-dark">{t.name}</h4>
+            <p className="text-sm text-primary-500 font-medium">{t.role} · {t.company}</p>
+          </motion.div>
+        </div>
+
+        {/* Carousel Controls */}
+        <div className="pt-8 pb-4 flex items-center justify-center gap-8">
+          <button
+            onClick={() => setActiveTestimonial((activeTestimonial - 1 + testimonials.length) % testimonials.length)}
+            className="w-10 h-10 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10 flex items-center justify-center text-muted-light dark:text-muted-dark hover:bg-primary-500/10 hover:text-primary-500 transition-all shadow-sm"
+          >
+            <RiArrowLeftLine size={20} />
+          </button>
+
+          <div className="flex justify-center gap-3">
+            {testimonials.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveTestimonial(i)}
+                className={`h-2 rounded-full transition-all duration-500 ${activeTestimonial === i ? "w-10 bg-gradient-to-r from-primary-500 to-secondary-500 shadow-glow-primary" : "w-3 bg-muted-light dark:bg-muted-dark hover:bg-primary-500/30"}`}
+              />
+            ))}
+          </div>
+
+          <button
+            onClick={() => setActiveTestimonial((activeTestimonial + 1) % testimonials.length)}
+            className="w-10 h-10 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10 flex items-center justify-center text-muted-light dark:text-muted-dark hover:bg-primary-500/10 hover:text-primary-500 transition-all shadow-sm"
+          >
+            <RiArrowRightLine size={20} />
+          </button>
+        </div>
+      </div>
+    </BoxWrapper>
+  );
+}
+
+function PeopleBehindView({ onClose }: { onClose: () => void }) {
+  const categories = ["Medical", "Administrative", "IT", "Creative"];
+  const [activeCat, setActiveCat] = useState("Medical");
+  
+  const team = [
+    { name: "Dr. Sarah Ahmed", role: "Medical Director", cat: "Medical", img: "https://i.pravatar.cc/150?u=sarah1" },
+    { name: "Dr. Khaled Omar", role: "Clinical Consultant", cat: "Medical", img: "https://i.pravatar.cc/150?u=khaled" },
+    { name: "Eng. Youssef Ali", role: "Tech Lead", cat: "IT", img: "https://i.pravatar.cc/150?u=youssef" },
+    { name: "Nour El-Din", role: "Creative Director", cat: "Creative", img: "https://i.pravatar.cc/150?u=nour" },
+    { name: "Mai Mahmoud", role: "Operations Manager", cat: "Administrative", img: "https://i.pravatar.cc/150?u=mai" },
+    { name: "Dr. Laila Hassan", role: "Medical Content Specialist", cat: "Medical", img: "https://i.pravatar.cc/150?u=laila" },
+    { name: "Ziad Tarek", role: "Systems Admin", cat: "IT", img: "https://i.pravatar.cc/150?u=ziad" },
+  ];
+
+  const filteredTeam = team.filter(p => p.cat === activeCat);
+
+  return (
+    <BoxWrapper title="The Force Behind" subtitle="Our Talented Team" onClose={onClose} icon={RiGroupLine}>
+       <div className="flex flex-col h-full">
+         {/* Category Tabs */}
+         <div className="flex gap-2 mb-8  pb-2 custom-scrollbar">
+           {categories.map(cat => (
+             <button
+               key={cat}
+               onClick={() => setActiveCat(cat)}
+               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                 activeCat === cat 
+                   ? "bg-primary-500 text-white shadow-lg shadow-primary-500/30" 
+                   : "bg-surface-light/80 dark:bg-surface-dark/80 text-text-light/70 dark:text-text-dark/70 border border-border-light/50 dark:border-white/10 hover:bg-primary-500/10 hover:text-primary-500 transition-all"
+               }`}
+             >
+               {cat}
+             </button>
+           ))}
+         </div>
+
+         {/* Team Grid */}
+         <div className="grid grid-cols-2 gap-4">
+           <AnimatePresence mode="wait">
+             {filteredTeam.map((person, i) => (
+               <motion.div
+                 key={person.name}
+                 initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                 animate={{ opacity: 1, scale: 1, y: 0 }}
+                 exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                 transition={{ delay: i * 0.05 }}
+                 className="group p-4 rounded-2xl bg-surface-light/40 dark:bg-surface-dark/40 border border-border-light/50 dark:border-white/10 hover:border-primary-500/30 transition-all text-center"
+               >
+                 <div className="relative w-16 h-16 mx-auto mb-3">
+                   <div className="absolute inset-0 bg-primary-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                   <div className="relative w-full h-full rounded-full border-2 border-primary-500/20 group-hover:border-primary-500 transition-all overflow-hidden">
+                     <img src={person.img} alt={person.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                   </div>
+                 </div>
+                 <h5 className="font-bold text-[13px] text-text-light dark:text-text-dark leading-tight">{person.name}</h5>
+                 <p className="text-[9px] text-primary-500 font-bold uppercase tracking-wider mt-1">{person.role}</p>
+               </motion.div>
+             ))}
+           </AnimatePresence>
+         </div>
+       </div>
+    </BoxWrapper>
+  );
+}
+
+function ChatInfoView({ onClose }: { onClose: () => void }) {
+  return (
+    <BoxWrapper title="AI Support" subtitle="Always Online" onClose={onClose} icon={RiMessage3Line}>
+      <div className="flex flex-col h-full space-y-4">
+        <div className="flex-1 p-4 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light/50 flex flex-col justify-center items-center text-center">
+          <div className="w-16 h-16 rounded-full bg-primary-500/10 flex items-center justify-center mb-4">
+            <RiMessage3Line className="text-primary-500" size={32} />
+          </div>
+          <h4 className="font-bold text-text-light dark:text-text-dark">How can we help?</h4>
+          <p className="text-xs text-muted-light dark:text-muted-dark mt-2">Our AI assistant is ready to answer your questions about Marvel Group.</p>
+        </div>
+        <button onClick={() => { /* Real chat logic would go here */ }} className="w-full py-3 rounded-2xl bg-primary-500 text-white font-bold shadow-lg">Start Conversation</button>
+      </div>
+    </BoxWrapper>
   );
 }
