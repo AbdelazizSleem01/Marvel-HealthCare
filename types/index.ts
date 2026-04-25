@@ -119,6 +119,7 @@ export interface SegmentedClient {
 }
 
 export interface SegmentedClients {
+  all: SegmentedClient[];
   pharma: SegmentedClient[];
   vendors: SegmentedClient[];
   societies: SegmentedClient[];

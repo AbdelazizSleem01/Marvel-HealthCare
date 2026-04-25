@@ -642,8 +642,7 @@ export const educationalPrograms = [
 ];
 
 // 8. SEGMENTED CLIENTS (Advanced Client List)
-export const segmentedClients: SegmentedClients = {
-  pharma: [
+const pharmaClients = [
     { id: "1", name: "Novartis", country: "Switzerland", flag: "CH", category: "pharma" as const, logo: "/marvel-images/Novo.png" },
     { id: "2", name: "Pfizer", country: "USA", flag: "US", category: "pharma" as const, logo: "/marvel-images/Pfizer-Logo.png" },
     { id: "3", name: "AstraZeneca", country: "UK", flag: "GB", category: "pharma" as const, logo: "/marvel-images/Astra Zeneca.png" },
@@ -655,21 +654,29 @@ export const segmentedClients: SegmentedClients = {
     { id: "9", name: "EIPICO", country: "Egypt", flag: "EG", category: "pharma" as const, logo: "/marvel-images/Eipico.png" },
     { id: "10", name: "Marcyrl", country: "Egypt", flag: "EG", category: "pharma" as const, logo: "/marvel-images/Marcyrl.svg" },
     { id: "11", name: "Hikma", country: "Jordan", flag: "JO", category: "pharma" as const, logo: "/marvel-images/hikma.png" },
-  ],
-  vendors: [
+  ];
+
+const vendorClients = [
     { id: "12", name: "AWS", country: "USA", flag: "US", category: "vendor" as const },
     { id: "13", name: "Adobe", country: "USA", flag: "US", category: "vendor" as const },
     { id: "14", name: "Salesforce", country: "USA", flag: "US", category: "vendor" as const },
     { id: "15", name: "Microsoft", country: "USA", flag: "US", category: "vendor" as const },
     { id: "16", name: "Google Cloud", country: "USA", flag: "US", category: "vendor" as const },
     { id: "17", name: "Veeva", country: "USA", flag: "US", category: "vendor" as const },
-  ],
-  societies: [
+  ];
+
+const societyClients = [
     { id: "18", name: "ESC", country: "Europe", flag: "EU", category: "society" as const },
     { id: "19", name: "ADA", country: "USA", flag: "US", category: "society" as const },
     { id: "20", name: "ESMO", country: "Europe", flag: "EU", category: "society" as const },
     { id: "21", name: "EULAR", country: "Europe", flag: "EU", category: "society" as const },
     { id: "22", name: "Saudi Heart Association", country: "KSA", flag: "SA", category: "society" as const, logo: "/marvel-images/SHA.png" },
     { id: "23", name: "Egyptian Cardiology Society", country: "Egypt", flag: "EG", category: "society" as const, logo: "/marvel-images/EgSC.png" },
-  ],
+  ];
+
+export const segmentedClients: SegmentedClients = {
+  all: [...pharmaClients, ...vendorClients, ...societyClients],
+  pharma: pharmaClients,
+  vendors: vendorClients,
+  societies: societyClients,
 };
