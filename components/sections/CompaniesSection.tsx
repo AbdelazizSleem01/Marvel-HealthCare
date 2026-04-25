@@ -72,36 +72,37 @@ function getOrbitConfig(bp: "mobile" | "tablet" | "desktop") {
   if (bp === "tablet") {
     return {
       positions: [
-        { angle: -90, distance: 155 },
-        { angle: -30, distance: 155 },
-        { angle: 30, distance: 155 },
-        { angle: 90, distance: 155 },
-        { angle: 150, distance: 155 },
-        { angle: -150, distance: 155 },
+        { angle: -90, distance: 130 },
+        { angle: -30, distance: 130 },
+        { angle: 30, distance: 130 },
+        { angle: 90, distance: 130 },
+        { angle: 150, distance: 130 },
+        { angle: -150, distance: 130 },
       ],
-      ringSize1: 300,
-      ringSize2: 330,
-      glowSize: 250,
-      centerSize: 100,
+      ringSize1: 260,
+      ringSize2: 290,
+      glowSize: 220,
+      centerSize: 95,
       nodeSize: 52,
       logoSize: 55,
     };
   }
+  // Desktop - smaller orbital to bring companies closer to center
   return {
     positions: [
-      { angle: -90, distance: 200 },
-      { angle: -30, distance: 200 },
-      { angle: 30, distance: 200 },
-      { angle: 90, distance: 200 },
-      { angle: 150, distance: 200 },
-      { angle: -150, distance: 200 },
+      { angle: -90, distance: 140 },
+      { angle: -30, distance: 140 },
+      { angle: 30, distance: 140 },
+      { angle: 90, distance: 140 },
+      { angle: 150, distance: 140 },
+      { angle: -150, distance: 140 },
     ],
-    ringSize1: 390,
-    ringSize2: 430,
-    glowSize: 330,
-    centerSize: 128,
-    nodeSize: 64,
-    logoSize: 70,
+    ringSize1: 280,
+    ringSize2: 310,
+    glowSize: 240,
+    centerSize: 110,
+    nodeSize: 56,
+    logoSize: 65,
   };
 }
 
@@ -123,7 +124,7 @@ export default function CompaniesSection() {
   const [isHovering, setIsHovering] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [rotation, setRotation] = useState(0);
-  const [activeClientTab, setActiveClientTab] = useState<"pharma" | "vendors" | "societies">("pharma");
+  const [activeClientTab, setActiveClientTab] = useState<"all" | "pharma" | "vendors" | "societies">("all");
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [showLeftSidebar, setShowLeftSidebar] = useState(true);
   const [showRightPanel, setShowRightPanel] = useState(true);
@@ -270,40 +271,29 @@ export default function CompaniesSection() {
       </div>
 
       {/* ─── Main Layout ─── */}
-      <motion.div layout className={`relative z-10 w-full max-w-7xl mx-auto px-2 sm:px-4 flex ${isMobile ? "flex-col items-center" : "flex-col items-center gap-4"}`}>
+      <motion.div layout className={`relative z-10 w-full max-w-7xl mx-auto px-2 sm:px-4 flex ${isMobile ? "flex-col items-center" : "flex-row items-center gap-6 h-full py-4"}`}>
 
-        {/* ─── Center Orbital ─── */}
+        {/* ─── Left: Orbital ─── */}
         <motion.div
           layout
           transition={SPRING_CONFIG}
-          className={`relative flex items-center justify-center ${isMobile ? "min-h-[55vh] -mt-20" : "flex-1 min-h-0"}`}
+          className={`relative flex items-center justify-center ${isMobile ? "min-h-[55vh] -mt-20 w-full" : "w-[45%] h-full"}`}
         >
-          {/* Countries flags row */}
-          <div className={`absolute left-1/2 -translate-x-1/2 z-30 ${isMobile ? "-top-12" : "-top-8"}`}>
-            <div className={`flex items-center justify-center ${isMobile ? "gap-6" : "gap-8 lg:gap-12"}`}>
+          {/* Countries flags row - simplified without spin animation on desktop */}
+          <div className={`absolute left-1/2 -translate-x-1/2 z-30 ${isMobile ? "-top-12" : "-top-6"}`}>
+            <div className={`flex items-center justify-center ${isMobile ? "gap-6" : "gap-6"}`}>
               {COUNTRIES.map((country, idx) => (
                 <motion.button
                   key={country.id}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: [0, -6, 0] }}
-                  transition={{
-                    y: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: idx * 0.25 },
-                    opacity: { duration: 0.5, delay: idx * 0.12 },
-                  }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.12 }}
                   whileHover={{ scale: 1.18 }}
                   whileTap={{ scale: 0.92 }}
                   onClick={() => setSelectedCountry(country)}
                   className="group relative flex items-center justify-center transition-all duration-300"
                 >
-                  <div className="absolute inset-[-8px] md:inset-[-10px] pointer-events-none rounded-full opacity-100 group-hover:opacity-0 transition-opacity duration-300">
-                    <div className="absolute inset-0 animate-[spin_3s_linear_infinite]">
-                      <div className="absolute inset-0 rounded-full" style={{ background: "conic-gradient(from 0deg, transparent 60%, rgba(18, 122, 138, 0.45) 100%)", maskImage: "radial-gradient(transparent 65%, black 67%)", WebkitMaskImage: "radial-gradient(transparent 65%, black 67%)" }} />
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                        <div className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-primary-500 shadow-[0_0_8px_#127A8A]" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className={`${isMobile ? "w-12 h-9" : "w-12 h-10"} rounded-lg overflow-hidden shadow-lg border-2 border-transparent group-hover:border-primary-500/60 transition-all duration-300 relative z-10`}>
+                  <div className={`${isMobile ? "w-12 h-9" : "w-11 h-8"} rounded-lg overflow-hidden shadow-lg border-2 border-transparent group-hover:border-primary-500/60 transition-all duration-300 relative z-10`}>
                     <ReactCountryFlag countryCode={country.flag} svg style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   </div>
                   <div className="absolute inset-0 rounded-lg bg-primary-500/25 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
@@ -312,9 +302,9 @@ export default function CompaniesSection() {
             </div>
           </div>
 
-          {/* Orbital layout */}
+          {/* Orbital layout - smaller on desktop */}
           <div
-            className={`relative flex items-center justify-center ${isMobile ? "w-full h-[380px] " : isTablet ? "w-full h-[400px] mt-10" : "w-full h-[500px] mt-6"}`}
+            className={`relative flex items-center justify-center ${isMobile ? "w-full h-[380px]" : "w-full h-[420px]"}`}
             onMouseEnter={() => !isMobile && setIsHovering(true)}
             onMouseLeave={() => !isMobile && setIsHovering(false)}
           >
@@ -448,6 +438,116 @@ export default function CompaniesSection() {
             })}
           </div>
         </motion.div>
+
+        {/* ─── Center: Info Box (Desktop Only) ─── */}
+        {!isMobile && (
+          <motion.div
+            layout
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={SPRING_CONFIG}
+            className="w-[30%] h-full flex flex-col justify-center"
+          >
+            <div className="rounded-2xl glass-light dark:glass-dark border border-border-light dark:border-border-dark shadow-xl p-6 space-y-4">
+              <div className="text-center">
+                <h2 className="font-display text-xl font-bold text-text-light dark:text-text-dark mb-2">Welcome to Marvel</h2>
+                <p className="text-sm text-muted-light dark:text-muted-dark">Your gateway to healthcare excellence across MENA</p>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="text-center p-3 rounded-xl bg-surface-light dark:bg-surface-dark">
+                  <p className="text-lg font-bold text-primary-500">3</p>
+                  <p className="text-xs text-muted-light dark:text-muted-dark">Countries</p>
+                </div>
+                <div className="text-center p-3 rounded-xl bg-surface-light dark:bg-surface-dark">
+                  <p className="text-lg font-bold text-secondary-500">6</p>
+                  <p className="text-xs text-muted-light dark:text-muted-dark">Companies</p>
+                </div>
+                <div className="text-center p-3 rounded-xl bg-surface-light dark:bg-surface-dark">
+                  <p className="text-lg font-bold text-primary-500">50+</p>
+                  <p className="text-xs text-muted-light dark:text-muted-dark">Clients</p>
+                </div>
+              </div>
+              <div className="pt-4 border-t border-border-light dark:border-border-dark">
+                <p className="text-xs text-muted-light dark:text-muted-dark leading-relaxed">
+                  Marvel Group is a leading healthcare solutions provider with operations in Egypt, Saudi Arabia, and UAE. We specialize in medical education, creative services, and innovative health tech solutions.
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => setShowServices(true)} className="flex-1 py-2 rounded-xl bg-gradient-to-r from-primary-500 to-secondary-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity">
+                  Our Services
+                </button>
+                <button onClick={() => setShowExpertise(true)} className="flex-1 py-2 rounded-xl border border-border-light dark:border-border-dark text-sm font-semibold text-text-light dark:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors">
+                  Expertise
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* ─── Right: Clients Panel (Desktop Only) ─── */}
+        {!isMobile && (
+          <motion.div
+            layout
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={SPRING_CONFIG}
+            className="w-[25%] h-full flex flex-col justify-center"
+          >
+            <div className="rounded-2xl glass-light dark:glass-dark border border-border-light dark:border-border-dark shadow-xl overflow-hidden h-[70vh]">
+              {/* Vertical Tabs */}
+              <div className="flex h-full">
+                {/* Tab Labels - Vertical */}
+                <div className="w-10 flex flex-col border-r border-border-light dark:border-border-dark bg-surface-light/50 dark:bg-surface-dark/50">
+                  {[
+                    { id: "all", label: "All" },
+                    { id: "pharma", label: "Pharma" },
+                    { id: "vendors", label: "Tech" },
+                    { id: "societies", label: "Med" },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveClientTab(tab.id === "all" ? "pharma" : tab.id as any)}
+                      className={`flex-1 flex items-center justify-center py-2 text-[9px] font-medium transition-all writing-mode-vertical ${activeClientTab === tab.id || (tab.id === "all" && activeClientTab) ? "bg-gradient-to-b from-primary-500 to-secondary-500 text-white" : "text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark"}`}
+                      style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+                {/* Clients Grid - Logos Only */}
+                <div className="flex-1 p-3 overflow-y-auto">
+                  <div className="grid grid-cols-2 gap-2">
+                    {segmentedClients[activeClientTab]?.map((client, idx) => (
+                      <motion.button
+                        key={client.id}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: idx * 0.03 }}
+                        onClick={() => setSelectedClient(client)}
+                        className="group relative aspect-square rounded-xl bg-white dark:bg-white flex items-center justify-center overflow-hidden shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 p-2"
+                      >
+                        {client.logo ? (
+                          <img src={client.logo} alt={client.name} className="w-full h-full object-contain" />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-sm font-bold">
+                            {client.name.slice(0, 2).toUpperCase()}
+                          </div>
+                        )}
+                        {/* Tooltip on hover */}
+                        <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-2">
+                          <p className="text-white text-xs font-semibold text-center">{client.name}</p>
+                          <p className="text-white/70 text-[10px] flex items-center gap-1 mt-1">
+                            <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-3" /> {client.country}
+                          </p>
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* ─── Mobile: Buttons & Panels BELOW Orbital ─── */}
         {isMobile && (
@@ -704,6 +804,20 @@ export default function CompaniesSection() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ─── Floating Chat Button (Desktop) ─── */}
+      {!isMobile && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setShowChat(true)}
+          className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg hover:shadow-xl flex items-center justify-center transition-all"
+        >
+          <RiMessage3Line size={24} />
+        </motion.button>
+      )}
 
       {/* ─── Modals ─── */}
       <AnimatePresence>
