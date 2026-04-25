@@ -211,7 +211,7 @@ export default function CompaniesSection() {
   return (
     <section
       ref={containerRef}
-      className={`${isMobile ? "min-h-[85vh] pt-36" : "min-h-screen"} bg-bg-light dark:bg-bg-dark relative overflow-hidden flex items-center justify-center`}
+      className={`${isMobile ? "min-h-[85vh] pt-36" : "h-screen"} bg-bg-light dark:bg-bg-dark relative overflow-hidden flex flex-col items-center justify-center`}
     >
       {/* ─── Animated Background ─── */}
       <div className="absolute inset-0 pointer-events-none">
@@ -270,98 +270,13 @@ export default function CompaniesSection() {
       </div>
 
       {/* ─── Main Layout ─── */}
-      <motion.div layout className={`relative z-10 w-full max-w-7xl mx-auto px-2 sm:px-4 flex ${isMobile ? "flex-col items-center" : "gap-4 lg:gap-8"}`}>
-
-        {/* Left Sidebar toggle (desktop/tablet only) */}
-        {!isMobile && (
-          <AnimatePresence mode="wait">
-            {!showLeftSidebar && (
-              <motion.button
-                key="left-toggle"
-                initial={{ opacity: 0, x: -24, scale: 0.8 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: -24, scale: 0.8 }}
-                whileHover={{ scale: 1.12 }}
-                whileTap={{ scale: 0.94 }}
-                onClick={() => setShowLeftSidebar(true)}
-                className="absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-40 w-12 h-12 lg:w-14 lg:h-14 rounded-2xl glass-light dark:glass-dark border border-border-light dark:border-border-dark shadow-2xl flex items-center justify-center hover:bg-surface-light dark:hover:bg-surface-dark transition-all group"
-              >
-                <div className="relative">
-                  <div className="absolute inset-0 bg-primary-500/20 blur-md rounded-full group-hover:bg-primary-500/40 transition-all" />
-                  <RiSettings4Line size={24} className="text-primary-500 relative z-10" />
-                </div>
-              </motion.button>
-            )}
-          </AnimatePresence>
-        )}
-
-        {/* ─── Left Sidebar (Desktop/Tablet) ─── */}
-        {!isMobile && (
-          <AnimatePresence>
-            {showLeftSidebar && (
-              <motion.div
-                layout
-                initial={{ opacity: 0, x: -80, scale: 0.92 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: -80, scale: 0.92 }}
-                transition={SPRING_CONFIG}
-                className="w-[70px] lg:w-22 flex flex-col gap-4 py-8 relative shrink-0"
-              >
-                <motion.button
-                  onClick={() => setShowLeftSidebar(false)}
-                  whileHover={{ scale: 1.1 }}
-                  className="absolute -right-4 lg:-right-5 top-1/2 -translate-y-1/2 w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-md flex items-center justify-center hover:bg-primary-500 hover:text-white transition-all z-50 group"
-                >
-                  <RiArrowLeftSLine size={16} className="group-hover:scale-110 transition-transform" />
-                </motion.button>
-
-                <div className="rounded-2xl glass-light dark:glass-dark border border-border-light dark:border-border-dark shadow-xl overflow-hidden">
-                  <div className="flex flex-col gap-1 pl-2 lg:pl-3 pt-3 pb-3 pr-1 max-h-[73vh] overflow-y-auto custom-scrollbar">
-                    {[
-                      { id: "services", onClick: () => setShowServices(true), icon: RiSettings4Line, label: "Services" },
-                      { id: "accreds", onClick: () => setShowAccreditations(true), icon: RiAwardLine, label: "Accreds" },
-                      { id: "contact", href: "/contact", icon: RiMailLine, label: "Contact" },
-                      { id: "reviews", onClick: () => setShowTestimonials(true), icon: RiTeamLine, label: "Reviews" },
-                      { id: "expertise", onClick: () => setShowExpertise(true), icon: RiHeartPulseLine, label: "Expertise" },
-                      { id: "divider", type: "divider" },
-                      { id: "chat", onClick: () => setShowChat(true), icon: RiMessage3Line, label: "Chat" },
-                      { id: "whatsapp", href: "https://wa.me/201000000000", icon: RiWhatsappLine, label: "WhatsApp", color: "secondary" },
-                    ].map((item, idx) => {
-                      const Icon = item.icon;
-                      return (
-                        <motion.div key={item.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.06 + 0.2 }}>
-                          {item.type === "divider" ? (
-                            <div className="h-px bg-border-light dark:bg-border-dark mx-1 my-1" />
-                          ) : item.href ? (
-                            <Link href={item.href} target={item.id === "whatsapp" ? "_blank" : undefined} className="group flex flex-col items-center gap-1 p-1.5 rounded-lg hover:bg-surface-light dark:hover:bg-surface-dark border border-transparent hover:border-primary-500/20 transition-all duration-300">
-                              <motion.div whileHover={{ scale: 1.15, rotate: 5 }} whileTap={{ scale: 0.92 }} className={`w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-gradient-to-br ${item.color === "secondary" ? "from-secondary-500/20 to-secondary-600/20" : "from-primary-500/20 to-secondary-500/20"} flex items-center justify-center`}>
-                                {Icon && <Icon size={18} className={`${item.color === "secondary" ? "text-secondary-500" : "text-primary-500"}`} />}
-                              </motion.div>
-                              <span className="text-[8px] lg:text-[9px] font-medium text-text-light dark:text-text-dark leading-tight">{item.label}</span>
-                            </Link>
-                          ) : (
-                            <button onClick={item.onClick} className="group flex flex-col items-center gap-1 p-1.5 rounded-lg hover:bg-surface-light dark:hover:bg-surface-dark border border-transparent hover:border-primary-500/20 transition-all duration-300 w-full">
-                              <motion.div whileHover={{ scale: 1.15, rotate: 5 }} whileTap={{ scale: 0.92 }} className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center">
-                                {Icon && <Icon size={18} className="text-primary-500" />}
-                              </motion.div>
-                              <span className="text-[8px] lg:text-[9px] font-medium text-text-light dark:text-text-dark leading-tight">{item.label}</span>
-                            </button>
-                          )}
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        )}
+      <motion.div layout className={`relative z-10 w-full max-w-7xl mx-auto px-2 sm:px-4 flex ${isMobile ? "flex-col items-center" : "flex-col items-center gap-4"}`}>
 
         {/* ─── Center Orbital ─── */}
         <motion.div
           layout
           transition={SPRING_CONFIG}
-          className={`flex-1 relative flex items-center justify-center ${isMobile ? "min-h-[55vh] -mt-20" : "min-h-[80vh] mt-14"}`}
+          className={`relative flex items-center justify-center ${isMobile ? "min-h-[55vh] -mt-20" : "flex-1 min-h-0"}`}
         >
           {/* Countries flags row */}
           <div className={`absolute left-1/2 -translate-x-1/2 z-30 ${isMobile ? "-top-12" : "-top-8"}`}>
@@ -667,89 +582,50 @@ export default function CompaniesSection() {
           </div>
         )}
 
-        {/* Right Panel toggle (desktop/tablet only) */}
+        {/* ─── Desktop Bottom Services Bar ─── */}
         {!isMobile && (
-          <AnimatePresence mode="wait">
-            {!showRightPanel && (
-              <motion.button
-                key="right-toggle"
-                initial={{ opacity: 0, x: 24, scale: 0.8 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: 24, scale: 0.8 }}
-                whileHover={{ scale: 1.12 }}
-                whileTap={{ scale: 0.94 }}
-                onClick={() => setShowRightPanel(true)}
-                className="absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-40 w-12 h-12 lg:w-14 lg:h-14 rounded-2xl glass-light dark:glass-dark border border-border-light dark:border-border-dark shadow-2xl flex items-center justify-center hover:bg-surface-light dark:hover:bg-surface-dark transition-all group"
-              >
-                <div className="relative">
-                  <div className="absolute inset-0 bg-secondary-500/20 blur-md rounded-full group-hover:bg-secondary-500/40 transition-all" />
-                  <RiGlobalLine size={24} className="text-secondary-500 relative z-10" />
-                </div>
-              </motion.button>
-            )}
-          </AnimatePresence>
-        )}
-
-        {/* ─── Right Panel (Desktop/Tablet) ─── */}
-        {!isMobile && (
-          <AnimatePresence>
-            {showRightPanel && (
-              <motion.div
-                layout
-                initial={{ opacity: 0, x: 80, scale: 0.92 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: 80, scale: 0.92 }}
-                transition={SPRING_CONFIG}
-                className="w-56 lg:w-64 flex flex-col gap-4 py-8 relative shrink-0"
-              >
-                <motion.button onClick={() => setShowRightPanel(false)} whileHover={{ scale: 1.1 }} className="absolute -left-5 lg:-left-6 top-1/2 -translate-y-1/2 w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-md flex items-center justify-center hover:bg-secondary-500 hover:text-white transition-all z-50 group">
-                  <RiArrowRightSLine size={16} className="group-hover:scale-110 transition-transform" />
-                </motion.button>
-
-                <div className="rounded-2xl glass-light dark:glass-dark border border-border-light dark:border-border-dark shadow-xl overflow-hidden">
-                  <div className="flex flex-col gap-3 lg:gap-4 p-3 lg:p-4 max-h-[73vh] overflow-y-auto custom-scrollbar">
-                    <div className="flex gap-1 p-1 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark">
-                      {[
-                        { id: "pharma", label: "Pharma", icon: RiBriefcaseLine },
-                        { id: "vendors", label: "Tech", icon: RiComputerLine },
-                        { id: "societies", label: "Medical", icon: RiBuildingLine },
-                      ].map((tab) => (
-                        <motion.button key={tab.id} onClick={() => setActiveClientTab(tab.id as any)} whileTap={{ scale: 0.95 }} className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg text-[10px] lg:text-xs font-medium transition-all ${activeClientTab === tab.id ? "bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-sm" : "text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark"}`}>
-                          <tab.icon size={11} /> {tab.label}
-                        </motion.button>
-                      ))}
-                    </div>
-
-                    <div className="flex-1 overflow-y-auto max-h-[55vh] lg:max-h-[60vh] space-y-1.5 lg:space-y-2 pr-1">
-                      <AnimatePresence mode="popLayout">
-                        {segmentedClients[activeClientTab]?.map((client, idx) => (
-                          <motion.button key={client.id} layout initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ delay: idx * 0.04 + 0.1 }} whileHover={{ x: 3 }} whileTap={{ scale: 0.97 }} onClick={() => setSelectedClient(client)} className="w-full flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary-500/40 transition-all duration-300 group text-left">
-                            <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-lg bg-white dark:bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                              {client.logo ? <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-0.5 lg:p-1" /> : <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-[10px] lg:text-xs font-bold">{client.name.slice(0, 2).toUpperCase()}</div>}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <h4 className="font-medium text-xs lg:text-sm text-text-light dark:text-text-dark truncate group-hover:text-primary-500 transition-colors">{client.name}</h4>
-                              <p className="text-[10px] lg:text-xs text-muted-light dark:text-muted-dark flex items-center gap-1">
-                                <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-3" /> {client.country}
-                              </p>
-                            </div>
-                            <RiArrowRightLine size={12} className="text-muted-light dark:text-muted-dark group-hover:text-primary-500 transition-colors shrink-0" />
-                          </motion.button>
-                        ))}
-                      </AnimatePresence>
-                    </div>
-
-                    <div className="pt-2 lg:pt-3 border-t border-border-light dark:border-border-dark">
-                      <p className="text-[10px] lg:text-xs text-center text-muted-light dark:text-muted-dark">
-                        {segmentedClients[activeClientTab]?.length || 0}{" "}
-                        {activeClientTab === "pharma" ? "Pharma Partners" : activeClientTab === "vendors" ? "Tech Vendors" : "Medical Societies"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <motion.div
+            layout
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={SPRING_CONFIG}
+            className="w-full max-w-5xl mx-auto shrink-0 py-4"
+          >
+            <div className="rounded-2xl glass-light dark:glass-dark border border-border-light dark:border-border-dark shadow-xl overflow-hidden">
+              <div className="flex items-center justify-center gap-2 lg:gap-4 px-4 py-3">
+                {[
+                  { id: "services", onClick: () => setShowServices(true), icon: RiSettings4Line, label: "Services" },
+                  { id: "expertise", onClick: () => setShowExpertise(true), icon: RiHeartPulseLine, label: "Expertise" },
+                  { id: "accreds", onClick: () => setShowAccreditations(true), icon: RiAwardLine, label: "Accreds" },
+                  { id: "reviews", onClick: () => setShowTestimonials(true), icon: RiTeamLine, label: "Reviews" },
+                  { id: "chat", onClick: () => setShowChat(true), icon: RiMessage3Line, label: "Chat" },
+                  { id: "contact", href: "/contact", icon: RiMailLine, label: "Contact" },
+                  { id: "whatsapp", href: "https://wa.me/201000000000", icon: RiWhatsappLine, label: "WhatsApp", color: "secondary" },
+                ].map((item, idx) => {
+                  const Icon = item.icon;
+                  return (
+                    <motion.div key={item.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}>
+                      {item.href ? (
+                        <Link href={item.href} target={item.id === "whatsapp" ? "_blank" : undefined} className="group flex flex-col items-center gap-1.5 p-2 lg:p-3 rounded-xl hover:bg-surface-light dark:hover:bg-surface-dark border border-transparent hover:border-primary-500/20 transition-all duration-300 min-w-[70px] lg:min-w-[90px]">
+                          <motion.div whileHover={{ scale: 1.1, rotate: 5 }} whileTap={{ scale: 0.95 }} className={`w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-gradient-to-br ${item.color === "secondary" ? "from-secondary-500/20 to-secondary-600/20" : "from-primary-500/20 to-secondary-500/20"} flex items-center justify-center`}>
+                            {Icon && <Icon size={20} className={`${item.color === "secondary" ? "text-secondary-500" : "text-primary-500"}`} />}
+                          </motion.div>
+                          <span className="text-[10px] lg:text-xs font-medium text-text-light dark:text-text-dark leading-tight">{item.label}</span>
+                        </Link>
+                      ) : (
+                        <button onClick={item.onClick} className="group flex flex-col items-center gap-1.5 p-2 lg:p-3 rounded-xl hover:bg-surface-light dark:hover:bg-surface-dark border border-transparent hover:border-primary-500/20 transition-all duration-300 min-w-[70px] lg:min-w-[90px]">
+                          <motion.div whileHover={{ scale: 1.1, rotate: 5 }} whileTap={{ scale: 0.95 }} className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center">
+                            {Icon && <Icon size={20} className="text-primary-500" />}
+                          </motion.div>
+                          <span className="text-[10px] lg:text-xs font-medium text-text-light dark:text-text-dark leading-tight">{item.label}</span>
+                        </button>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
         )}
       </motion.div>
 
