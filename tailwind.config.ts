@@ -68,6 +68,7 @@ const config: Config = {
         "spin-slow": "spin 8s linear infinite",
         "marquee": "marquee 30s linear infinite",
         "counter": "counter 2s ease-out forwards",
+        "scroll-up": "scrollUp linear infinite",
       },
       keyframes: {
         fadeUp: {
@@ -101,6 +102,10 @@ const config: Config = {
         marquee: {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
+        },
+        scrollUp: {
+          "0%": { transform: "translateY(0)" },
+          "100%": { transform: "translateY(-50%)" },
         },
       },
       backgroundImage: {

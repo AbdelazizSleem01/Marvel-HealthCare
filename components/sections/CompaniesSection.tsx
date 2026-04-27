@@ -13,8 +13,9 @@ import {
   RiBrainLine, RiEyeLine, RiCapsuleLine, RiWomenLine, RiStethoscopeLine, RiVirusLine,
   RiUserHeartLine, RiFirstAidKitLine, RiHospitalLine, RiHealthBookLine, RiArrowUpSLine,
   RiSunLine, RiMoonLine,
-  RiArrowLeftLine,
-  RiGroupLine
+  RiArrowLeftLine, RiArrowRightSLine, RiArrowLeftSLine,
+  RiGroupLine,
+  RiImageLine
 } from "react-icons/ri";
 import Link from "next/link";
 import Image from "next/image";
@@ -141,8 +142,21 @@ export default function CompaniesSection() {
   const [showMobileNetwork, setShowMobileNetwork] = useState(false);
   const [showMobileLeft, setShowMobileLeft] = useState(false);
   const [showMobileRight, setShowMobileRight] = useState(false);
+  
+  const [scrollSpeed, setScrollSpeed] = useState(1); 
+  const [isPaused, setIsPaused] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [showGallery, setShowGallery] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // Orbit expansion state - true when in center (expanded), false when moved left (compact)
+  const [orbitExpanded, setOrbitExpanded] = useState(true);
 
-  // Unified state reset for desktop dynamic box
+  const BASE_DURATION = 60;
+  
+  // Compute if any info panel is currently shown
+  const isInfoPanelShown = selectedCompany || selectedClient || selectedCountry || showServices || showExpertise || showAccreditations || showTestimonials || showChat || showPeople || showGallery;
+
   const resetDesktopStates = () => {
     setSelectedCompany(null);
     setSelectedClient(null);
@@ -153,11 +167,14 @@ export default function CompaniesSection() {
     setShowTestimonials(false);
     setShowChat(false);
     setShowPeople(false);
+    setShowGallery(false);
+    setOrbitExpanded(true); // Return orbit to center when closing panels
   };
 
   const handleStateChange = (setter: (val: any) => void, val: any) => {
     if (!isMobile) resetDesktopStates();
     setter(val);
+    setOrbitExpanded(false); // Collapse orbit to left when opening any panel
   };
 
   // Must be defined before useTransform calls that depend on it
@@ -234,6 +251,7 @@ export default function CompaniesSection() {
     }
   }, [isMobile]);
 
+
   return (
     <section
       ref={containerRef}
@@ -298,24 +316,24 @@ export default function CompaniesSection() {
       {/* ─── Main Layout ─── */}
       <motion.div layout className={`relative z-10 w-full max-w-7xl mx-auto px-2 sm:px-4 flex ${isMobile ? "flex-col items-center" : "items-center justify-start gap-4 lg:gap-8"}`}>
 
-        {/* ─── Desktop/Tablet: Bottom Toolbar ─── */}
+        {/* ─── Desktop/Tablet: Top Toolbar ─── */}
         {!isMobile && (
           <motion.div
-            initial={{ y: 100, opacity: 0 }}
+            initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5, type: "spring", stiffness: 100 }}
-            className="fixed bottom-0 left-0 right-0 z-50 px-6 pointer-events-none"
+            className="fixed top-0 left-14 right-0 z-50 px-4 pointer-events-none"
           >
             <div className="max-w-4xl mx-auto w-full pointer-events-auto">
-              <div className="rounded-t-2xl glass-light dark:glass-dark border-x border-t border-border-light dark:border-border-dark/50 shadow-2xl overflow-hidden backdrop-blur-xl">
-                <div className="flex items-center justify-around p-2 lg:p-3">
+              <div className="rounded-b-2xl glass-light dark:glass-dark border-x border-b border-border-light dark:border-border-dark/50 shadow-2xl overflow-hidden backdrop-blur-xl mt-0">
+                <div className="flex items-center justify-around p-1 lg:p-3">
                   {[
                     { id: "services", onClick: () => handleStateChange(setShowServices, true), icon: RiSettings4Line, label: "Services", color: "primary", isActive: showServices },
-                    { id: "expertise", onClick: () => handleStateChange(setShowExpertise, true), icon: RiHeartPulseLine, label: "Expertise", color: "primary", isActive: showExpertise },
+                    { id: "expertise", onClick: () => handleStateChange(setShowExpertise, true), icon: RiHeartPulseLine, label: "Therapeutic Areas", color: "primary", isActive: showExpertise },
                     { id: "accreds", onClick: () => handleStateChange(setShowAccreditations, true), icon: RiAwardLine, label: "Accreds", color: "primary", isActive: showAccreditations },
                     { id: "reviews", onClick: () => handleStateChange(setShowTestimonials, true), icon: RiTeamLine, label: "Reviews", color: "primary", isActive: showTestimonials },
                     { id: "people", onClick: () => handleStateChange(setShowPeople, true), icon: RiGroupLine, label: "People Behind", color: "primary", isActive: showPeople },
-                    { id: "whatsapp", href: "https://wa.me/201000000000", icon: RiWhatsappLine, label: "WhatsApp", color: "secondary", isActive: false },
+                    { id: "gallery", onClick: () => handleStateChange(setShowGallery, true), icon: RiImageLine, label: "Work Gallery", color: "primary", isActive: showGallery },
                     { id: "theme", onClick: () => setTheme(theme === "dark" ? "light" : "dark"), icon: mounted ? (theme === "dark" ? RiSunLine : RiMoonLine) : RiSunLine, label: mounted ? (theme === "dark" ? "Light" : "Dark") : "Theme", color: "primary", isActive: false },
                     { id: "contact", href: "/contact", icon: RiMailLine, label: "Contact", color: "primary", isActive: false },
                   ].map((item, idx) => {
@@ -335,7 +353,7 @@ export default function CompaniesSection() {
                         >
                           <Icon size={20} className="lg:size-22" />
                         </motion.div>
-                        <span className={`text-[9px] lg:text-[10px] font-bold uppercase tracking-wide transition-all ${active ? "text-primary-500 opacity-100" : "text-text-light dark:text-text-dark opacity-80 group-hover:opacity-100 group-hover:text-primary-500"
+                        <span className={`whitespace-nowrap text-[9px] lg:text-[10px] font-bold uppercase tracking-wide transition-all ${active ? "text-primary-500 opacity-100" : "text-text-light dark:text-text-dark opacity-80 group-hover:opacity-100 group-hover:text-primary-500"
                           }`}>
                           {item.label}
                         </span>
@@ -353,7 +371,6 @@ export default function CompaniesSection() {
                         {item.href ? (
                           <Link
                             href={item.href}
-                            target={item.id === "whatsapp" ? "_blank" : undefined}
                             className="group flex flex-col items-center gap-1.5 py-1.5 px-1 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-xl transition-all duration-300"
                           >
                             {content}
@@ -378,47 +395,79 @@ export default function CompaniesSection() {
 
 
 
+        {/* ─── Desktop/Tablet: Flags Row (Fixed, above toolbar) ─── */}
+        {!isMobile && (
+          <motion.div
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
+            className="fixed top-7 left-5 lg:left-8  z-[60] flex items-center gap-3 lg:gap-4 pointer-events-auto"
+          >
+            {COUNTRIES.map((country, idx) => (
+              <motion.button
+                key={country.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: [0, -4, 0] }}
+                transition={{
+                  y: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: idx * 0.25 },
+                  opacity: { duration: 0.5, delay: idx * 0.12 },
+                }}
+                whileHover={{ scale: 1.18 }}
+                whileTap={{ scale: 0.92 }}
+                onClick={() => handleStateChange(setSelectedCountry, country)}
+                className="group relative flex items-center justify-center transition-all duration-300"
+              >
+                <div className="w-10 h-7 lg:w-12 lg:h-8 rounded-lg overflow-hidden shadow-lg border-2 border-transparent group-hover:border-primary-500/60 transition-all duration-300 relative z-10">
+                  <ReactCountryFlag countryCode={country.flag} svg style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                </div>
+                <div className="absolute inset-0 rounded-lg bg-primary-500/25 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
+              </motion.button>
+            ))}
+          </motion.div>
+        )}
+
         {/* ─── Center Orbital ─── */}
         <motion.div
           layout
-          transition={SPRING_CONFIG}
-          className={`relative flex items-center justify-center ${isMobile ? "flex-1 min-h-[55vh] -mt-20" : "w-[400px] min-h-[80vh] -ml-12"}`}
+          initial={false}
+          animate={!isMobile ? {
+            x: orbitExpanded ? 420 : -50,
+            scale: orbitExpanded ? 1.25 : 0.95,
+          } : {}}
+          transition={{ type: "spring", stiffness: 100, damping: 20 }}
+          className={`relative flex items-center justify-center pointer-events-auto ${isMobile ? "flex-1 min-h-[55vh] -mt-20" : "w-[400px] min-h-[80vh]  mt-24"}`}
         >
-          {/* Countries flags row */}
-          <div className={`absolute left-1/2 -translate-x-1/2 z-30 ${isMobile ? "-top-12" : "top-2"}`}>
-            <div className={`flex items-center justify-center ${isMobile ? "gap-6" : "gap-8 lg:gap-12"}`}>
-              {COUNTRIES.map((country, idx) => (
-                <motion.button
-                  key={country.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: [0, -6, 0] }}
-                  transition={{
-                    y: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: idx * 0.25 },
-                    opacity: { duration: 0.5, delay: idx * 0.12 },
-                  }}
-                  whileHover={{ scale: 1.18 }}
-                  whileTap={{ scale: 0.92 }}
-                  onClick={() => {
-                    if (isMobile) {
-                      setSelectedCountry(country);
-                    } else {
-                      handleStateChange(setSelectedCountry, country);
-                    }
-                  }}
-                  className="group relative flex items-center justify-center transition-all duration-300"
-                >
-                  <div className={`${isMobile ? "w-12 h-9" : "w-12 h-10"} rounded-lg overflow-hidden shadow-lg border-2 border-transparent group-hover:border-primary-500/60 transition-all duration-300 relative z-10`}>
-                    <ReactCountryFlag countryCode={country.flag} svg style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  </div>
-                  <div className="absolute inset-0 rounded-lg bg-primary-500/25 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
-                </motion.button>
-              ))}
+          {/* Mobile flags row only */}
+          {isMobile && (
+            <div className="absolute left-1/2 -translate-x-1/2 z-30 -top-12">
+              <div className="flex items-center justify-center gap-6">
+                {COUNTRIES.map((country, idx) => (
+                  <motion.button
+                    key={country.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: [0, -6, 0] }}
+                    transition={{
+                      y: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: idx * 0.25 },
+                      opacity: { duration: 0.5, delay: idx * 0.12 },
+                    }}
+                    whileHover={{ scale: 1.18 }}
+                    whileTap={{ scale: 0.92 }}
+                    onClick={() => setSelectedCountry(country)}
+                    className="group relative flex items-center justify-center transition-all duration-300"
+                  >
+                    <div className="w-12 h-9 rounded-lg overflow-hidden shadow-lg border-2 border-transparent group-hover:border-primary-500/60 transition-all duration-300 relative z-10">
+                      <ReactCountryFlag countryCode={country.flag} svg style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    </div>
+                    <div className="absolute inset-0 rounded-lg bg-primary-500/25 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
+                  </motion.button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Orbital layout */}
           <div
-            className={`relative flex items-center justify-center ${isMobile ? "w-full h-[380px] " : isTablet ? "w-full h-[400px] mt-10" : "w-full h-[500px] mt-6"}`}
+            className={`relative flex items-center justify-center pointer-events-auto ${isMobile ? "w-full h-[380px] " : isTablet ? "w-full h-[400px] mt-10" : "w-full h-[500px] mt-6"}`}
             onMouseEnter={() => !isMobile && setIsHovering(true)}
             onMouseLeave={() => !isMobile && setIsHovering(false)}
           >
@@ -459,7 +508,7 @@ export default function CompaniesSection() {
               </AnimatePresence>
             )}
 
-            {/* Central Marvel Logo */}
+            {/* Central Marvel Logo - Clickable to show About Marvel */}
             <motion.div
               className="absolute left-1/2 top-[48%] md:top-[45%] z-20 cursor-pointer group"
               style={{
@@ -468,6 +517,24 @@ export default function CompaniesSection() {
               }}
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.96 }}
+              onClick={() => {
+                if (!isMobile) {
+                  // Show Marvel Group info
+                  const marvelGroup = {
+                    id: "marvel-group",
+                    name: "Marvel Group",
+                    tagline: "Where Medicine Meets Mastery",
+                    year: "2015",
+                    country: "Egypt / UAE / KSA",
+                    flag: "EG",
+                    description: "Marvel Group is the MENA region's most trusted med-tech ecosystem, powering healthcare innovation since 2015. We are a full-service healthcare solutions provider combining medical education, creative communication, digital platforms, and cutting-edge technology to transform patient care across the region.",
+                    color: "from-primary-500 to-secondary-400",
+                    icon: "M",
+                    logo: "/Logo.png",
+                  };
+                  handleStateChange(setSelectedCompany, marvelGroup);
+                }
+              }}
             >
               <motion.div
                 animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
@@ -575,6 +642,7 @@ export default function CompaniesSection() {
             showTestimonials={showTestimonials}
             showChat={showChat}
             showPeople={showPeople}
+            showGallery={showGallery}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             activeTestimonial={activeTestimonial}
@@ -588,6 +656,8 @@ export default function CompaniesSection() {
             setShowTestimonials={setShowTestimonials}
             setShowChat={setShowChat}
             setShowPeople={setShowPeople}
+            setShowGallery={setShowGallery}
+            resetDesktopStates={resetDesktopStates}
           />
         )}
 
@@ -641,17 +711,17 @@ export default function CompaniesSection() {
                     <div className="grid grid-cols-4 gap-2">
                       {[
                         { id: "services", onClick: () => setShowServices(true), icon: RiSettings4Line, label: "Services" },
-                        { id: "expertise", onClick: () => setShowExpertise(true), icon: RiHeartPulseLine, label: "Expertise" },
+                        { id: "expertise", onClick: () => setShowExpertise(true), icon: RiHeartPulseLine, label: "Therapeutic Areas" },
                         { id: "accreds", onClick: () => setShowAccreditations(true), icon: RiAwardLine, label: "Accreds" },
                         { id: "reviews", onClick: () => setShowTestimonials(true), icon: RiTeamLine, label: "Reviews" },
+                        { id: "gallery", onClick: () => setShowGallery(true), icon: RiImageLine, label: "Work Gallery" },
                         { id: "chat", onClick: () => setShowChat(true), icon: RiMessage3Line, label: "Chat" },
                         { id: "contact", href: "/contact", icon: RiMailLine, label: "Contact" },
-                        { id: "whatsapp", href: "https://wa.me/201000000000", icon: RiWhatsappLine, label: "WhatsApp", color: "secondary" },
                       ].map((item) => (
                         item.href ? (
-                          <Link key={item.id} href={item.href} target={item.id === "whatsapp" ? "_blank" : undefined} onClick={() => setShowMobileLeft(false)} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-surface-light dark:hover:bg-surface-dark transition-colors">
-                            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.color === "secondary" ? "from-secondary-500/20 to-secondary-600/20" : "from-primary-500/20 to-secondary-500/20"} flex items-center justify-center`}>
-                              <item.icon size={18} className={`${item.color === "secondary" ? "text-secondary-500" : "text-primary-500"}`} />
+                          <Link key={item.id} href={item.href} onClick={() => setShowMobileLeft(false)} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-surface-light dark:hover:bg-surface-dark transition-colors">
+                            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${(item as any).color === "secondary" ? "from-secondary-500/20 to-secondary-600/20" : "from-primary-500/20 to-secondary-500/20"} flex items-center justify-center`}>
+                              <item.icon size={18} className={`${(item as any).color === "secondary" ? "text-secondary-500" : "text-primary-500"}`} />
                             </div>
                             <span className="text-[9px] font-medium text-text-light dark:text-text-dark text-center leading-tight">{item.label}</span>
                           </Link>
@@ -765,23 +835,15 @@ export default function CompaniesSection() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 80 }}
                 transition={SPRING_CONFIG}
-                className="fixed right-4 top-[5%] -translate-y-1/2 z-40 flex items-center h-[80vh] rounded-2xl overflow-hidden shadow-2xl"
+                className="fixed right-4 top-[5%] -translate-y-1/2 z-40 flex items-center h-[80vh] rounded-2xl overflow-visible shadow-2xl"
               >
-                {/* Vertical Tabs Sidebar */}
-                <div className="flex flex-col gap-1 p-1.5 glass-light dark:glass-dark border-y border-l border-border-light/50 dark:border-border-dark/50 rounded-l-2xl shadow-xl z-10 relative">
-                  <motion.button
-                    onClick={() => setShowRightPanel(false)}
-                    whileHover={{ scale: 1.1 }}
-                    className="w-8 h-8 mb-2 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-md flex items-center justify-center hover:bg-secondary-500 hover:text-white transition-all group"
-                  >
-                    <RiArrowRightLine size={16} className="group-hover:scale-110 transition-transform" />
-                  </motion.button>
-
+                {/* Vertical Tabs Sidebar - with overflow visible */}
+                <div className="flex flex-col gap-2 p-2 glass-light dark:glass-dark border-y border-l border-border-light/50 dark:border-border-dark/50 rounded-l-2xl shadow-xl z-10 relative h-full overflow-visible min-w-[50px]">
                   {[
-                    { id: "all", label: "All", icon: RiGlobalLine },
-                    { id: "pharma", label: "Pharma", icon: RiBriefcaseLine },
-                    { id: "vendors", label: "Companies", icon: RiComputerLine },
-                    { id: "societies", label: "Societies", icon: RiBuildingLine },
+                    { id: "all", label: `All`, count: 95, icon: RiGlobalLine },
+                    { id: "pharma", label: `Pharma`, count: 46, icon: RiBriefcaseLine },
+                    { id: "vendors", label: `Vendors`, count: 18, icon: RiComputerLine },
+                    { id: "societies", label: `Societies`, count: 31, icon: RiBuildingLine },
                   ].map((tab) => (
                     <motion.button
                       key={tab.id}
@@ -791,35 +853,77 @@ export default function CompaniesSection() {
                       className={`flex flex-col items-center gap-2 py-4 px-2 rounded-xl transition-all duration-300 ${activeClientTab === tab.id ? "bg-gradient-to-b from-primary-500 to-secondary-500 text-white shadow-lg" : "text-muted-light dark:text-muted-dark hover:text-primary-500"}`}
                     >
                       <tab.icon size={18} />
-                      <span className="text-[10px] font-bold uppercase tracking-widest [writing-mode:vertical-lr] rotate-180">
-                        {tab.label}
-                      </span>
+                      <div className="flex flex-col items-center gap-0.5">
+                        <span className="text-[9px] font-bold uppercase tracking-wider [writing-mode:vertical-lr] rotate-180 leading-tight">
+                          {tab.label}
+                        </span>
+                        <span className={`text-[10px] font-bold ${activeClientTab === tab.id ? 'text-white' : 'text-primary-500'}`}>
+                          {tab.count}
+                        </span>
+                      </div>
                     </motion.button>
                   ))}
                 </div>
 
-                {/* Client Logos List */}
-                <div className="w-16 lg:w-20 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-2xl border-y border-r border-border-light/50 dark:border-border-dark/50 rounded-r-2xl py-6 flex flex-col gap-4 items-center max-h-[85vh] overflow-y-auto custom-scrollbar relative">
-                  <AnimatePresence mode="popLayout">
-                    {(() => {
-                      const list = activeClientTab === "all"
-                        ? [...segmentedClients.pharma, ...segmentedClients.vendors, ...segmentedClients.societies]
-                        : segmentedClients[activeClientTab];
+                {/* Client Logos List - Smooth CSS Auto Scrolling */}
+                <div 
+                  className="w-16 lg:w-20 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-2xl border-y border-r border-border-light/50 dark:border-border-dark/50 rounded-r-2xl flex flex-col items-center h-[70vh] overflow-hidden relative"
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
+                >
+                  {/* Speed Controls - Fixed at Top */}
+                  <div className="flex items-center gap-1 py-2 px-1 border-b border-border-light/50 dark:border-border-dark/50 w-full justify-center bg-surface-light dark:bg-surface-dark z-10 shrink-0">
+                    <motion.button
+                      onClick={() => setScrollSpeed((s) => Math.max(s - 0.5, 0.5))}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="w-5 h-5 rounded bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm flex items-center justify-center hover:bg-primary-500 hover:text-white transition-all"
+                      title="Slower"
+                    >
+                      <span className="text-[10px] font-bold">−</span>
+                    </motion.button>
+                    <div className="text-[8px] font-bold text-primary-500 w-6 text-center">
+                      {scrollSpeed.toFixed(1)}x
+                    </div>
+                    <motion.button
+                      onClick={() => setScrollSpeed((s) => Math.min(s + 0.5, 3))}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="w-5 h-5 rounded bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm flex items-center justify-center hover:bg-secondary-500 hover:text-white transition-all"
+                      title="Faster"
+                    >
+                      <span className="text-[10px] font-bold">+</span>
+                    </motion.button>
+                  </div>
+                  
+                  {/* Scrolling Container - Fixed height with overflow */}
+                  <div className="flex-1 overflow-hidden relative w-full">
+                    <div 
+                      ref={scrollRef}
+                      className="flex flex-col gap-3 items-center py-4 animate-scroll-up"
+                      style={{ 
+                        animationDuration: `${BASE_DURATION / scrollSpeed}s`,
+                        animationTimingFunction: 'linear',
+                        animationIterationCount: 'infinite',
+                        animationPlayState: isPaused ? 'paused' : 'running',
+                        minHeight: 'fit-content',
+                      }}
+                    >
+                      {(() => {
+                        const originalList = activeClientTab === "all"
+                          ? [...segmentedClients.pharma, ...segmentedClients.vendors, ...segmentedClients.societies]
+                          : segmentedClients[activeClientTab];
+                        const list = [...originalList, ...originalList];
 
-                      return list?.map((client, idx) => (
+                        return list?.map((client, idx) => (
                         <motion.button
-                          key={client.id}
-                          layout
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: 20 }}
-                          transition={{ delay: idx * 0.03 }}
+                          key={`${client.id}-${idx}`}
                           whileHover={{ scale: 1.12, x: -3 }}
                           whileTap={{ scale: 0.92 }}
-                          onClick={() => setSelectedClient(client)}
-                          className="group relative flex items-center justify-center"
+                          onClick={() => handleStateChange(setSelectedClient, client)}
+                          className="group relative flex items-center justify-center shrink-0 w-10 h-10 lg:w-12 lg:h-12"
                         >
-                          <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-white dark:bg-white flex items-center justify-center overflow-hidden shadow-sm border border-border-light/50 dark:border-border-dark/20 group-hover:border-primary-500/50 transition-all">
+                          <div className="w-full h-full rounded-xl bg-white dark:bg-white flex items-center justify-center overflow-hidden shadow-sm border border-border-light/50 dark:border-border-dark/20 group-hover:border-primary-500/50 transition-all">
                             {client.logo ? (
                               <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-1.5" />
                             ) : (
@@ -842,7 +946,8 @@ export default function CompaniesSection() {
                         </motion.button>
                       ));
                     })()}
-                  </AnimatePresence>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -943,6 +1048,7 @@ export default function CompaniesSection() {
           {showTestimonials && <TestimonialsModal activeTestimonial={activeTestimonial} setActiveTestimonial={setActiveTestimonial} onClose={() => setShowTestimonials(false)} />}
           {showChat && <ChatModal onClose={() => setShowChat(false)} />}
           {showExpertise && <ExpertiseModal onClose={() => setShowExpertise(false)} />}
+          {showGallery && <GalleryModal currentIndex={currentImageIndex} setCurrentIndex={setCurrentImageIndex} onClose={() => setShowGallery(false)} />}
         </AnimatePresence>
       )}
 
@@ -1605,26 +1711,35 @@ function ExpertiseModal({ onClose }: { onClose: () => void }) {
 // ─────────────────────────────────────────────
 function DynamicContentBox({
   selectedClient, selectedCompany, selectedCountry,
-  showServices, showExpertise, showAccreditations, showTestimonials, showChat, showPeople,
+  showServices, showExpertise, showAccreditations, showTestimonials, showChat, showPeople, showGallery,
   activeTab, setActiveTab, activeTestimonial, setActiveTestimonial,
   setSelectedClient, setSelectedCompany, setSelectedCountry,
-  setShowServices, setShowExpertise, setShowAccreditations, setShowTestimonials, setShowChat, setShowPeople
+  setShowServices, setShowExpertise, setShowAccreditations, setShowTestimonials, setShowChat, setShowPeople, setShowGallery,
+  resetDesktopStates
 }: any) {
+  // Check if any panel is currently shown
+  const hasContent = selectedClient || selectedCompany || selectedCountry || showServices || showExpertise || showAccreditations || showTestimonials || showChat || showPeople || showGallery;
+  
   return (
-    <div className="flex-1 min-w-[600px] max-w-3xl z-20 h-[70vh] flex flex-col -mt-16 -ml-14">
+    <div className={`flex-1 min-w-[600px] max-w-3xl z-20 h-[70vh] flex flex-col mt-16 -ml-24 ${hasContent ? 'pointer-events-auto' : 'pointer-events-none'}`}>
       <AnimatePresence mode="wait">
         {(() => {
-          if (selectedClient) return <ClientInfoView key="client" client={selectedClient} onClose={() => setSelectedClient(null)} />;
-          if (selectedCompany) return <CompanyInfoView key="company" company={selectedCompany} onClose={() => setSelectedCompany(null)} />;
-          if (selectedCountry) return <CountryInfoView key="country" country={selectedCountry} onClose={() => setSelectedCountry(null)} />;
-          if (showServices) return <ServicesInfoView key="services" activeTab={activeTab} setActiveTab={setActiveTab} onClose={() => setShowServices(false)} />;
-          if (showExpertise) return <ExpertiseInfoView key="expertise" onClose={() => setShowExpertise(false)} />;
-          if (showAccreditations) return <AccreditationsInfoView key="accreds" onClose={() => setShowAccreditations(false)} />;
-          if (showTestimonials) return <TestimonialsInfoView key="reviews" activeTestimonial={activeTestimonial} setActiveTestimonial={setActiveTestimonial} onClose={() => setShowTestimonials(false)} />;
-          if (showPeople) return <PeopleBehindView key="people" onClose={() => setShowPeople(false)} />;
-          if (showChat) return <ChatInfoView key="chat" onClose={() => setShowChat(false)} />;
+          const handleClose = () => {
+            resetDesktopStates(); // This will expand orbit back to center
+          };
+          
+          if (selectedClient) return <ClientInfoView key="client" client={selectedClient} onClose={handleClose} />;
+          if (selectedCompany) return <CompanyInfoView key="company" company={selectedCompany} onClose={handleClose} />;
+          if (selectedCountry) return <CountryInfoView key="country" country={selectedCountry} onClose={handleClose} />;
+          if (showServices) return <ServicesInfoView key="services" activeTab={activeTab} setActiveTab={setActiveTab} onClose={handleClose} />;
+          if (showExpertise) return <ExpertiseInfoView key="expertise" onClose={handleClose} />;
+          if (showAccreditations) return <AccreditationsInfoView key="accreds" onClose={handleClose} />;
+          if (showTestimonials) return <TestimonialsInfoView key="reviews" activeTestimonial={activeTestimonial} setActiveTestimonial={setActiveTestimonial} onClose={handleClose} />;
+          if (showPeople) return <PeopleBehindView key="people" onClose={handleClose} />;
+          if (showChat) return <ChatInfoView key="chat" onClose={handleClose} />;
+          if (showGallery) return <GalleryInfoView key="gallery" onClose={handleClose} />;
 
-          return <AboutMarvelView key="about" />;
+          return null; // Empty when no panel selected - orbit stays in center
         })()}
       </AnimatePresence>
     </div>
@@ -2195,6 +2310,106 @@ function PeopleBehindView({ onClose }: { onClose: () => void }) {
   );
 }
 
+// ─────────────────────────────────────────────
+// Gallery Images Data
+// ─────────────────────────────────────────────
+const galleryImages = [
+  { id: 1, src: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80", title: "Medical Conference 2024", category: "Events" },
+  { id: 2, src: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80", title: "Healthcare Innovation", category: "Projects" },
+  { id: 3, src: "https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?w=800&q=80", title: "Pharma Partnership", category: "Partnerships" },
+  { id: 4, src: "https://images.unsplash.com/photo-1551076805-e1869033e561?w=800&q=80", title: "Medical Research", category: "Research" },
+  { id: 5, src: "https://images.unsplash.com/photo-1571772996211-2f02c9727629?w=800&q=80", title: "Team Workshop", category: "Team" },
+  { id: 6, src: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&q=80", title: "Product Launch", category: "Events" },
+    { id: 7, src: "https://images.unsplash.com/photo-1581093458791-9d42e3c7e117?w=800&q=80", title: "Lab Research", category: "Research" },
+    { id: 8, src: "https://images.unsplash.com/photo-1578496480157-3d14f496689b?w=800&q=80", title: "Medical Society", category: "Partnerships" },
+];
+
+// ─────────────────────────────────────────────
+// Gallery Info View — Desktop Dynamic Box
+// ─────────────────────────────────────────────
+function GalleryInfoView({ onClose }: { onClose: () => void }) {
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [direction, setDirection] = useState(0);
+
+  const nextImage = () => {
+    setDirection(1);
+    setCurrentIdx((prev) => (prev + 1) % galleryImages.length);
+  };
+
+  const prevImage = () => {
+    setDirection(-1);
+    setCurrentIdx((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  };
+
+  return (
+    <BoxWrapper title="Work Gallery" subtitle="Our Projects & Events" onClose={onClose} icon={RiImageLine}>
+      <div className="flex flex-col h-[450px]">
+        {/* Main Image */}
+        <div className="flex-1 relative flex items-center justify-center bg-surface-light/50 dark:bg-surface-dark/50 rounded-2xl overflow-hidden">
+          <AnimatePresence initial={false} custom={direction}>
+            <motion.img
+              key={currentIdx}
+              src={galleryImages[currentIdx].src}
+              alt={galleryImages[currentIdx].title}
+              custom={direction}
+              initial={{ x: direction > 0 ? 200 : -200, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: direction > 0 ? -200 : 200, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="absolute w-full h-full object-cover"
+            />
+          </AnimatePresence>
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={prevImage}
+            className="absolute left-2 z-10 w-8 h-8 rounded-full bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-sm shadow-lg flex items-center justify-center hover:bg-primary-500 hover:text-white transition-all border border-border-light/50 dark:border-white/10"
+          >
+            <RiArrowLeftSLine size={20} />
+          </button>
+          <button
+            onClick={nextImage}
+            className="absolute right-2 z-10 w-8 h-8 rounded-full bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-sm shadow-lg flex items-center justify-center hover:bg-primary-500 hover:text-white transition-all border border-border-light/50 dark:border-white/10"
+          >
+            <RiArrowRightSLine size={20} />
+          </button>
+
+          {/* Image Info */}
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+            <h4 className="text-white font-bold">{galleryImages[currentIdx].title}</h4>
+            <span className="text-primary-300 text-xs">{galleryImages[currentIdx].category}</span>
+          </div>
+        </div>
+
+        {/* Thumbnails */}
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-2 px-1">
+          {galleryImages.map((img, idx) => (
+            <button
+              key={img.id}
+              onClick={() => {
+                setDirection(idx > currentIdx ? 1 : -1);
+                setCurrentIdx(idx);
+              }}
+              className={`relative flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden transition-all ${
+                idx === currentIdx
+                  ? "ring-2 ring-primary-500 ring-offset-2 dark:ring-offset-surface-dark"
+                  : "opacity-60 hover:opacity-100"
+              }`}
+            >
+              <img src={img.src} alt={img.title} className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+
+        {/* Counter */}
+        <div className="mt-2 text-center text-xs text-muted-light dark:text-muted-dark">
+          {currentIdx + 1} / {galleryImages.length}
+        </div>
+      </div>
+    </BoxWrapper>
+  );
+}
+
 function ChatInfoView({ onClose }: { onClose: () => void }) {
   return (
     <BoxWrapper title="AI Support" subtitle="Always Online" onClose={onClose} icon={RiMessage3Line}>
@@ -2202,5 +2417,97 @@ function ChatInfoView({ onClose }: { onClose: () => void }) {
         <ChatWidget inline={true} />
       </div>
     </BoxWrapper>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Gallery Modal — Image Carousel (Mobile)
+// ─────────────────────────────────────────────
+
+function GalleryModal({ currentIndex, setCurrentIndex, onClose }: { 
+  currentIndex: number; 
+  setCurrentIndex: (idx: number) => void; 
+  onClose: () => void; 
+}) {
+  const [direction, setDirection] = useState(0);
+
+  const nextImage = () => {
+    setDirection(1);
+    setCurrentIndex((currentIndex + 1) % galleryImages.length);
+  };
+
+  const prevImage = () => {
+    setDirection(-1);
+    setCurrentIndex((currentIndex - 1 + galleryImages.length) % galleryImages.length);
+  };
+
+  return (
+    <ModalBackdrop onClose={onClose}>
+      <BoxWrapper title="Work Gallery" subtitle="Our Projects & Events" onClose={onClose} icon={RiImageLine}>
+        <div className="flex flex-col h-[500px]">
+          {/* Main Image Display */}
+          <div className="flex-1 relative flex items-center justify-center bg-surface-light/50 dark:bg-surface-dark/50 rounded-2xl overflow-hidden">
+            <AnimatePresence initial={false} custom={direction}>
+              <motion.img
+                key={currentIndex}
+                src={galleryImages[currentIndex].src}
+                alt={galleryImages[currentIndex].title}
+                custom={direction}
+                initial={{ x: direction > 0 ? 300 : -300, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="absolute w-full h-full object-cover"
+              />
+            </AnimatePresence>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={prevImage}
+              className="absolute left-3 z-10 w-10 h-10 rounded-full bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-sm shadow-lg flex items-center justify-center hover:bg-primary-500 hover:text-white transition-all border border-border-light/50 dark:border-white/10"
+            >
+              <RiArrowLeftSLine size={24} />
+            </button>
+            <button
+              onClick={nextImage}
+              className="absolute right-3 z-10 w-10 h-10 rounded-full bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-sm shadow-lg flex items-center justify-center hover:bg-primary-500 hover:text-white transition-all border border-border-light/50 dark:border-white/10"
+            >
+              <RiArrowRightSLine size={24} />
+            </button>
+
+            {/* Image Info Overlay */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+              <h4 className="text-white font-bold text-lg">{galleryImages[currentIndex].title}</h4>
+              <span className="text-primary-300 text-sm">{galleryImages[currentIndex].category}</span>
+            </div>
+          </div>
+
+          {/* Thumbnails Strip */}
+          <div className="mt-4 flex gap-2 overflow-x-auto pb-2 px-1">
+            {galleryImages.map((img, idx) => (
+              <button
+                key={img.id}
+                onClick={() => {
+                  setDirection(idx > currentIndex ? 1 : -1);
+                  setCurrentIndex(idx);
+                }}
+                className={`relative flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden transition-all ${
+                  idx === currentIndex 
+                    ? "ring-2 ring-primary-500 ring-offset-2 dark:ring-offset-surface-dark" 
+                    : "opacity-60 hover:opacity-100"
+                }`}
+              >
+                <img src={img.src} alt={img.title} className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
+
+          {/* Counter */}
+          <div className="mt-3 text-center text-sm text-muted-light dark:text-muted-dark">
+            {currentIndex + 1} / {galleryImages.length}
+          </div>
+        </div>
+      </BoxWrapper>
+    </ModalBackdrop>
   );
 }
