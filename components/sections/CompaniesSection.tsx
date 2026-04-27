@@ -59,19 +59,19 @@ function getOrbitConfig(bp: "mobile" | "tablet" | "desktop") {
   if (bp === "mobile") {
     return {
       positions: [
-        { angle: -90, distance: 145 },
-        { angle: -30, distance: 145 },
-        { angle: 30, distance: 145 },
-        { angle: 90, distance: 145 },
-        { angle: 150, distance: 145 },
-        { angle: -150, distance: 145 },
+        { angle: -90, distance: 125 },
+        { angle: -30, distance: 125 },
+        { angle: 30, distance: 125 },
+        { angle: 90, distance: 125 },
+        { angle: 150, distance: 125 },
+        { angle: -150, distance: 125 },
       ],
-      ringSize1: 290,
-      ringSize2: 320,
-      glowSize: 220,
-      centerSize: 110,
-      nodeSize: 58,
-      logoSize: 56,
+      ringSize1: 250,
+      ringSize2: 280,
+      glowSize: 200,
+      centerSize: 100,
+      nodeSize: 54,
+      logoSize: 52,
     };
   }
   if (bp === "tablet") {
@@ -255,7 +255,7 @@ export default function CompaniesSection() {
   return (
     <section
       ref={containerRef}
-      className={`${isMobile ? "min-h-[85vh] pt-40 overflow-hidden " : "h-screen overflow-hidden"} bg-bg-light dark:bg-bg-dark relative flex items-center justify-center`}
+      className={`${isMobile ? "min-h-[90vh] pt-36 overflow-x-hidden" : "h-screen overflow-hidden"} bg-bg-light dark:bg-bg-dark relative flex items-center justify-center`}
     >
       {/* ─── Animated Background ─── */}
       <div className="absolute inset-0 pointer-events-none w-full ">
@@ -433,9 +433,9 @@ export default function CompaniesSection() {
           animate={!isMobile ? {
             x: orbitExpanded ? 420 : -50,
             scale: orbitExpanded ? 1.25 : 0.95,
-          } : {}}
+          } : { x: 0, scale: 1 }}
           transition={{ type: "spring", stiffness: 100, damping: 20 }}
-          className={`relative flex items-center justify-center pointer-events-auto ${isMobile ? "flex-1 min-h-[55vh] -mt-20" : "w-[400px] min-h-[80vh]  mt-24"}`}
+          className={`relative flex items-center justify-center pointer-events-auto ${isMobile ? "w-full min-h-[60vh]" : "w-[400px] min-h-[80vh] mt-24"}`}
         >
           {/* Mobile flags row only */}
           {isMobile && (
@@ -467,13 +467,13 @@ export default function CompaniesSection() {
 
           {/* Orbital layout */}
           <div
-            className={`relative flex items-center justify-center pointer-events-auto ${isMobile ? "w-full h-[380px] " : isTablet ? "w-full h-[400px] mt-10" : "w-full h-[500px] mt-6"}`}
+            className={`relative flex items-center justify-center pointer-events-auto ${isMobile ? "w-full h-[340px]" : isTablet ? "w-full h-[400px] mt-10" : "w-full h-[500px] mt-6"}`}
             onMouseEnter={() => !isMobile && setIsHovering(true)}
             onMouseLeave={() => !isMobile && setIsHovering(false)}
           >
             {/* Outer dashed ring */}
             <div
-              className="absolute left-1/2 top-[48%] md:top-[45%] pointer-events-none"
+              className="absolute left-1/2 top-1/2 pointer-events-none"
               style={{ transform: `translate(-50%, -50%) rotate(${rotation}deg)` }}
             >
               <div style={{ width: orbitConfig.ringSize1, height: orbitConfig.ringSize1 }} className="border-2 border-dashed border-primary-500/40 rounded-full" />
@@ -481,14 +481,14 @@ export default function CompaniesSection() {
 
             {/* Second counter ring */}
             <div
-              className="absolute left-1/2 top-[48%] md:top-[45%] pointer-events-none"
+              className="absolute left-1/2 top-1/2 pointer-events-none"
               style={{ transform: `translate(-50%, -50%) rotate(${-rotation * 0.6}deg)` }}
             >
               <div style={{ width: orbitConfig.ringSize2, height: orbitConfig.ringSize2 }} className="border border-secondary-500/35 rounded-full" />
             </div>
 
             {/* Inner glow ring */}
-            <div className="absolute left-1/2 top-[48%] md:top-[45%] -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
               <motion.div
                 animate={{ scale: [1, 1.04, 1], opacity: [0.5, 0.8, 0.5] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -510,7 +510,7 @@ export default function CompaniesSection() {
 
             {/* Central Marvel Logo - Clickable to show About Marvel */}
             <motion.div
-              className="absolute left-1/2 top-[48%] md:top-[45%] z-20 cursor-pointer group"
+              className="absolute left-1/2 top-1/2 z-20 cursor-pointer group"
               style={{
                 x: isMobile ? -(orbitConfig.centerSize / 2) : centerX,
                 y: isMobile ? -(orbitConfig.centerSize / 2) : centerY,
