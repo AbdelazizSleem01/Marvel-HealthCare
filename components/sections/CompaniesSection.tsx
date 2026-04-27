@@ -324,9 +324,9 @@ export default function CompaniesSection() {
             transition={{ delay: 0.5, type: "spring", stiffness: 100 }}
             className="fixed top-0 left-14 right-0 z-50 px-4 pointer-events-none"
           >
-            <div className="max-w-4xl mx-auto w-full pointer-events-auto">
+            <div className="max-w-xl lg:max-w-4xl  mx-auto w-full pointer-events-auto">
               <div className="rounded-b-2xl glass-light dark:glass-dark border-x border-b border-border-light dark:border-border-dark/50 shadow-2xl overflow-hidden backdrop-blur-xl mt-0">
-                <div className="flex items-center justify-around p-1 lg:p-3">
+                <div className="flex items-center justify-around p-1 lg:p-1.5">
                   {[
                     { id: "services", onClick: () => handleStateChange(setShowServices, true), icon: RiSettings4Line, label: "Services", color: "primary", isActive: showServices },
                     { id: "expertise", onClick: () => handleStateChange(setShowExpertise, true), icon: RiHeartPulseLine, label: "Therapeutic Areas", color: "primary", isActive: showExpertise },
@@ -371,14 +371,14 @@ export default function CompaniesSection() {
                         {item.href ? (
                           <Link
                             href={item.href}
-                            className="group flex flex-col items-center gap-1.5 py-1.5 px-1 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-xl transition-all duration-300"
+                            className="group flex flex-col items-center gap-1.5 py-1 px-1 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-xl transition-all duration-300"
                           >
                             {content}
                           </Link>
                         ) : (
                           <button
                             onClick={item.onClick}
-                            className="group flex flex-col items-center gap-1.5 py-1.5 px-1 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-xl transition-all duration-300 w-full"
+                            className="group flex flex-col items-center gap-1.5 py-1 px-1 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-xl transition-all duration-300 w-full"
                           >
                             {content}
                           </button>
