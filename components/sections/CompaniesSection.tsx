@@ -570,7 +570,7 @@ export default function CompaniesSection() {
               return (
                 <div
                   key={company.id}
-                  className={`absolute left-1/2 top-1/2 transition-all duration-300 ${isHovered ? "z-[60]" : "z-20"}`}
+                  className={`absolute left-1/2 top-1/2 mt-4 transition-all duration-300 ${isHovered ? "z-[60]" : "z-20"}`}
                   style={{
                     width: orbitConfig.nodeSize,
                     height: orbitConfig.nodeSize,
@@ -593,10 +593,10 @@ export default function CompaniesSection() {
                       whileHover={{ scale: 1.18 }}
                       whileTap={{ scale: 0.92 }}
                       style={{ width: orbitConfig.nodeSize, height: orbitConfig.nodeSize }}
-                      className={`relative rounded-full glass-light dark:glass-dark border-2 ${(isHovered || isActive) ? "border-primary-500 shadow-[0_0_15px_rgba(18,122,138,0.5)]" : "border-transparent"} flex items-center justify-center shadow-lg transition-all duration-300`}
+                      className={`relative rounded-full bg-white border-2 ${(isHovered || isActive) ? "border-primary-500 shadow-[0_0_15px_rgba(18,122,138,0.5)]" : "border-transparent"} flex items-center justify-center shadow-lg transition-all duration-300`}
                     >
                       {company.logo ? (
-                        <Image src={company.logo} alt={company.name} width={isMobile ? 26 : 40} height={isMobile ? 26 : 40} className="object-contain w-auto h-auto" />
+                        <Image src={company.logo} alt={company.name} width={isMobile ? 26 : 40} height={isMobile ? 26 : 40} className="object-contain w-auto h-auto rounded-full" />
                       ) : (
                         <div style={{ width: isMobile ? 28 : 40, height: isMobile ? 28 : 40 }} className={`rounded-full bg-gradient-to-br ${company.color} flex items-center justify-center text-white ${isMobile ? "text-xs" : "text-base"} font-bold`}>
                           {company.icon}

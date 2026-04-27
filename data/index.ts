@@ -47,7 +47,7 @@ export const companies: Company[] = [
     description: "AI-driven medical visualization and augmented reality solutions for next-generation clinical communication.",
     color: "from-primary-500 to-secondary-400",
     icon: "◉",
-    logo: "/marvel-images/MedVi.png",
+    logo: "/med-visual.jpg",
   },
   {
     id: "med-lab",
@@ -59,7 +59,7 @@ export const companies: Company[] = [
     description: "The R&D powerhouse of Marvel Group — incubating breakthrough technologies for the future of healthcare.",
     color: "from-primary-500 to-secondary-400",
     icon: "⬢",
-    logo: "/marvel-images/medlab-logo-1.png",
+    logo: "/med-lab.jpg",
   },
   {
     id: "meduscript",
@@ -71,7 +71,7 @@ export const companies: Company[] = [
     description: "Expert medical writing and regulatory documentation services meeting global pharmaceutical standards.",
     color: "from-primary-500 to-secondary-400",
     icon: "⊕",
-    logo: "/marvel-images/PDC.png",
+    logo: "/medu-script.jpg",
   },
 ];
 
