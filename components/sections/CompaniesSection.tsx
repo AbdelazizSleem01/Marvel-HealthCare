@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { companies, segmentedClients } from "@/data";
+import { companies, segmentedClients, bigNumbers } from "@/data";
 import {
   RiCloseLine, RiArrowRightLine, RiMailLine, RiSettings4Line, RiServiceLine,
   RiStarLine, RiStackLine, RiGraduationCapLine, RiFileTextLine, RiComputerLine,
@@ -37,6 +37,35 @@ const modalVariants = {
   hidden: { opacity: 0, scale: 0.92, y: 20 },
   visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring" as const, damping: 28, stiffness: 320 } },
   exit: { opacity: 0, scale: 0.94, y: 10, transition: { duration: 0.18 } },
+};
+
+function useCountUp(target: number, duration = 1500) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let startTime: number;
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(ease * target));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    const frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [target, duration]);
+
+  return count;
+}
+
+const StatValue = ({ value, suffix }: { value: number; suffix: string }) => {
+  const count = useCountUp(value);
+  return (
+    <>
+      {count}
+      {suffix}
+    </>
+  );
 };
 
 // Hook for responsive breakpoints
@@ -148,6 +177,16 @@ export default function CompaniesSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showGallery, setShowGallery] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // Stats cycling logic
+  const [currentStatIndex, setCurrentStatIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentStatIndex((prev) => (prev + 1) % bigNumbers.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
   
   // Orbit expansion state - true when in center (expanded), false when moved left (compact)
   const [orbitExpanded, setOrbitExpanded] = useState(true);
@@ -435,11 +474,11 @@ export default function CompaniesSection() {
             scale: orbitExpanded ? 1.25 : 0.95,
           } : { x: 0, scale: 1 }}
           transition={{ type: "spring", stiffness: 100, damping: 20 }}
-          className={`relative flex items-center justify-center pointer-events-auto ${isMobile ? "w-full min-h-[60vh]" : "w-[400px] min-h-[80vh] mt-24"}`}
+          className={`relative flex items-center justify-center pointer-events-auto ${isMobile ? "w-full min-h-[60vh]" : "w-[400px] min-h-[80vh] mt-12"}`}
         >
           {/* Mobile flags row only */}
           {isMobile && (
-            <div className="absolute left-1/2 -translate-x-1/2 z-30 -top-12">
+            <div className="absolute left-1/2 -translate-x-1/2 z-30 -top-28">
               <div className="flex items-center justify-center gap-6">
                 {COUNTRIES.map((country, idx) => (
                   <motion.button
@@ -467,7 +506,7 @@ export default function CompaniesSection() {
 
           {/* Orbital layout */}
           <div
-            className={`relative flex items-center justify-center pointer-events-auto ${isMobile ? "w-full h-[340px]" : isTablet ? "w-full h-[400px] mt-10" : "w-full h-[500px] mt-6"}`}
+            className={`relative flex items-center justify-center pointer-events-auto ${isMobile ? "w-full h-[340px] -mt-44" : isTablet ? "w-full h-[400px] -mt-8" : "w-full h-[500px] -mt-12"}`}
             onMouseEnter={() => !isMobile && setIsHovering(true)}
             onMouseLeave={() => !isMobile && setIsHovering(false)}
           >
@@ -627,6 +666,37 @@ export default function CompaniesSection() {
                 </div>
               );
             })}
+
+            {/* Animated Stats - Under the Orbit */}
+            <div className={`absolute ${isMobile ? "-bottom-20" : "bottom-0"} left-1/2 -translate-x-1/2 w-full text-center z-30`}>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentStatIndex}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.5 }}
+                  className="flex flex-col items-center"
+                >
+                  <div className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent font-display">
+                    <StatValue value={bigNumbers[currentStatIndex].value} suffix={bigNumbers[currentStatIndex].suffix} />
+                  </div>
+                  <p className="text-muted-light dark:text-muted-dark text-[10px] md:text-xs font-bold mt-1 uppercase tracking-[0.2em]">
+                    {bigNumbers[currentStatIndex].label}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Progress Indicators */}
+              <div className="flex justify-center gap-1.5 mt-3">
+                {bigNumbers.map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-1 rounded-full transition-all duration-500 ${i === currentStatIndex ? "w-6 bg-primary-500" : "w-1.5 bg-primary-500/20"}`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </motion.div>
 
@@ -663,7 +733,7 @@ export default function CompaniesSection() {
 
         {/* ─── Mobile: Buttons & Panels BELOW Orbital ─── */}
         {isMobile && (
-          <div className="w-full flex flex-col items-center px-4 ">
+          <div className="w-full flex flex-col items-center px-4 mt-12">
             {/* Toggle Buttons */}
             <div className="flex items-center justify-center gap-4">
               <motion.button
