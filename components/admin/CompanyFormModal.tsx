@@ -636,37 +636,58 @@ export function CompanyFormModal({
                       )}
                     </div>
 
-                    {/* Inputs */}
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <RiLink size={14} className="text-muted-dark" />
-                        <input
-                          type="text"
-                          className="flex-1 bg-transparent text-sm text-text-dark focus:outline-none placeholder:text-muted-dark"
-                          placeholder="Image URL"
-                          value={img.src}
-                          onChange={(e) => updateGalleryImage(index, "src", e.target.value)}
-                        />
+                    {/* Inputs - Stacked with proper borders */}
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-xs text-muted-dark uppercase tracking-wider mb-1.5 block">
+                          Image URL
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <div className="w-10 h-10 rounded-lg bg-white/5 border border-border-dark flex items-center justify-center shrink-0">
+                            <RiLink size={16} className="text-muted-dark" />
+                          </div>
+                          <input
+                            type="text"
+                            className={inputCls}
+                            placeholder="https://example.com/image.jpg"
+                            value={img.src}
+                            onChange={(e) => updateGalleryImage(index, "src", e.target.value)}
+                          />
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <RiFileTextLine size={14} className="text-muted-dark" />
-                        <input
-                          type="text"
-                          className="flex-1 bg-transparent text-sm text-text-dark focus:outline-none placeholder:text-muted-dark"
-                          placeholder="Title"
-                          value={img.title}
-                          onChange={(e) => updateGalleryImage(index, "title", e.target.value)}
-                        />
+                      <div>
+                        <label className="text-xs text-muted-dark uppercase tracking-wider mb-1.5 block">
+                          Title
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <div className="w-10 h-10 rounded-lg bg-white/5 border border-border-dark flex items-center justify-center shrink-0">
+                            <RiFileTextLine size={16} className="text-muted-dark" />
+                          </div>
+                          <input
+                            type="text"
+                            className={inputCls}
+                            placeholder="e.g., Marvel Hospital Project"
+                            value={img.title}
+                            onChange={(e) => updateGalleryImage(index, "title", e.target.value)}
+                          />
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <RiPaletteLine size={14} className="text-muted-dark" />
-                        <input
-                          type="text"
-                          className="flex-1 bg-transparent text-sm text-text-dark focus:outline-none placeholder:text-muted-dark"
-                          placeholder="Category"
-                          value={img.category}
-                          onChange={(e) => updateGalleryImage(index, "category", e.target.value)}
-                        />
+                      <div>
+                        <label className="text-xs text-muted-dark uppercase tracking-wider mb-1.5 block">
+                          Category
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <div className="w-10 h-10 rounded-lg bg-white/5 border border-border-dark flex items-center justify-center shrink-0">
+                            <RiPaletteLine size={16} className="text-muted-dark" />
+                          </div>
+                          <input
+                            type="text"
+                            className={inputCls}
+                            placeholder="e.g., Healthcare, Infrastructure"
+                            value={img.category}
+                            onChange={(e) => updateGalleryImage(index, "category", e.target.value)}
+                          />
+                        </div>
                       </div>
                     </div>
 
