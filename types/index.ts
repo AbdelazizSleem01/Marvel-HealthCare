@@ -1,6 +1,38 @@
+export interface FocusArea {
+  icon: string;
+  label: string;
+  description: string;
+}
+
+export interface GalleryImage {
+  src: string;
+  title: string;
+  category: string;
+}
+
+export interface SocialMedia {
+  linkedin?: string;
+  facebook?: string;
+  email?: string;
+}
+
+export interface Employee {
+  name: string;
+  position: string;
+  department?: string;
+}
+
+export interface CustomStat {
+  id: string;
+  label: string;
+  value: number;
+  suffix?: string;
+}
+
 export interface Company {
   id: string;
   name: string;
+  slug?: string;
   tagline: string;
   year: string;
   country: string;
@@ -9,6 +41,14 @@ export interface Company {
   color: string;
   icon: string;
   logo?: string;
+  isMain?: boolean;
+  isActive?: boolean;
+  order?: number;
+  focusAreas?: FocusArea[];
+  gallery?: GalleryImage[];
+  socialMedia?: SocialMedia;
+  customStats?: CustomStat[];
+  employees?: Employee[];
 }
 
 export interface Project {
