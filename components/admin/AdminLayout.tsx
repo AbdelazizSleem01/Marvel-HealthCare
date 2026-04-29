@@ -29,26 +29,24 @@ export function AdminLayout({ children, activeTab, onTabChange, navItems }: Admi
           sidebarOpen ? "w-64 p-6" : "w-20 p-4"
         }`}
       >
-        {/* Toggle Button */}
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className={`absolute top-4 p-2 rounded-lg bg-white/5 border border-border-dark text-muted-dark hover:text-text-dark hover:bg-white/10 transition-all z-50 ${
-            sidebarOpen ? "right-4" : "left-1/2 -translate-x-1/2"
-          }`}
-          title={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
-        >
-          {sidebarOpen ? <RiMenuFoldLine size={18} /> : <RiMenuUnfoldLine size={18} />}
-        </button>
-        <div className={`flex items-center gap-2 mb-8 mt-12 ${!sidebarOpen && "justify-center"}`}>
+        <div className={`flex items-center gap-2 mb-8 ${!sidebarOpen && "justify-center flex-col gap-3"}`}>
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shrink-0">
             <span className="text-white font-display font-bold text-sm">M</span>
           </div>
-          {sidebarOpen && (
-            <div className="overflow-hidden">
+          {sidebarOpen ? (
+            <div className="overflow-hidden flex-1">
               <div className="font-display font-bold text-sm text-text-dark">Marvel Group</div>
               <div className="text-xs text-muted-dark">Admin Panel</div>
             </div>
-          )}
+          ) : null}
+          {/* Toggle Button - inline with logo */}
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-2 rounded-lg bg-white/5 border border-border-dark text-muted-dark hover:text-text-dark hover:bg-white/10 transition-all z-50"
+            title={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+          >
+            {sidebarOpen ? <RiMenuFoldLine size={18} /> : <RiMenuUnfoldLine size={18} />}
+          </button>
         </div>
 
         <nav className="space-y-1 flex-1">
