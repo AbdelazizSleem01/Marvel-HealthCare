@@ -6,7 +6,22 @@ import {
   RiSearchLine, 
   RiFilterLine,
   RiArrowDownSLine,
-  RiCheckLine
+  RiCheckLine,
+  RiAppsLine,
+  RiFileTextLine,
+  RiBookLine,
+  RiImageLine,
+  RiHeartLine,
+  RiUserLine,
+  RiBriefcaseLine,
+  RiChat1Line,
+  RiMapPinLine,
+  RiTimerLine,
+  RiLeafLine,
+  RiShoppingBagLine,
+  RiCloudLine,
+  RiSettings3Line,
+  RiShareLine
 } from "react-icons/ri";
 import { iconComponents, availableIcons, IconDef } from "./iconData";
 
@@ -25,21 +40,21 @@ export function IconPicker({ isOpen, onClose, onSelect }: IconPickerProps) {
     "w-full bg-white/5 border border-border-dark rounded-xl px-4 py-3 text-sm text-text-dark placeholder:text-muted-dark focus:outline-none focus:border-primary-500/60 transition-all";
 
   const categories = [
-    "All",
-    "Document",
-    "Education",
-    "Media",
-    "Health",
-    "User",
-    "Business",
-    "Chat",
-    "Location",
-    "Time",
-    "Nature",
-    "Shopping",
-    "Weather",
-    "Settings",
-    "Social",
+    { name: "All", icon: RiAppsLine },
+    { name: "Document", icon: RiFileTextLine },
+    { name: "Education", icon: RiBookLine },
+    { name: "Media", icon: RiImageLine },
+    { name: "Health", icon: RiHeartLine },
+    { name: "User", icon: RiUserLine },
+    { name: "Business", icon: RiBriefcaseLine },
+    { name: "Chat", icon: RiChat1Line },
+    { name: "Location", icon: RiMapPinLine },
+    { name: "Time", icon: RiTimerLine },
+    { name: "Nature", icon: RiLeafLine },
+    { name: "Shopping", icon: RiShoppingBagLine },
+    { name: "Weather", icon: RiCloudLine },
+    { name: "Settings", icon: RiSettings3Line },
+    { name: "Social", icon: RiShareLine },
   ];
 
   const filteredIcons: IconDef[] = availableIcons.filter((icon: IconDef) => {
@@ -148,23 +163,30 @@ export function IconPicker({ isOpen, onClose, onSelect }: IconPickerProps) {
           {isFilterOpen && (
             <div className="absolute z-20 mt-2 w-full max-w-sm bg-bg-dark rounded-xl border border-border-dark overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200">
               <div className="p-2 max-h-64 overflow-y-auto custom-scrollbar">
-                <div className="grid grid-cols-2 gap-1">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => handleCategoryClick(cat)}
-                      className={`text-sm px-3 py-2 rounded-lg transition-all flex items-center justify-between group ${
-                        selectedCategory === cat
-                          ? "bg-primary-500/20 text-primary-400"
-                          : "text-text-dark hover:bg-white/5"
-                      }`}
-                    >
-                      <span>{cat}</span>
-                      {selectedCategory === cat && (
-                        <RiCheckLine size={16} className="text-primary-400" />
-                      )}
-                    </button>
-                  ))}
+                <div className="grid grid-cols-2 gap-2">
+                  {categories.map((cat) => {
+                    const IconComponent = cat.icon;
+                    const isSelected = selectedCategory === cat.name;
+                    return (
+                      <button
+                        key={cat.name}
+                        onClick={() => handleCategoryClick(cat.name)}
+                        className={`relative flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                          isSelected
+                            ? "bg-gradient-to-br from-primary-500/20 to-secondary-500/10 border-primary-500/50 text-primary-400"
+                            : "bg-white/5 border-border-dark text-text-dark hover:bg-white/10 hover:border-primary-500/30"
+                        }`}
+                      >
+                        <div className={`p-2 rounded-lg ${isSelected ? "bg-primary-500/20" : "bg-white/5"}`}>
+                          <IconComponent size={20} className={isSelected ? "text-primary-400" : "text-text-dark"} />
+                        </div>
+                        <span className="text-xs font-medium">{cat.name}</span>
+                        {isSelected && (
+                          <RiCheckLine size={14} className="text-primary-400 absolute top-2 right-2" />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
