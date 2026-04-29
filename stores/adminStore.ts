@@ -27,6 +27,14 @@ export interface SocialMedia {
   telegram?: string;
 }
 
+export interface Stat {
+  id: string;
+  label: string;
+  value: number;
+  suffix?: string;
+}
+
+// Legacy Stats interface for backward compatibility
 export interface Stats {
   employees: number;
   projects: number;
@@ -57,7 +65,8 @@ export interface Company {
   focusAreas: FocusArea[];
   gallery: GalleryImage[];
   socialMedia?: SocialMedia;
-  stats?: Stats;
+  stats?: Stats; // Legacy stats for backward compatibility
+  customStats?: Stat[]; // New dynamic custom statistics
   employees?: Employee[];
   order: number;
   createdAt?: string;

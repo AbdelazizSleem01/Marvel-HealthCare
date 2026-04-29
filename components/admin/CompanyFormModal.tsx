@@ -40,7 +40,7 @@ import {
   RiTelegramLine,
   RiSearchLine,
 } from "react-icons/ri";
-import { Company, FocusArea, GalleryImage } from "@/stores/adminStore";
+import { Company, FocusArea, GalleryImage, Stat } from "@/stores/adminStore";
 import { IconPicker } from "./IconPicker";
 import { FlagPicker, COUNTRIES } from "./FlagPicker";
 import { iconComponents } from "./iconData";
@@ -121,12 +121,38 @@ export function CompanyFormModal({
     });
   };
 
-  // Stats Helpers
+  // Stats Helpers (Legacy)
   const updateStats = (field: "employees" | "projects" | "clients", value: number) => {
     setFormData({
       ...formData,
       stats: { ...(formData.stats || { employees: 0, projects: 0, clients: 0 }), [field]: value },
     });
+  };
+
+  // Custom Stats Helpers
+  const addCustomStat = () => {
+    const newStat: Stat = {
+      id: `stat-${Date.now()}`,
+      label: "New Statistic",
+      value: 0,
+      suffix: "+",
+    };
+    setFormData({
+      ...formData,
+      customStats: [...(formData.customStats || []), newStat],
+    });
+  };
+
+  const updateCustomStat = (id: string, field: keyof Stat, value: string | number) => {
+    const updated = (formData.customStats || []).map((stat) =>
+      stat.id === id ? { ...stat, [field]: value } : stat
+    );
+    setFormData({ ...formData, customStats: updated });
+  };
+
+  const removeCustomStat = (id: string) => {
+    const updated = (formData.customStats || []).filter((stat) => stat.id !== id);
+    setFormData({ ...formData, customStats: updated });
   };
 
   // Employees Helpers
@@ -819,7 +845,7 @@ export function CompanyFormModal({
               </div>
             </div>
 
-            {/* Overview Stats Section */}
+            {/* Overview Stats Section - Dynamic Custom Statistics */}
             <div className={sectionCls}>
               <div className={sectionHeaderCls}>
                 <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center">
@@ -827,33 +853,92 @@ export function CompanyFormModal({
                 </div>
                 Overview Statistics
                 <span className="ml-auto text-xs text-muted-dark font-normal">
-                  Company achievements
+                  {formData.customStats?.length || 0} statistics
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {[
-                  { key: "employees", label: "Employees", suffix: "+" },
-                  { key: "projects", label: "Projects", suffix: "+" },
-                  { key: "clients", label: "Clients", suffix: "+" },
-                ].map(({ key, label, suffix }) => (
-                  <div key={key}>
-                    <label className={labelCls}>
-                      <RiUserLine size={14} />
-                      {label}
-                    </label>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="number"
-                        className={inputCls}
-                        placeholder="0"
-                        value={formData.stats?.[key as keyof typeof formData.stats] || 0}
-                        onChange={(e) => updateStats(key as "employees" | "projects" | "clients", parseInt(e.target.value) || 0)}
-                      />
-                      <span className="text-muted-dark font-semibold">{suffix}</span>
+              <div className="space-y-3">
+                {(formData.customStats || []).map((stat) => (
+                  <div
+                    key={stat.id}
+                    className="p-4 rounded-xl bg-white/5 border border-border-dark hover:border-primary-500/30 transition-all"
+                  >
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+                      {/* Stat Label */}
+                      <div className="sm:col-span-5">
+                        <label className={labelCls}>
+                          <RiFileTextLine size={14} />
+                          Statistic Name
+                        </label>
+                        <input
+                          type="text"
+                          className={inputCls}
+                          placeholder="e.g., Projects Completed"
+                          value={stat.label}
+                          onChange={(e) => updateCustomStat(stat.id, "label", e.target.value)}
+                        />
+                      </div>
+
+                      {/* Stat Value */}
+                      <div className="sm:col-span-4">
+                        <label className={labelCls}>
+                          <RiBarChartLine size={14} />
+                          Value
+                        </label>
+                        <input
+                          type="number"
+                          className={inputCls}
+                          placeholder="0"
+                          value={stat.value}
+                          onChange={(e) => updateCustomStat(stat.id, "value", parseInt(e.target.value) || 0)}
+                        />
+                      </div>
+
+                      {/* Stat Suffix */}
+                      <div className="sm:col-span-2">
+                        <label className={labelCls}>
+                          <span className="text-xs">Suffix</span>
+                        </label>
+                        <input
+                          type="text"
+                          className={inputCls}
+                          placeholder="+, %, etc"
+                          value={stat.suffix || ""}
+                          onChange={(e) => updateCustomStat(stat.id, "suffix", e.target.value)}
+                        />
+                      </div>
+
+                      {/* Remove Button */}
+                      <div className="sm:col-span-1">
+                        <button
+                          onClick={() => removeCustomStat(stat.id)}
+                          className="w-full p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 hover:border-red-500/40 transition-all flex items-center justify-center"
+                          title="Remove statistic"
+                        >
+                          <RiDeleteBinLine size={18} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
+
+                {/* Add New Stat Button */}
+                <button
+                  onClick={addCustomStat}
+                  className="w-full p-4 rounded-xl border-2 border-dashed border-border-dark hover:border-primary-500/50 hover:bg-primary-500/5 transition-all flex items-center justify-center gap-2 text-muted-dark hover:text-primary-400"
+                >
+                  <RiAddLine size={20} />
+                  <span className="font-medium">Add Custom Statistic</span>
+                </button>
+
+                {/* Empty State */}
+                {(formData.customStats || []).length === 0 && (
+                  <div className="text-center py-8 text-muted-dark">
+                    <RiBarChartLine size={48} className="mx-auto mb-3 opacity-30" />
+                    <p className="text-sm">No statistics added yet</p>
+                    <p className="text-xs mt-1">Click above to add your first company statistic</p>
+                  </div>
+                )}
               </div>
             </div>
 

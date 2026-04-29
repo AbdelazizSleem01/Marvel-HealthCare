@@ -135,12 +135,21 @@ const CompanySchema = new Schema(
       snapchat: String,
       telegram: String,
     },
-    // Overview Stats
+    // Overview Stats (Legacy - fixed fields)
     stats: {
       employees: { type: Number, default: 0 },
       projects: { type: Number, default: 0 },
       clients: { type: Number, default: 0 },
     },
+    // Custom Stats (Dynamic - user can add any)
+    customStats: [
+      {
+        id: String,
+        label: String,
+        value: { type: Number, default: 0 },
+        suffix: String,
+      },
+    ],
     // Team Members
     employees: [
       {
