@@ -29,7 +29,7 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET || "marvel-secret-key-2025",
   pages: {
-    signIn: "/admin",
+    signIn: "/marvell-admin-page",
   },
 };
 
