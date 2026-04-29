@@ -146,7 +146,7 @@ export function IconPicker({ isOpen, onClose, onSelect }: IconPickerProps) {
 
           {/* Dropdown Categories */}
           {isFilterOpen && (
-            <div className="absolute z-20 mt-2 w-full max-w-sm glass-dark rounded-xl border border-border-dark overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="absolute z-20 mt-2 w-full max-w-sm bg-bg-dark rounded-xl border border-border-dark overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200">
               <div className="p-2 max-h-64 overflow-y-auto custom-scrollbar">
                 <div className="grid grid-cols-2 gap-1">
                   {categories.map((cat) => (
