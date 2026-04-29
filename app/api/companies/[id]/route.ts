@@ -5,11 +5,12 @@ import { Company } from "@/models";
 // GET - Fetch single company
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await connectDB();
-    const company = await Company.findById(params.id);
+    const company = await Company.findById(id);
 
     if (!company) {
       return NextResponse.json(
@@ -31,9 +32,10 @@ export async function GET(
 // PUT - Update company
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     await connectDB();
 
@@ -41,7 +43,7 @@ export async function PUT(
     if (body.slug) {
       const existing = await Company.findOne({
         slug: body.slug,
-        _id: { $ne: params.id },
+        _id: { $ne: id },
       });
       if (existing) {
         return NextResponse.json(
@@ -52,7 +54,7 @@ export async function PUT(
     }
 
     const company = await Company.findByIdAndUpdate(
-      params.id,
+      id,
       { $set: body },
       { new: true, runValidators: true }
     );
@@ -77,11 +79,12 @@ export async function PUT(
 // DELETE - Delete company
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await connectDB();
-    const company = await Company.findByIdAndDelete(params.id);
+    const company = await Company.findByIdAndDelete(id);
 
     if (!company) {
       return NextResponse.json(

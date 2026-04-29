@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { companies, segmentedClients, bigNumbers } from "@/data";
+import { segmentedClients, bigNumbers } from "@/data";
 import {
   RiCloseLine, RiArrowRightLine, RiMailLine, RiSettings4Line, RiServiceLine,
   RiStarLine, RiStackLine, RiGraduationCapLine, RiFileTextLine, RiComputerLine,
@@ -144,9 +144,30 @@ export default function CompaniesSection() {
   const isMobile = bp === "mobile";
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-
+  
+  // Fetch companies from API
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [loadingCompanies, setLoadingCompanies] = useState(true);
+  
   useEffect(() => {
     setMounted(true);
+    
+    // Fetch companies from API
+    const fetchCompanies = async () => {
+      try {
+        const response = await fetch('/api/companies');
+        const data = await response.json();
+        if (data.success) {
+          setCompanies(data.companies);
+        }
+      } catch (error) {
+        console.error('Error fetching companies:', error);
+      } finally {
+        setLoadingCompanies(false);
+      }
+    };
+    
+    fetchCompanies();
   }, []);
   const isTablet = bp === "tablet";
 
@@ -599,8 +620,18 @@ export default function CompaniesSection() {
               </div>
             </motion.div>
 
+            {/* Loading State */}
+            {loadingCompanies && (
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-8 h-8 border-2 border-primary-500/30 border-t-primary-500 rounded-full animate-spin" />
+                  <span className="text-xs text-muted-dark">Loading companies...</span>
+                </div>
+              </div>
+            )}
+
             {/* Company Orbitals */}
-            {companies.map((company, index) => {
+            {!loadingCompanies && companies.map((company, index) => {
               const position = orbitConfig.positions[index];
               if (!position) return null;
               const angleRad = ((position.angle + rotation * 0.22) * Math.PI) / 180;
