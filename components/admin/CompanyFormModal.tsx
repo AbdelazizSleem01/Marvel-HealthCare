@@ -47,6 +47,7 @@ export function CompanyFormModal({
 }: CompanyFormModalProps) {
   const [showIconPicker, setShowIconPicker] = useState(false);
   const [selectedFocusAreaIndex, setSelectedFocusAreaIndex] = useState<number | null>(null);
+  const [iconPickerMode, setIconPickerMode] = useState<"company" | "focusArea">("company");
 
   const inputCls =
     "w-full bg-white/5 border border-border-dark rounded-xl px-4 py-3 text-sm text-text-dark placeholder:text-muted-dark focus:outline-none focus:border-primary-500/60 transition-all";
@@ -91,14 +92,21 @@ export function CompanyFormModal({
     setFormData({ ...formData, gallery: updated });
   };
 
-  const openIconPicker = (index: number) => {
-    setSelectedFocusAreaIndex(index);
+  const openIconPicker = (index?: number) => {
+    if (index !== undefined) {
+      setSelectedFocusAreaIndex(index);
+      setIconPickerMode("focusArea");
+    } else {
+      setIconPickerMode("company");
+    }
     setShowIconPicker(true);
   };
 
   const selectIcon = (iconName: string) => {
-    if (selectedFocusAreaIndex !== null) {
+    if (iconPickerMode === "focusArea" && selectedFocusAreaIndex !== null) {
       updateFocusArea(selectedFocusAreaIndex, "icon", iconName);
+    } else if (iconPickerMode === "company") {
+      setFormData({ ...formData, icon: iconName });
     }
     setShowIconPicker(false);
     setSelectedFocusAreaIndex(null);
@@ -321,40 +329,90 @@ export function CompanyFormModal({
                     <p className="text-xs text-muted-dark mt-1">Paste an image URL to see preview</p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className={labelCls}>
-                        <RiPaletteLine size={14} />
-                        Gradient Color
-                      </label>
-                      <select
-                        className={inputCls}
-                        value={formData.color || "from-primary-500 to-secondary-400"}
-                        onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                  {/* Gradient Color Picker */}
+                  <div>
+                    <label className={labelCls}>
+                      <RiPaletteLine size={14} />
+                      Gradient Color
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { value: "from-primary-500 to-secondary-400", from: "#3b82f6", to: "#a855f7", label: "Primary" },
+                        { value: "from-primary-500 to-primary-600", from: "#3b82f6", to: "#2563eb", label: "Blue" },
+                        { value: "from-secondary-400 to-secondary-600", from: "#a855f7", to: "#9333ea", label: "Purple" },
+                        { value: "from-blue-500 to-cyan-500", from: "#3b82f6", to: "#06b6d4", label: "Cyan" },
+                        { value: "from-purple-500 to-pink-500", from: "#a855f7", to: "#ec4899", label: "Pink" },
+                        { value: "from-green-500 to-emerald-500", from: "#22c55e", to: "#10b981", label: "Green" },
+                        { value: "from-amber-500 to-orange-500", from: "#f59e0b", to: "#f97316", label: "Orange" },
+                        { value: "from-red-500 to-rose-500", from: "#ef4444", to: "#f43f5e", label: "Red" },
+                      ].map((color) => (
+                        <button
+                          key={color.value}
+                          onClick={() => setFormData({ ...formData, color: color.value })}
+                          className={`group relative w-12 h-12 rounded-xl border-2 transition-all overflow-hidden ${
+                            formData.color === color.value
+                              ? "border-white ring-2 ring-primary-500"
+                              : "border-transparent hover:border-white/50"
+                          }`}
+                          title={color.label}
+                        >
+                          <div
+                            className="absolute inset-0"
+                            style={{
+                              background: `linear-gradient(135deg, ${color.from}, ${color.to})`,
+                            }}
+                          />
+                          {formData.color === color.value && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <RiCheckboxCircleLine className="text-white drop-shadow-lg" size={20} />
+                            </div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Company Icon Picker */}
+                  <div>
+                    <label className={labelCls}>
+                      <RiBuildingLine size={14} />
+                      Company Icon
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => setShowIconPicker(true)}
+                        className="w-14 h-14 rounded-xl bg-white/10 border border-border-dark hover:border-primary-500/50 flex items-center justify-center transition-all"
+                        title="Click to select icon"
                       >
-                        <option value="from-primary-500 to-secondary-400">Primary → Secondary</option>
-                        <option value="from-primary-500 to-primary-600">Primary Dark</option>
-                        <option value="from-secondary-400 to-secondary-600">Secondary</option>
-                        <option value="from-blue-500 to-cyan-500">Blue → Cyan</option>
-                        <option value="from-purple-500 to-pink-500">Purple → Pink</option>
-                        <option value="from-green-500 to-emerald-500">Green → Emerald</option>
-                        <option value="from-amber-500 to-orange-500">Amber → Orange</option>
-                        <option value="from-red-500 to-rose-500">Red → Rose</option>
-                      </select>
+                        {formData.icon && iconComponents[formData.icon] ? (
+                          (() => {
+                            const IconComp = iconComponents[formData.icon];
+                            return <IconComp size={28} className="text-primary-400" />;
+                          })()
+                        ) : (
+                          <span className="text-2xl">{formData.icon || "✦"}</span>
+                        )}
+                      </button>
+                      <div className="flex-1">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={formData.icon || ""}
+                          readOnly
+                          onClick={() => setShowIconPicker(true)}
+                          placeholder="Click to select an icon"
+                        />
+                      </div>
+                      {formData.icon && (
+                        <button
+                          onClick={() => setFormData({ ...formData, icon: "" })}
+                          className="p-2 rounded-lg hover:bg-red-500/10 text-muted-dark hover:text-red-400 transition-all"
+                        >
+                          <RiDeleteBinLine size={18} />
+                        </button>
+                      )}
                     </div>
-                    <div>
-                      <label className={labelCls}>
-                        <RiBuildingLine size={14} />
-                        Icon (emoji/text)
-                      </label>
-                      <input
-                        type="text"
-                        className={inputCls}
-                        value={formData.icon || ""}
-                        onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                        placeholder="✦ or M"
-                      />
-                    </div>
+                    <p className="text-xs text-muted-dark mt-1">Click the icon to browse all available icons</p>
                   </div>
                 </div>
               </div>
