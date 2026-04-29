@@ -713,8 +713,8 @@ export function CompanyFormModal({
             {/* Social Media Section */}
             <div className={sectionCls}>
               <div className={sectionHeaderCls}>
-                <div className="w-8 h-8 rounded-lg bg-primary-500/20 flex items-center justify-center">
-                  <RiGlobalLine className="text-primary-400" size={18} />
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-secondary-400 flex items-center justify-center">
+                  <RiGlobalLine className="text-white" size={18} />
                 </div>
                 Social Media Links
                 <span className="ml-auto text-xs text-muted-dark font-normal">
@@ -736,8 +736,8 @@ export function CompanyFormModal({
                   { key: "telegram", label: "Telegram", icon: RiTelegramLine },
                 ].map(({ key, label, icon: Icon }) => (
                   <div key={key} className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-lg bg-primary-500/20 border border-primary-500/30 flex items-center justify-center shrink-0">
-                      <Icon size={18} className="text-primary-400" />
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500 to-secondary-400 border border-primary-500/30 flex items-center justify-center shrink-0">
+                      <Icon size={18} className="text-white" />
                     </div>
                     <input
                       type="text"
