@@ -386,9 +386,9 @@ export function CompanyFormModal({
                     </label>
                     <div className="flex flex-wrap gap-2">
                       {[
-                        { value: "from-primary-500 to-secondary-400", from: "#3b82f6", to: "#a855f7", label: "Primary" },
-                        { value: "from-primary-500 to-primary-600", from: "#3b82f6", to: "#2563eb", label: "Blue" },
-                        { value: "from-secondary-400 to-secondary-600", from: "#a855f7", to: "#9333ea", label: "Purple" },
+                        { value: "from-primary-500 to-secondary-400", from: "#127A8A", to: "#4D9DA9", label: "Primary" },
+                        { value: "from-primary-500 to-primary-600", from: "#127A8A", to: "#0d5c6b", label: "Teal Dark" },
+                        { value: "from-secondary-400 to-secondary-600", from: "#E1B15E", to: "#c99a4e", label: "Gold" },
                         { value: "from-blue-500 to-cyan-500", from: "#3b82f6", to: "#06b6d4", label: "Cyan" },
                         { value: "from-purple-500 to-pink-500", from: "#a855f7", to: "#ec4899", label: "Pink" },
                         { value: "from-green-500 to-emerald-500", from: "#22c55e", to: "#10b981", label: "Green" },
