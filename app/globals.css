@@ -18,6 +18,12 @@ h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; font-weight: 
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(18, 122, 138, 0.5); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(18, 122, 138, 0.8); }
+
+/* Custom scrollbar for modals - integrated inside */
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 3px; margin: 4px 0; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(18, 122, 138, 0.4); border-radius: 3px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(18, 122, 138, 0.7); }
 ::selection { background: rgba(18, 122, 138, 0.3); color: inherit; }
 
 /* Glass effect - auto switches based on theme */

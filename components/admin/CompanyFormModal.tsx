@@ -174,9 +174,9 @@ export function CompanyFormModal({
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-        <div className="glass-dark rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-auto border border-border-dark">
-          {/* Header */}
-          <div className="sticky top-0 glass-dark border-b border-border-dark p-6 flex items-center justify-between">
+        <div className="bg-bg-dark rounded-3xl w-full max-w-3xl max-h-[90vh] border border-border-dark flex flex-col overflow-hidden shadow-2xl">
+          {/* Header - Solid Background */}
+          <div className="flex-none bg-bg-dark border-b border-border-dark p-6 flex items-center justify-between z-10">
             <h3 className="font-display font-bold text-xl text-text-dark">
               {editingCompany ? "Edit Company" : "Add New Company"}
             </h3>
@@ -188,7 +188,8 @@ export function CompanyFormModal({
             </button>
           </div>
 
-          <div className="p-6 space-y-6">
+          {/* Form Content - Scrollable Area with Custom Scrollbar */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
             {/* Company Identity Section */}
             <div className={sectionCls}>
               <div className={sectionHeaderCls}>
@@ -368,7 +369,7 @@ export function CompanyFormModal({
                       {formData.logo && (
                         <button
                           onClick={() => setFormData({ ...formData, logo: "" })}
-                          className="px-3 py-2 rounded-xl border border-border-dark text-muted-dark hover:text-red-400 hover:border-red-500/30 transition-all"
+                          className="px-3 py-2 rounded-lg border border-border-dark text-muted-dark hover:text-red-400 hover:border-red-500/30 transition-all"
                         >
                           <RiDeleteBinLine size={18} />
                         </button>
@@ -547,51 +548,43 @@ export function CompanyFormModal({
                     key={index}
                     className="flex items-start gap-2 p-3 rounded-xl bg-white/5 border border-border-dark"
                   >
-                    <div className="grid grid-cols-[auto_1fr_1fr] gap-2 flex-1">
-                      {/* Icon Picker Button */}
-                      <button
-                        onClick={() => openIconPicker(index)}
-                        className="w-12 h-12 rounded-xl bg-white/10 border border-border-dark hover:border-primary-500/50 flex items-center justify-center transition-all"
-                        title="Click to select icon"
-                      >
-                        {area.icon && iconComponents[area.icon] ? (
-                          (() => {
-                            const IconComp = iconComponents[area.icon];
-                            return <IconComp size={22} className="text-primary-400" />;
-                          })()
-                        ) : (
-                          <RiImageLine size={20} className="text-muted-dark" />
-                        )}
-                      </button>
-                      <input
-                        type="text"
-                        className={inputCls}
-                        placeholder="Icon name (e.g., RiFileTextLine)"
-                        value={area.icon}
-                        readOnly
-                        onClick={() => openIconPicker(index)}
-                      />
-                      <input
-                        type="text"
-                        className={inputCls}
-                        placeholder="Label"
-                        value={area.label}
-                        onChange={(e) => updateFocusArea(index, "label", e.target.value)}
-                      />
-                      <input
-                        type="text"
-                        className={inputCls}
-                        placeholder="Short description"
-                        value={area.description}
-                        onChange={(e) => updateFocusArea(index, "description", e.target.value)}
-                      />
-                    </div>
+                    {/* Icon Picker Button */}
                     <button
-                      onClick={() => removeFocusArea(index)}
-                      className="p-2 rounded-lg hover:bg-red-500/10 text-muted-dark hover:text-red-400 transition-all"
+                      onClick={() => openIconPicker(index)}
+                      className="w-12 h-12 rounded-xl bg-white/10 border border-border-dark hover:border-primary-500/50 flex items-center justify-center transition-all"
+                      title="Click to select icon"
                     >
-                      <RiDeleteBinLine size={16} />
+                      {area.icon && iconComponents[area.icon] ? (
+                        (() => {
+                          const IconComp = iconComponents[area.icon];
+                          return <IconComp size={22} className="text-primary-400" />;
+                        })()
+                      ) : (
+                        <RiImageLine size={20} className="text-muted-dark" />
+                      )}
                     </button>
+                    <input
+                      type="text"
+                      className={inputCls}
+                      placeholder="Icon name (e.g., RiFileTextLine)"
+                      value={area.icon}
+                      readOnly
+                      onClick={() => openIconPicker(index)}
+                    />
+                    <input
+                      type="text"
+                      className={inputCls}
+                      placeholder="Label"
+                      value={area.label}
+                      onChange={(e) => updateFocusArea(index, "label", e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      className={inputCls}
+                      placeholder="Short description"
+                      value={area.description}
+                      onChange={(e) => updateFocusArea(index, "description", e.target.value)}
+                    />
                   </div>
                 ))}
                 {(formData.focusAreas || []).length === 0 && (
@@ -879,7 +872,7 @@ export function CompanyFormModal({
             </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-border-dark">
+            <div className="flex-none bg-bg-dark border-t border-border-dark p-6 flex items-center justify-end gap-3">
               <button
                 onClick={onClose}
                 className="px-6 py-2.5 rounded-xl border border-border-dark text-muted-dark hover:text-text-dark transition-all"
