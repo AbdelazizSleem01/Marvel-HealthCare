@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { signIn, signOut, useSession, SessionProvider } from "next-auth/react";
-import { RiDashboardLine, RiMailLine, RiProjectorLine, RiUserStarLine, RiLogoutBoxLine, RiRefreshLine, RiBuildingLine, RiAddLine, RiEditLine, RiDeleteBinLine, RiImageLine, RiEyeLine, RiStarLine, RiCloseLine, RiSearchLine, RiPhoneLine, RiCalendarLine, RiTimeLine, RiUserLine, RiFilterLine, RiSortAsc, RiDownloadLine, RiUploadLine, RiShareLine, RiLinksLine, RiExternalLinkLine, RiSubtractLine, RiErrorWarningLine, RiInformationLine, RiQuestionLine, RiFireLine, RiLeafLine, RiCloudLine, RiRainyLine, RiSnowyLine, RiWindyLine, RiFoggyLine, RiHazeLine, RiDrizzleLine, RiShowersLine } from "react-icons/ri";
+import { RiDashboardLine, RiMailLine, RiProjectorLine, RiUserStarLine, RiLogoutBoxLine, RiRefreshLine, RiBuildingLine, RiAddLine, RiEditLine, RiDeleteBinLine, RiImageLine, RiEyeLine, RiStarLine, RiCloseLine, RiSearchLine, RiPhoneLine, RiCalendarLine, RiTimeLine, RiUserLine, RiFilterLine, RiSortAsc, RiDownloadLine, RiUploadLine, RiShareLine, RiLinksLine, RiExternalLinkLine, RiSubtractLine, RiErrorWarningLine, RiInformationLine, RiQuestionLine, RiFireLine, RiLeafLine, RiCloudLine, RiRainyLine, RiSnowyLine, RiWindyLine, RiFoggyLine, RiHazeLine, RiDrizzleLine, RiShowersLine, RiFileTextLine, RiArticleLine, RiBookLine, RiBriefcaseLine, RiCalendarCheckLine, RiChat1Line, RiCheckLine, RiCheckboxCircleLine, RiCustomerServiceLine, RiDatabaseLine, RiDeviceLine, RiDiscussLine, RiFlagLine, RiFlashlightLine, RiFoldersLine, RiGalleryLine, RiGlobalLine, RiGovernmentLine, RiHandHeartLine, RiHealthBookLine, RiHeartLine, RiHomeLine, RiHospitalLine, RiInfinityLine, RiInputMethodLine, RiLightbulbLine, RiMapPinLine, RiMapPinUserLine, RiPulseLine, RiRestaurantLine, RiRocketLine, RiSafeLine, RiServerLine, RiServiceLine, RiSettings3Line, RiShieldLine, RiShoppingBagLine, RiShoppingCartLine, RiSuitcaseLine, RiTimerLine, RiTrophyLine, RiTruckLine, RiUser2Line, RiUser3Line, RiUserAddLine, RiUserCommunityLine, RiUserFollowLine, RiUserHeartLine, RiUserLocationLine, RiUserReceivedLine, RiUserSearchLine, RiUserSettingsLine, RiUserSharedLine, RiUserSmileLine, RiVideoLine, RiVipCrownLine, RiWalletLine } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { useAdminStore, Company, FocusArea, GalleryImage } from "@/stores/adminStore";
 
@@ -249,68 +249,169 @@ function AdminDashboard() {
   const [selectedFocusAreaIndex, setSelectedFocusAreaIndex] = useState<number | null>(null);
   const [iconSearch, setIconSearch] = useState("");
 
-  // Available Icons List (Ri icons)
+  // Icon Components Map - All verified existing icons
+  const iconComponents: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+    RiFileTextLine: RiFileTextLine,
+    RiArticleLine: RiArticleLine,
+    RiBookLine: RiBookLine,
+    RiImageLine: RiImageLine,
+    RiGalleryLine: RiGalleryLine,
+    RiVideoLine: RiVideoLine,
+    RiGlobalLine: RiGlobalLine,
+    RiUserSettingsLine: RiUserSettingsLine,
+    RiStarLine: RiStarLine,
+    RiTrophyLine: RiTrophyLine,
+    RiVipCrownLine: RiVipCrownLine,
+    RiHeartLine: RiHeartLine,
+    RiPulseLine: RiPulseLine,
+    RiHealthBookLine: RiHealthBookLine,
+    RiHandHeartLine: RiHandHeartLine,
+    RiCheckLine: RiCheckLine,
+    RiCheckboxCircleLine: RiCheckboxCircleLine,
+    RiBriefcaseLine: RiBriefcaseLine,
+    RiSuitcaseLine: RiSuitcaseLine,
+    RiBuildingLine: RiBuildingLine,
+    RiHospitalLine: RiHospitalLine,
+    RiHomeLine: RiHomeLine,
+    RiEyeLine: RiEyeLine,
+    RiChat1Line: RiChat1Line,
+    RiDiscussLine: RiDiscussLine,
+    RiCustomerServiceLine: RiCustomerServiceLine,
+    RiMailLine: RiMailLine,
+    RiPhoneLine: RiPhoneLine,
+    RiMapPinLine: RiMapPinLine,
+    RiMapPinUserLine: RiMapPinUserLine,
+    RiCalendarLine: RiCalendarLine,
+    RiCalendarCheckLine: RiCalendarCheckLine,
+    RiTimerLine: RiTimerLine,
+    RiTimeLine: RiTimeLine,
+    RiSettings3Line: RiSettings3Line,
+    RiDashboardLine: RiDashboardLine,
+    RiUserLine: RiUserLine,
+    RiUser2Line: RiUser2Line,
+    RiUser3Line: RiUser3Line,
+    RiUserAddLine: RiUserAddLine,
+    RiUserFollowLine: RiUserFollowLine,
+    RiUserHeartLine: RiUserHeartLine,
+    RiUserLocationLine: RiUserLocationLine,
+    RiUserSearchLine: RiUserSearchLine,
+    RiUserSmileLine: RiUserSmileLine,
+    RiUserCommunityLine: RiUserCommunityLine,
+    RiSearchLine: RiSearchLine,
+    RiFilterLine: RiFilterLine,
+    RiSortAsc: RiSortAsc,
+    RiDownloadLine: RiDownloadLine,
+    RiUploadLine: RiUploadLine,
+    RiShareLine: RiShareLine,
+    RiLinksLine: RiLinksLine,
+    RiExternalLinkLine: RiExternalLinkLine,
+    RiAddLine: RiAddLine,
+    RiSubtractLine: RiSubtractLine,
+    RiCloseLine: RiCloseLine,
+    RiErrorWarningLine: RiErrorWarningLine,
+    RiInformationLine: RiInformationLine,
+    RiQuestionLine: RiQuestionLine,
+    RiLightbulbLine: RiLightbulbLine,
+    RiFlashlightLine: RiFlashlightLine,
+    RiFireLine: RiFireLine,
+    RiRocketLine: RiRocketLine,
+    RiLeafLine: RiLeafLine,
+    RiCloudLine: RiCloudLine,
+    RiRainyLine: RiRainyLine,
+    RiSnowyLine: RiSnowyLine,
+    RiWindyLine: RiWindyLine,
+    RiFoggyLine: RiFoggyLine,
+    RiHazeLine: RiHazeLine,
+    RiDrizzleLine: RiDrizzleLine,
+    RiShowersLine: RiShowersLine,
+    RiDatabaseLine: RiDatabaseLine,
+    RiServerLine: RiServerLine,
+    RiDeviceLine: RiDeviceLine,
+    RiFlagLine: RiFlagLine,
+    RiFoldersLine: RiFoldersLine,
+    RiGovernmentLine: RiGovernmentLine,
+    RiInfinityLine: RiInfinityLine,
+    RiInputMethodLine: RiInputMethodLine,
+    RiRestaurantLine: RiRestaurantLine,
+    RiSafeLine: RiSafeLine,
+    RiServiceLine: RiServiceLine,
+    RiShieldLine: RiShieldLine,
+    RiShoppingBagLine: RiShoppingBagLine,
+    RiShoppingCartLine: RiShoppingCartLine,
+    RiTruckLine: RiTruckLine,
+    RiUserReceivedLine: RiUserReceivedLine,
+    RiUserSharedLine: RiUserSharedLine,
+    RiWalletLine: RiWalletLine,
+  };
+
+  // Available Icons List (Ri icons) - All verified existing
   const availableIcons = [
     { name: "RiFileTextLine", category: "Document" },
-    { name: "RiMicroscopeLine", category: "Science" },
-    { name: "RiComputerLine", category: "Tech" },
-    { name: "RiPaletteLine", category: "Design" },
-    { name: "RiGraduationCapLine", category: "Education" },
-    { name: "RiVideoLine", category: "Media" },
-    { name: "RiStackLine", category: "Layers" },
+    { name: "RiArticleLine", category: "Document" },
+    { name: "RiBookLine", category: "Education" },
     { name: "RiImageLine", category: "Media" },
+    { name: "RiGalleryLine", category: "Media" },
+    { name: "RiVideoLine", category: "Media" },
     { name: "RiGlobalLine", category: "World" },
-    { name: "RiBrainLine", category: "AI" },
     { name: "RiUserSettingsLine", category: "User" },
-    { name: "RiAwardLine", category: "Award" },
-    { name: "RiTeamLine", category: "Team" },
-    { name: "RiCodeBoxLine", category: "Code" },
     { name: "RiStarLine", category: "Star" },
-    { name: "RiHeartPulseLine", category: "Health" },
-    { name: "RiShieldCheckLine", category: "Security" },
+    { name: "RiTrophyLine", category: "Award" },
+    { name: "RiVipCrownLine", category: "VIP" },
+    { name: "RiHeartLine", category: "Health" },
+    { name: "RiPulseLine", category: "Health" },
     { name: "RiHealthBookLine", category: "Health" },
+    { name: "RiHandHeartLine", category: "Health" },
     { name: "RiCheckLine", category: "Check" },
+    { name: "RiCheckboxCircleLine", category: "Check" },
     { name: "RiBriefcaseLine", category: "Business" },
+    { name: "RiSuitcaseLine", category: "Business" },
     { name: "RiBuildingLine", category: "Building" },
     { name: "RiHospitalLine", category: "Hospital" },
-    { name: "RiFirstAidKitLine", category: "Medical" },
-    { name: "RiStethoscopeLine", category: "Medical" },
-    { name: "RiCapsuleLine", category: "Pharma" },
+    { name: "RiHomeLine", category: "Home" },
     { name: "RiEyeLine", category: "Vision" },
-    { name: "RiVirusLine", category: "Lab" },
-    { name: "RiMessage3Line", category: "Chat" },
+    { name: "RiChat1Line", category: "Chat" },
+    { name: "RiDiscussLine", category: "Chat" },
+    { name: "RiCustomerServiceLine", category: "Support" },
     { name: "RiMailLine", category: "Email" },
     { name: "RiPhoneLine", category: "Phone" },
     { name: "RiMapPinLine", category: "Location" },
+    { name: "RiMapPinUserLine", category: "Location" },
     { name: "RiCalendarLine", category: "Calendar" },
+    { name: "RiCalendarCheckLine", category: "Calendar" },
+    { name: "RiTimerLine", category: "Time" },
     { name: "RiTimeLine", category: "Time" },
-    { name: "RiSettings4Line", category: "Settings" },
+    { name: "RiSettings3Line", category: "Settings" },
     { name: "RiDashboardLine", category: "Dashboard" },
-    { name: "RiBarChartLine", category: "Chart" },
-    { name: "RiPieChartLine", category: "Chart" },
     { name: "RiUserLine", category: "User" },
-    { name: "RiGroupLine", category: "Group" },
+    { name: "RiUser2Line", category: "User" },
+    { name: "RiUser3Line", category: "User" },
+    { name: "RiUserAddLine", category: "User" },
+    { name: "RiUserFollowLine", category: "User" },
+    { name: "RiUserHeartLine", category: "User" },
+    { name: "RiUserLocationLine", category: "User" },
+    { name: "RiUserSearchLine", category: "User" },
+    { name: "RiUserSettingsLine", category: "User" },
+    { name: "RiUserSmileLine", category: "User" },
+    { name: "RiUserCommunityLine", category: "Group" },
     { name: "RiSearchLine", category: "Search" },
     { name: "RiFilterLine", category: "Filter" },
     { name: "RiSortAsc", category: "Sort" },
     { name: "RiDownloadLine", category: "Download" },
     { name: "RiUploadLine", category: "Upload" },
     { name: "RiShareLine", category: "Share" },
-    { name: "RiLinkLine", category: "Link" },
+    { name: "RiLinksLine", category: "Link" },
     { name: "RiExternalLinkLine", category: "External" },
-    { name: "RiArrowRightLine", category: "Arrow" },
-    { name: "RiArrowLeftLine", category: "Arrow" },
     { name: "RiAddLine", category: "Add" },
     { name: "RiSubtractLine", category: "Minus" },
     { name: "RiCloseLine", category: "Close" },
-    { name: "RiCheckDoubleLine", category: "Check" },
     { name: "RiErrorWarningLine", category: "Warning" },
     { name: "RiInformationLine", category: "Info" },
     { name: "RiQuestionLine", category: "Question" },
+    { name: "RiLightbulbLine", category: "Idea" },
+    { name: "RiFlashlightLine", category: "Flash" },
     { name: "RiFireLine", category: "Fire" },
+    { name: "RiRocketLine", category: "Rocket" },
     { name: "RiLeafLine", category: "Nature" },
-    { name: "RiSunLine", category: "Sun" },
-    { name: "RiMoonLine", category: "Moon" },
     { name: "RiCloudLine", category: "Cloud" },
     { name: "RiRainyLine", category: "Rain" },
     { name: "RiSnowyLine", category: "Snow" },
@@ -319,6 +420,24 @@ function AdminDashboard() {
     { name: "RiHazeLine", category: "Haze" },
     { name: "RiDrizzleLine", category: "Rain" },
     { name: "RiShowersLine", category: "Rain" },
+    { name: "RiDatabaseLine", category: "Database" },
+    { name: "RiServerLine", category: "Server" },
+    { name: "RiDeviceLine", category: "Device" },
+    { name: "RiFlagLine", category: "Flag" },
+    { name: "RiFoldersLine", category: "Folders" },
+    { name: "RiGovernmentLine", category: "Government" },
+    { name: "RiInfinityLine", category: "Infinity" },
+    { name: "RiInputMethodLine", category: "Input" },
+    { name: "RiRestaurantLine", category: "Restaurant" },
+    { name: "RiSafeLine", category: "Safe" },
+    { name: "RiServiceLine", category: "Service" },
+    { name: "RiShieldLine", category: "Shield" },
+    { name: "RiShoppingBagLine", category: "Shopping" },
+    { name: "RiShoppingCartLine", category: "Shopping" },
+    { name: "RiTruckLine", category: "Truck" },
+    { name: "RiUserReceivedLine", category: "User" },
+    { name: "RiUserSharedLine", category: "User" },
+    { name: "RiWalletLine", category: "Wallet" },
   ];
 
   const openIconPicker = (index: number) => {
@@ -826,8 +945,11 @@ function AdminDashboard() {
                                 className="w-12 h-12 rounded-xl bg-white/10 border border-border-dark hover:border-primary-500/50 flex items-center justify-center transition-all"
                                 title="Click to select icon"
                               >
-                                {area.icon ? (
-                                  <span className="text-lg text-primary-400">{area.icon.replace('Ri', '').replace('Line', '')}</span>
+                                {area.icon && iconComponents[area.icon] ? (
+                                  (() => {
+                                    const IconComp = iconComponents[area.icon];
+                                    return <IconComp size={22} className="text-primary-400" />;
+                                  })()
                                 ) : (
                                   <RiImageLine size={20} className="text-muted-dark" />
                                 )}
@@ -1004,21 +1126,24 @@ function AdminDashboard() {
                   {/* Icons Grid */}
                   <div className="p-4 overflow-y-auto max-h-[50vh] custom-scrollbar">
                     <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
-                      {filteredIcons.map((icon) => (
-                        <button
-                          key={icon.name}
-                          onClick={() => selectIcon(icon.name)}
-                          className="group flex flex-col items-center gap-1 p-3 rounded-xl bg-white/5 border border-border-dark hover:border-primary-500/50 hover:bg-primary-500/10 transition-all"
-                          title={`${icon.name} (${icon.category})`}
-                        >
-                          <span className="text-lg text-text-dark group-hover:text-primary-400 transition-colors">
-                            {icon.name.replace('Ri', '').replace('Line', '').slice(0, 2)}
-                          </span>
-                          <span className="text-[9px] text-muted-dark text-center truncate w-full">
-                            {icon.name.replace('Ri', '').replace('Line', '')}
-                          </span>
-                        </button>
-                      ))}
+                      {filteredIcons.map((icon) => {
+                        const IconComponent = iconComponents[icon.name];
+                        return (
+                          <button
+                            key={icon.name}
+                            onClick={() => selectIcon(icon.name)}
+                            className="group flex flex-col items-center gap-1 p-3 rounded-xl bg-white/5 border border-border-dark hover:border-primary-500/50 hover:bg-primary-500/10 transition-all"
+                            title={`${icon.name} (${icon.category})`}
+                          >
+                            <span className="text-lg text-text-dark group-hover:text-primary-400 transition-colors">
+                              {IconComponent ? <IconComponent size={20} /> : <span>?</span>}
+                            </span>
+                            <span className="text-[9px] text-muted-dark text-center truncate w-full">
+                              {icon.name.replace('Ri', '').replace('Line', '')}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                     {filteredIcons.length === 0 && (
                       <div className="text-center py-8 text-muted-dark">
