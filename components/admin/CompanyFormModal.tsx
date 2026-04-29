@@ -713,8 +713,8 @@ export function CompanyFormModal({
             {/* Social Media Section */}
             <div className={sectionCls}>
               <div className={sectionHeaderCls}>
-                <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                  <RiGlobalLine className="text-blue-400" size={18} />
+                <div className="w-8 h-8 rounded-lg bg-primary-500/20 flex items-center justify-center">
+                  <RiGlobalLine className="text-primary-400" size={18} />
                 </div>
                 Social Media Links
                 <span className="ml-auto text-xs text-muted-dark font-normal">
@@ -724,20 +724,20 @@ export function CompanyFormModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
-                  { key: "whatsapp", label: "WhatsApp", icon: RiPhoneLine, bgColor: "bg-green-500/20", iconColor: "text-green-400" },
-                  { key: "email", label: "Email", icon: RiMailLine, bgColor: "bg-red-500/20", iconColor: "text-red-400" },
-                  { key: "linkedin", label: "LinkedIn", icon: RiLinkedinLine, bgColor: "bg-blue-600/20", iconColor: "text-blue-500" },
-                  { key: "facebook", label: "Facebook", icon: RiFacebookLine, bgColor: "bg-blue-500/20", iconColor: "text-blue-400" },
-                  { key: "youtube", label: "YouTube", icon: RiYoutubeLine, bgColor: "bg-red-600/20", iconColor: "text-red-500" },
-                  { key: "x", label: "X (Twitter)", icon: RiTwitterLine, bgColor: "bg-gray-500/20", iconColor: "text-gray-400" },
-                  { key: "instagram", label: "Instagram", icon: RiInstagramLine, bgColor: "bg-pink-500/20", iconColor: "text-pink-400" },
-                  { key: "tiktok", label: "TikTok", icon: RiTiktokLine, bgColor: "bg-cyan-500/20", iconColor: "text-cyan-400" },
-                  { key: "snapchat", label: "Snapchat", icon: RiSnapchatLine, bgColor: "bg-yellow-400/20", iconColor: "text-yellow-300" },
-                  { key: "telegram", label: "Telegram", icon: RiTelegramLine, bgColor: "bg-sky-500/20", iconColor: "text-sky-400" },
-                ].map(({ key, label, icon: Icon, bgColor, iconColor }) => (
+                  { key: "whatsapp", label: "WhatsApp", icon: RiPhoneLine },
+                  { key: "email", label: "Email", icon: RiMailLine },
+                  { key: "linkedin", label: "LinkedIn", icon: RiLinkedinLine },
+                  { key: "facebook", label: "Facebook", icon: RiFacebookLine },
+                  { key: "youtube", label: "YouTube", icon: RiYoutubeLine },
+                  { key: "x", label: "X (Twitter)", icon: RiTwitterLine },
+                  { key: "instagram", label: "Instagram", icon: RiInstagramLine },
+                  { key: "tiktok", label: "TikTok", icon: RiTiktokLine },
+                  { key: "snapchat", label: "Snapchat", icon: RiSnapchatLine },
+                  { key: "telegram", label: "Telegram", icon: RiTelegramLine },
+                ].map(({ key, label, icon: Icon }) => (
                   <div key={key} className="flex items-center gap-2">
-                    <div className={`w-10 h-10 rounded-lg ${bgColor} border border-border-dark flex items-center justify-center shrink-0`}>
-                      <Icon size={18} className={iconColor} />
+                    <div className="w-10 h-10 rounded-lg bg-primary-500/20 border border-primary-500/30 flex items-center justify-center shrink-0">
+                      <Icon size={18} className="text-primary-400" />
                     </div>
                     <input
                       type="text"
