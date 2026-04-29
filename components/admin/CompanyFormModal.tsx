@@ -414,11 +414,10 @@ export function CompanyFormModal({
                         <button
                           key={color.value}
                           onClick={() => setFormData({ ...formData, color: color.value })}
-                          className={`group relative w-12 h-12 rounded-xl border-2 transition-all overflow-hidden ${
-                            formData.color === color.value
+                          className={`group relative w-12 h-12 rounded-xl border-2 transition-all overflow-hidden ${formData.color === color.value
                               ? "border-white ring-2 ring-primary-500"
                               : "border-transparent hover:border-white/50"
-                          }`}
+                            }`}
                           title={color.label}
                         >
                           <div
@@ -502,7 +501,6 @@ export function CompanyFormModal({
                   />
                   <div>
                     <span className="text-sm font-medium text-text-dark block">Main Company</span>
-                    <span className="text-xs text-muted-dark">Marvel Group headquarters</span>
                   </div>
                 </label>
 
@@ -515,7 +513,6 @@ export function CompanyFormModal({
                   />
                   <div>
                     <span className="text-sm font-medium text-text-dark block">Active</span>
-                    <span className="text-xs text-muted-dark">Visible to public</span>
                   </div>
                 </label>
 
@@ -920,8 +917,8 @@ export function CompanyFormModal({
                 {isLoading
                   ? "Loading..."
                   : editingCompany
-                  ? "Update Company"
-                  : "Create Company"}
+                    ? "Update Company"
+                    : "Create Company"}
               </button>
             </div>
           </div>

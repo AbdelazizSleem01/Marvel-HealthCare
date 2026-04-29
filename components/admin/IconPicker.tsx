@@ -162,8 +162,8 @@ export function IconPicker({ isOpen, onClose, onSelect }: IconPickerProps) {
           {/* Dropdown Categories */}
           {isFilterOpen && (
             <div className="absolute z-20 mt-2 w-full max-w-sm bg-bg-dark rounded-xl border border-border-dark overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200">
-              <div className="p-2 max-h-64 overflow-y-auto custom-scrollbar">
-                <div className="grid grid-cols-2 gap-2">
+              <div className="p-2">
+                <div className="grid grid-cols-3 gap-1.5">
                   {categories.map((cat) => {
                     const IconComponent = cat.icon;
                     const isSelected = selectedCategory === cat.name;
@@ -171,18 +171,18 @@ export function IconPicker({ isOpen, onClose, onSelect }: IconPickerProps) {
                       <button
                         key={cat.name}
                         onClick={() => handleCategoryClick(cat.name)}
-                        className={`relative flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                        className={`relative flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
                           isSelected
                             ? "bg-gradient-to-br from-primary-500/20 to-secondary-500/10 border-primary-500/50 text-primary-400"
                             : "bg-white/5 border-border-dark text-text-dark hover:bg-white/10 hover:border-primary-500/30"
                         }`}
                       >
-                        <div className={`p-2 rounded-lg ${isSelected ? "bg-primary-500/20" : "bg-white/5"}`}>
-                          <IconComponent size={20} className={isSelected ? "text-primary-400" : "text-text-dark"} />
+                        <div className={`p-1 rounded-md ${isSelected ? "bg-primary-500/20" : "bg-white/5"}`}>
+                          <IconComponent size={16} className={isSelected ? "text-primary-400" : "text-text-dark"} />
                         </div>
-                        <span className="text-xs font-medium">{cat.name}</span>
+                        <span className="text-[10px] font-medium leading-tight">{cat.name}</span>
                         {isSelected && (
-                          <RiCheckLine size={14} className="text-primary-400 absolute top-2 right-2" />
+                          <RiCheckLine size={12} className="text-primary-400 absolute top-1 right-1" />
                         )}
                       </button>
                     );
