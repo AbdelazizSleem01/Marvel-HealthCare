@@ -21,6 +21,19 @@ import {
   RiUploadCloudLine,
   RiPictureInPictureLine,
   RiFlagLine,
+  RiPhoneLine,
+  RiMailLine,
+  RiUserLine,
+  RiTeamLine,
+  RiBarChartLine,
+  RiLinkedinLine,
+  RiFacebookLine,
+  RiYoutubeLine,
+  RiTwitterLine,
+  RiInstagramLine,
+  RiTiktokLine,
+  RiSnapchatLine,
+  RiTelegramLine,
 } from "react-icons/ri";
 import { Company, FocusArea, GalleryImage } from "@/stores/adminStore";
 import { IconPicker } from "./IconPicker";
@@ -90,6 +103,41 @@ export function CompanyFormModal({
   const removeGalleryImage = (index: number) => {
     const updated = (formData.gallery || []).filter((_, i) => i !== index);
     setFormData({ ...formData, gallery: updated });
+  };
+
+  // Social Media Helpers
+  const updateSocialMedia = (platform: string, value: string) => {
+    setFormData({
+      ...formData,
+      socialMedia: { ...(formData.socialMedia || {}), [platform]: value },
+    });
+  };
+
+  // Stats Helpers
+  const updateStats = (field: "employees" | "projects" | "clients", value: number) => {
+    setFormData({
+      ...formData,
+      stats: { ...(formData.stats || { employees: 0, projects: 0, clients: 0 }), [field]: value },
+    });
+  };
+
+  // Employees Helpers
+  const addEmployee = () => {
+    setFormData({
+      ...formData,
+      employees: [...(formData.employees || []), { name: "", position: "", image: "", department: "" }],
+    });
+  };
+
+  const updateEmployee = (index: number, field: string, value: string) => {
+    const updated = [...(formData.employees || [])];
+    updated[index] = { ...updated[index], [field]: value };
+    setFormData({ ...formData, employees: updated });
+  };
+
+  const removeEmployee = (index: number) => {
+    const updated = (formData.employees || []).filter((_, i) => i !== index);
+    setFormData({ ...formData, employees: updated });
   };
 
   const openIconPicker = (index?: number) => {
@@ -647,6 +695,184 @@ export function CompanyFormModal({
                     <RiImageAddLine size={48} className="mx-auto mb-3 text-muted-dark opacity-30" />
                     <p className="text-sm text-muted-dark">No gallery images added yet</p>
                     <p className="text-xs text-muted-dark mt-1">Add images to showcase the company&apos;s work</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Social Media Section */}
+            <div className={sectionCls}>
+              <div className={sectionHeaderCls}>
+                <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                  <RiGlobalLine className="text-blue-400" size={18} />
+                </div>
+                Social Media Links
+                <span className="ml-auto text-xs text-muted-dark font-normal">
+                  Connect with your audience
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  { key: "whatsapp", label: "WhatsApp", icon: RiPhoneLine },
+                  { key: "email", label: "Email", icon: RiMailLine },
+                  { key: "linkedin", label: "LinkedIn", icon: RiLinkedinLine },
+                  { key: "facebook", label: "Facebook", icon: RiFacebookLine },
+                  { key: "youtube", label: "YouTube", icon: RiYoutubeLine },
+                  { key: "x", label: "X (Twitter)", icon: RiTwitterLine },
+                  { key: "instagram", label: "Instagram", icon: RiInstagramLine },
+                  { key: "tiktok", label: "TikTok", icon: RiTiktokLine },
+                  { key: "snapchat", label: "Snapchat", icon: RiSnapchatLine },
+                  { key: "telegram", label: "Telegram", icon: RiTelegramLine },
+                ].map(({ key, label, icon: Icon }) => (
+                  <div key={key} className="flex items-center gap-2">
+                    <div className="w-10 h-10 rounded-lg bg-white/5 border border-border-dark flex items-center justify-center shrink-0">
+                      <Icon size={18} className="text-muted-dark" />
+                    </div>
+                    <input
+                      type="text"
+                      className={inputCls}
+                      placeholder={`${label} URL`}
+                      value={formData.socialMedia?.[key as keyof typeof formData.socialMedia] || ""}
+                      onChange={(e) => updateSocialMedia(key, e.target.value)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Overview Stats Section */}
+            <div className={sectionCls}>
+              <div className={sectionHeaderCls}>
+                <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                  <RiBarChartLine className="text-amber-400" size={18} />
+                </div>
+                Overview Statistics
+                <span className="ml-auto text-xs text-muted-dark font-normal">
+                  Company achievements
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {[
+                  { key: "employees", label: "Employees", suffix: "+" },
+                  { key: "projects", label: "Projects", suffix: "+" },
+                  { key: "clients", label: "Clients", suffix: "+" },
+                ].map(({ key, label, suffix }) => (
+                  <div key={key}>
+                    <label className={labelCls}>
+                      <RiUserLine size={14} />
+                      {label}
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        className={inputCls}
+                        placeholder="0"
+                        value={formData.stats?.[key as keyof typeof formData.stats] || 0}
+                        onChange={(e) => updateStats(key as "employees" | "projects" | "clients", parseInt(e.target.value) || 0)}
+                      />
+                      <span className="text-muted-dark font-semibold">{suffix}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Team/Employees Section */}
+            <div className={sectionCls}>
+              <div className={sectionHeaderCls}>
+                <div className="w-8 h-8 rounded-lg bg-teal-500/20 flex items-center justify-center">
+                  <RiTeamLine className="text-teal-400" size={18} />
+                </div>
+                Team Members
+                <span className="ml-auto text-xs text-muted-dark font-normal">
+                  {formData.employees?.length || 0} members
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-sm text-muted-dark">Add team members with their positions</p>
+                <button
+                  onClick={addEmployee}
+                  className="text-xs flex items-center gap-2 px-3 py-2 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-400 hover:bg-teal-500/20 hover:border-teal-500/40 transition-all"
+                >
+                  <RiAddLine size={16} /> Add Member
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {(formData.employees || []).map((emp, index) => (
+                  <div
+                    key={index}
+                    className="p-4 rounded-xl bg-white/5 border border-border-dark hover:border-primary-500/30 transition-all"
+                  >
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                      {/* Employee Image Preview */}
+                      <div className="sm:col-span-1">
+                        <div className="aspect-square rounded-lg bg-black/20 overflow-hidden relative">
+                          {emp.image ? (
+                            <img
+                              src={emp.image}
+                              alt={emp.name || "Team member"}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).style.display = "none";
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-muted-dark">
+                              <RiUserLine size={32} className="opacity-30" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="sm:col-span-3 space-y-2">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          placeholder="Full Name"
+                          value={emp.name}
+                          onChange={(e) => updateEmployee(index, "name", e.target.value)}
+                        />
+                        <input
+                          type="text"
+                          className={inputCls}
+                          placeholder="Position/Title"
+                          value={emp.position}
+                          onChange={(e) => updateEmployee(index, "position", e.target.value)}
+                        />
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            className={inputCls}
+                            placeholder="Image URL"
+                            value={emp.image}
+                            onChange={(e) => updateEmployee(index, "image", e.target.value)}
+                          />
+                          <input
+                            type="text"
+                            className={inputCls}
+                            placeholder="Department"
+                            value={emp.department}
+                            onChange={(e) => updateEmployee(index, "department", e.target.value)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => removeEmployee(index)}
+                      className="mt-3 w-full py-2 rounded-lg border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-all text-xs flex items-center justify-center gap-1"
+                    >
+                      <RiDeleteBinLine size={14} /> Remove Member
+                    </button>
+                  </div>
+                ))}
+                {(formData.employees || []).length === 0 && (
+                  <div className="p-8 rounded-xl bg-white/5 border border-border-dark border-dashed text-center">
+                    <RiTeamLine size={48} className="mx-auto mb-3 text-muted-dark opacity-30" />
+                    <p className="text-sm text-muted-dark">No team members added yet</p>
+                    <p className="text-xs text-muted-dark mt-1">Add key team members to showcase your leadership</p>
                   </div>
                 )}
               </div>

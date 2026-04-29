@@ -14,6 +14,32 @@ export interface GalleryImage {
   category: string;
 }
 
+export interface SocialMedia {
+  whatsapp?: string;
+  email?: string;
+  linkedin?: string;
+  facebook?: string;
+  youtube?: string;
+  x?: string;
+  instagram?: string;
+  tiktok?: string;
+  snapchat?: string;
+  telegram?: string;
+}
+
+export interface Stats {
+  employees: number;
+  projects: number;
+  clients: number;
+}
+
+export interface Employee {
+  name: string;
+  position: string;
+  image?: string;
+  department?: string;
+}
+
 export interface Company {
   _id?: string;
   name: string;
@@ -30,6 +56,9 @@ export interface Company {
   isActive: boolean;
   focusAreas: FocusArea[];
   gallery: GalleryImage[];
+  socialMedia?: SocialMedia;
+  stats?: Stats;
+  employees?: Employee[];
   order: number;
   createdAt?: string;
   updatedAt?: string;

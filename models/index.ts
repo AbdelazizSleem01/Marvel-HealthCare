@@ -122,6 +122,34 @@ const CompanySchema = new Schema(
         category: String,
       },
     ],
+    // Social Media Links
+    socialMedia: {
+      whatsapp: String,
+      email: String,
+      linkedin: String,
+      facebook: String,
+      youtube: String,
+      x: String,
+      instagram: String,
+      tiktok: String,
+      snapchat: String,
+      telegram: String,
+    },
+    // Overview Stats
+    stats: {
+      employees: { type: Number, default: 0 },
+      projects: { type: Number, default: 0 },
+      clients: { type: Number, default: 0 },
+    },
+    // Team Members
+    employees: [
+      {
+        name: String,
+        position: String,
+        image: String,
+        department: String,
+      },
+    ],
     order: { type: Number, default: 0 },
   },
   { timestamps: true }
