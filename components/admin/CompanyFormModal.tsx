@@ -546,42 +546,38 @@ export function CompanyFormModal({
                 {(formData.focusAreas || []).map((area, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-2 p-3 rounded-xl bg-white/5 border border-border-dark"
+                    className="p-3 rounded-xl bg-white/5 border border-border-dark"
                   >
-                    {/* Icon Picker Button */}
-                    <button
-                      onClick={() => openIconPicker(index)}
-                      className="w-12 h-12 rounded-xl bg-white/10 border border-border-dark hover:border-primary-500/50 flex items-center justify-center transition-all"
-                      title="Click to select icon"
-                    >
-                      {area.icon && iconComponents[area.icon] ? (
-                        (() => {
-                          const IconComp = iconComponents[area.icon];
-                          return <IconComp size={22} className="text-primary-400" />;
-                        })()
-                      ) : (
-                        <RiImageLine size={20} className="text-muted-dark" />
-                      )}
-                    </button>
-                    <input
-                      type="text"
-                      className={inputCls}
-                      placeholder="Icon name (e.g., RiFileTextLine)"
-                      value={area.icon}
-                      readOnly
-                      onClick={() => openIconPicker(index)}
-                    />
-                    <input
-                      type="text"
-                      className={inputCls}
-                      placeholder="Label"
-                      value={area.label}
-                      onChange={(e) => updateFocusArea(index, "label", e.target.value)}
-                    />
-                    <input
-                      type="text"
-                      className={inputCls}
-                      placeholder="Short description"
+                    {/* Row 1: Icon + Label */}
+                    <div className="flex items-start gap-2 mb-3">
+                      {/* Icon Picker Button */}
+                      <button
+                        onClick={() => openIconPicker(index)}
+                        className="w-12 h-12 rounded-xl bg-white/10 border border-border-dark hover:border-primary-500/50 flex items-center justify-center transition-all shrink-0"
+                        title="Click to select icon"
+                      >
+                        {area.icon && iconComponents[area.icon] ? (
+                          (() => {
+                            const IconComp = iconComponents[area.icon];
+                            return <IconComp size={22} className="text-primary-400" />;
+                          })()
+                        ) : (
+                          <RiImageLine size={20} className="text-muted-dark" />
+                        )}
+                      </button>
+                      {/* Label Input - Takes remaining space */}
+                      <input
+                        type="text"
+                        className={`${inputCls} flex-1`}
+                        placeholder="Label (e.g., Healthcare)"
+                        value={area.label}
+                        onChange={(e) => updateFocusArea(index, "label", e.target.value)}
+                      />
+                    </div>
+                    {/* Row 2: Description Textarea - Full width */}
+                    <textarea
+                      className={`${inputCls} min-h-[80px] resize-none w-full`}
+                      placeholder="Short description..."
                       value={area.description}
                       onChange={(e) => updateFocusArea(index, "description", e.target.value)}
                     />
