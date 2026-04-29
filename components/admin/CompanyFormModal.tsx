@@ -309,7 +309,7 @@ export function CompanyFormModal({
                         </span>
                       </>
                     ) : (
-                      <span className="text-muted-dark">Click to select country flag...</span>
+                      <span className="text-muted-dark whitespace-nowrap text-xs">Click to select country flag...</span>
                     )}
                   </button>
                 </div>
