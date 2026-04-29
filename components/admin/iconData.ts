@@ -577,7 +577,6 @@ export const availableIcons: IconDef[] = [
   { name: "RiRocketLine", category: "Nature" },
   { name: "RiLeafLine", category: "Nature" },
   { name: "RiRecycleLine", category: "Nature" },
-  { name: "RiDropLine", category: "Nature" },
   { name: "RiUmbrellaLine", category: "Nature" },
   
   // Weather
@@ -591,7 +590,6 @@ export const availableIcons: IconDef[] = [
   { name: "RiShowersLine", category: "Weather" },
   { name: "RiMoonLine", category: "Weather" },
   { name: "RiSunLine", category: "Weather" },
-  { name: "RiDropLine", category: "Weather" },
   { name: "RiCelsiusLine", category: "Weather" },
   { name: "RiThermometerLine", category: "Weather" },
   { name: "RiTornadoLine", category: "Weather" },
@@ -650,10 +648,8 @@ export const availableIcons: IconDef[] = [
   { name: "RiFlagLine", category: "Flags" },
   { name: "RiFoldersLine", category: "Folders" },
   { name: "RiGovernmentLine", category: "Government" },
-  { name: "RiHospitalLine", category: "Medical" },
   { name: "RiHotelLine", category: "Travel" },
   { name: "RiRestaurantLine", category: "Food" },
-  { name: "RiCupLine", category: "Food" },
   { name: "RiTruckLine", category: "Delivery" },
   { name: "RiInfinityLine", category: "Symbols" },
   { name: "RiInputMethodLine", category: "Input" },
