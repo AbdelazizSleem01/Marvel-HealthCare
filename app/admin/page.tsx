@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { signIn, signOut, useSession, SessionProvider } from "next-auth/react";
-import { RiDashboardLine, RiMailLine, RiProjectorLine, RiUserStarLine, RiLogoutBoxLine, RiRefreshLine, RiBuildingLine, RiAddLine, RiEditLine, RiDeleteBinLine, RiImageLine, RiEyeLine, RiStarLine, RiCloseLine } from "react-icons/ri";
+import { RiDashboardLine, RiMailLine, RiProjectorLine, RiUserStarLine, RiLogoutBoxLine, RiRefreshLine, RiBuildingLine, RiAddLine, RiEditLine, RiDeleteBinLine, RiImageLine, RiEyeLine, RiStarLine, RiCloseLine, RiSearchLine, RiPhoneLine, RiCalendarLine, RiTimeLine, RiUserLine, RiFilterLine, RiSortAsc, RiDownloadLine, RiUploadLine, RiShareLine, RiLinksLine, RiExternalLinkLine, RiSubtractLine, RiErrorWarningLine, RiInformationLine, RiQuestionLine, RiFireLine, RiLeafLine, RiCloudLine, RiRainyLine, RiSnowyLine, RiWindyLine, RiFoggyLine, RiHazeLine, RiDrizzleLine, RiShowersLine } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { useAdminStore, Company, FocusArea, GalleryImage } from "@/stores/adminStore";
 
@@ -243,6 +243,106 @@ function AdminDashboard() {
     const updated = (companyForm.gallery || []).filter((_, i) => i !== index);
     setCompanyForm(prev => ({ ...prev, gallery: updated }));
   };
+
+  // Icon Picker State & Functions
+  const [showIconPicker, setShowIconPicker] = useState(false);
+  const [selectedFocusAreaIndex, setSelectedFocusAreaIndex] = useState<number | null>(null);
+  const [iconSearch, setIconSearch] = useState("");
+
+  // Available Icons List (Ri icons)
+  const availableIcons = [
+    { name: "RiFileTextLine", category: "Document" },
+    { name: "RiMicroscopeLine", category: "Science" },
+    { name: "RiComputerLine", category: "Tech" },
+    { name: "RiPaletteLine", category: "Design" },
+    { name: "RiGraduationCapLine", category: "Education" },
+    { name: "RiVideoLine", category: "Media" },
+    { name: "RiStackLine", category: "Layers" },
+    { name: "RiImageLine", category: "Media" },
+    { name: "RiGlobalLine", category: "World" },
+    { name: "RiBrainLine", category: "AI" },
+    { name: "RiUserSettingsLine", category: "User" },
+    { name: "RiAwardLine", category: "Award" },
+    { name: "RiTeamLine", category: "Team" },
+    { name: "RiCodeBoxLine", category: "Code" },
+    { name: "RiStarLine", category: "Star" },
+    { name: "RiHeartPulseLine", category: "Health" },
+    { name: "RiShieldCheckLine", category: "Security" },
+    { name: "RiHealthBookLine", category: "Health" },
+    { name: "RiCheckLine", category: "Check" },
+    { name: "RiBriefcaseLine", category: "Business" },
+    { name: "RiBuildingLine", category: "Building" },
+    { name: "RiHospitalLine", category: "Hospital" },
+    { name: "RiFirstAidKitLine", category: "Medical" },
+    { name: "RiStethoscopeLine", category: "Medical" },
+    { name: "RiCapsuleLine", category: "Pharma" },
+    { name: "RiEyeLine", category: "Vision" },
+    { name: "RiVirusLine", category: "Lab" },
+    { name: "RiMessage3Line", category: "Chat" },
+    { name: "RiMailLine", category: "Email" },
+    { name: "RiPhoneLine", category: "Phone" },
+    { name: "RiMapPinLine", category: "Location" },
+    { name: "RiCalendarLine", category: "Calendar" },
+    { name: "RiTimeLine", category: "Time" },
+    { name: "RiSettings4Line", category: "Settings" },
+    { name: "RiDashboardLine", category: "Dashboard" },
+    { name: "RiBarChartLine", category: "Chart" },
+    { name: "RiPieChartLine", category: "Chart" },
+    { name: "RiUserLine", category: "User" },
+    { name: "RiGroupLine", category: "Group" },
+    { name: "RiSearchLine", category: "Search" },
+    { name: "RiFilterLine", category: "Filter" },
+    { name: "RiSortAsc", category: "Sort" },
+    { name: "RiDownloadLine", category: "Download" },
+    { name: "RiUploadLine", category: "Upload" },
+    { name: "RiShareLine", category: "Share" },
+    { name: "RiLinkLine", category: "Link" },
+    { name: "RiExternalLinkLine", category: "External" },
+    { name: "RiArrowRightLine", category: "Arrow" },
+    { name: "RiArrowLeftLine", category: "Arrow" },
+    { name: "RiAddLine", category: "Add" },
+    { name: "RiSubtractLine", category: "Minus" },
+    { name: "RiCloseLine", category: "Close" },
+    { name: "RiCheckDoubleLine", category: "Check" },
+    { name: "RiErrorWarningLine", category: "Warning" },
+    { name: "RiInformationLine", category: "Info" },
+    { name: "RiQuestionLine", category: "Question" },
+    { name: "RiFireLine", category: "Fire" },
+    { name: "RiLeafLine", category: "Nature" },
+    { name: "RiSunLine", category: "Sun" },
+    { name: "RiMoonLine", category: "Moon" },
+    { name: "RiCloudLine", category: "Cloud" },
+    { name: "RiRainyLine", category: "Rain" },
+    { name: "RiSnowyLine", category: "Snow" },
+    { name: "RiWindyLine", category: "Wind" },
+    { name: "RiFoggyLine", category: "Fog" },
+    { name: "RiHazeLine", category: "Haze" },
+    { name: "RiDrizzleLine", category: "Rain" },
+    { name: "RiShowersLine", category: "Rain" },
+  ];
+
+  const openIconPicker = (index: number) => {
+    setSelectedFocusAreaIndex(index);
+    setShowIconPicker(true);
+    setIconSearch("");
+  };
+
+  const selectIcon = (iconName: string) => {
+    if (selectedFocusAreaIndex !== null) {
+      updateFocusArea(selectedFocusAreaIndex, 'icon', iconName);
+    }
+    setShowIconPicker(false);
+    setSelectedFocusAreaIndex(null);
+    setIconSearch("");
+  };
+
+  const filteredIcons = iconSearch
+    ? availableIcons.filter(
+        (icon) =>
+          icon.name.toLowerCase().includes(iconSearch.toLowerCase()) ||
+          icon.category.toLowerCase().includes(iconSearch.toLowerCase())
+      )
+    : availableIcons;
 
   const inputCls = "w-full bg-white/5 border border-border-dark rounded-xl px-4 py-3 text-sm text-text-dark placeholder:text-muted-dark focus:outline-none focus:border-primary-500/60 transition-all";
 
@@ -719,13 +819,26 @@ function AdminDashboard() {
                       <div className="space-y-3">
                         {(companyForm.focusAreas || []).map((area, index) => (
                           <div key={index} className="flex items-start gap-2 p-3 rounded-xl bg-white/5 border border-border-dark">
-                            <div className="grid grid-cols-3 gap-2 flex-1">
+                            <div className="grid grid-cols-[auto_1fr_1fr] gap-2 flex-1">
+                              {/* Icon Picker Button */}
+                              <button
+                                onClick={() => openIconPicker(index)}
+                                className="w-12 h-12 rounded-xl bg-white/10 border border-border-dark hover:border-primary-500/50 flex items-center justify-center transition-all"
+                                title="Click to select icon"
+                              >
+                                {area.icon ? (
+                                  <span className="text-lg text-primary-400">{area.icon.replace('Ri', '').replace('Line', '')}</span>
+                                ) : (
+                                  <RiImageLine size={20} className="text-muted-dark" />
+                                )}
+                              </button>
                               <input
                                 type="text"
                                 className={inputCls}
                                 placeholder="Icon name (e.g., RiFileTextLine)"
                                 value={area.icon}
-                                onChange={(e) => updateFocusArea(index, 'icon', e.target.value)}
+                                readOnly
+                                onClick={() => openIconPicker(index)}
                               />
                               <input
                                 type="text"
@@ -836,6 +949,96 @@ function AdminDashboard() {
                         {editingCompany ? "Update Company" : "Create Company"}
                       </button>
                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Icon Picker Modal */}
+            {showIconPicker && (
+              <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+                <div className="glass-dark rounded-3xl w-full max-w-2xl max-h-[80vh] overflow-hidden border border-border-dark">
+                  <div className="sticky top-0 glass-dark border-b border-border-dark p-5 flex items-center justify-between">
+                    <div>
+                      <h3 className="font-display font-bold text-lg text-text-dark">Select Icon</h3>
+                      <p className="text-xs text-muted-dark mt-0.5">{filteredIcons.length} icons available</p>
+                    </div>
+                    <button
+                      onClick={() => setShowIconPicker(false)}
+                      className="p-2 rounded-lg hover:bg-white/5 text-muted-dark hover:text-text-dark transition-all"
+                    >
+                      <RiCloseLine size={24} />
+                    </button>
+                  </div>
+
+                  {/* Search */}
+                  <div className="p-4 border-b border-border-dark">
+                    <div className="relative">
+                      <RiSearchLine className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-dark" size={18} />
+                      <input
+                        type="text"
+                        className={`${inputCls} pl-10`}
+                        placeholder="Search icons by name or category..."
+                        value={iconSearch}
+                        onChange={(e) => setIconSearch(e.target.value)}
+                      />
+                    </div>
+                    {/* Category Pills */}
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {["All", "Document", "Science", "Tech", "Design", "Education", "Media", "Health", "Medical", "Business", "Chart", "Arrow"].map((cat) => (
+                        <button
+                          key={cat}
+                          onClick={() => setIconSearch(cat === "All" ? "" : cat)}
+                          className={`text-xs px-3 py-1 rounded-full border transition-all ${
+                            (iconSearch === cat || (cat === "All" && !iconSearch))
+                              ? "bg-primary-500/20 border-primary-500/50 text-primary-400"
+                              : "border-border-dark text-muted-dark hover:border-primary-500/30"
+                          }`}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Icons Grid */}
+                  <div className="p-4 overflow-y-auto max-h-[50vh] custom-scrollbar">
+                    <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
+                      {filteredIcons.map((icon) => (
+                        <button
+                          key={icon.name}
+                          onClick={() => selectIcon(icon.name)}
+                          className="group flex flex-col items-center gap-1 p-3 rounded-xl bg-white/5 border border-border-dark hover:border-primary-500/50 hover:bg-primary-500/10 transition-all"
+                          title={`${icon.name} (${icon.category})`}
+                        >
+                          <span className="text-lg text-text-dark group-hover:text-primary-400 transition-colors">
+                            {icon.name.replace('Ri', '').replace('Line', '').slice(0, 2)}
+                          </span>
+                          <span className="text-[9px] text-muted-dark text-center truncate w-full">
+                            {icon.name.replace('Ri', '').replace('Line', '')}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                    {filteredIcons.length === 0 && (
+                      <div className="text-center py-8 text-muted-dark">
+                        <RiSearchLine size={32} className="mx-auto mb-2 opacity-30" />
+                        <p>No icons found matching "{iconSearch}"</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  <div className="sticky bottom-0 glass-dark border-t border-border-dark p-4 flex items-center justify-between">
+                    <span className="text-xs text-muted-dark">
+                      Click an icon to select it
+                    </span>
+                    <button
+                      onClick={() => setShowIconPicker(false)}
+                      className="px-4 py-2 rounded-xl border border-border-dark text-muted-dark hover:text-text-dark text-sm transition-all"
+                    >
+                      Cancel
+                    </button>
                   </div>
                 </div>
               </div>
