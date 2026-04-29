@@ -12,6 +12,9 @@ import {
   RiGlobalLine,
   RiPaletteLine,
   RiCheckboxCircleLine,
+  RiCheckboxBlankCircleLine,
+  RiCheckLine,
+  RiCloseCircleLine,
   RiImageAddLine,
   RiStackLine,
   RiListOrdered,
@@ -491,44 +494,96 @@ export function CompanyFormModal({
                 Company Status
               </div>
 
-              <div className="flex flex-wrap items-center gap-6">
-                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl bg-white/5 border border-border-dark hover:border-primary-500/30 transition-all">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* Main Company Toggle */}
+                <label className={`relative flex items-center gap-3 cursor-pointer p-4 rounded-xl border-2 transition-all ${
+                  formData.isMain 
+                    ? "bg-gradient-to-br from-primary-500/20 to-secondary-500/10 border-primary-500/50" 
+                    : "bg-white/5 border-border-dark hover:border-primary-500/30"
+                }`}>
                   <input
                     type="checkbox"
                     checked={formData.isMain || false}
                     onChange={(e) => setFormData({ ...formData, isMain: e.target.checked })}
-                    className="w-5 h-5 rounded border-border-dark bg-white/5 text-primary-500 focus:ring-primary-500"
+                    className="sr-only"
                   />
-                  <div>
-                    <span className="text-sm font-medium text-text-dark block">Main Company</span>
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
+                    formData.isMain ? "bg-primary-500/20" : "bg-white/10"
+                  }`}>
+                    {formData.isMain ? (
+                      <RiCheckboxCircleLine className="text-primary-400" size={24} />
+                    ) : (
+                      <RiCheckboxBlankCircleLine className="text-muted-dark" size={24} />
+                    )}
                   </div>
+                  <div className="flex-1">
+                    <span className={`text-sm font-semibold block ${formData.isMain ? "text-primary-400" : "text-text-dark"}`}>
+                      Main Company
+                    </span>
+                    <span className="text-xs text-muted-dark">Featured on homepage</span>
+                  </div>
+                  {formData.isMain && (
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary-500/30 flex items-center justify-center">
+                      <RiCheckLine className="text-primary-400" size={12} />
+                    </div>
+                  )}
                 </label>
 
-                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl bg-white/5 border border-border-dark hover:border-primary-500/30 transition-all">
+                {/* Active Status Toggle */}
+                <label className={`relative flex items-center gap-3 cursor-pointer p-4 rounded-xl border-2 transition-all ${
+                  formData.isActive !== false 
+                    ? "bg-gradient-to-br from-green-500/20 to-emerald-500/10 border-green-500/50" 
+                    : "bg-white/5 border-border-dark hover:border-red-500/30"
+                }`}>
                   <input
                     type="checkbox"
                     checked={formData.isActive !== false}
                     onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    className="w-5 h-5 rounded border-border-dark bg-white/5 text-primary-500 focus:ring-primary-500"
+                    className="sr-only"
                   />
-                  <div>
-                    <span className="text-sm font-medium text-text-dark block">Active</span>
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
+                    formData.isActive !== false ? "bg-green-500/20" : "bg-red-500/10"
+                  }`}>
+                    {formData.isActive !== false ? (
+                      <RiCheckboxCircleLine className="text-green-400" size={24} />
+                    ) : (
+                      <RiCloseCircleLine className="text-red-400" size={24} />
+                    )}
                   </div>
+                  <div className="flex-1">
+                    <span className={`text-sm font-semibold block ${formData.isActive !== false ? "text-green-400" : "text-red-400"}`}>
+                      {formData.isActive !== false ? "Active" : "Inactive"}
+                    </span>
+                    <span className="text-xs text-muted-dark">
+                      {formData.isActive !== false ? "Visible to users" : "Hidden from users"}
+                    </span>
+                  </div>
+                  {formData.isActive !== false && (
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-green-500/30 flex items-center justify-center">
+                      <RiCheckLine className="text-green-400" size={12} />
+                    </div>
+                  )}
                 </label>
 
-                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-border-dark">
-                  <RiListOrdered size={18} className="text-muted-dark" />
-                  <div>
-                    <label className="text-sm font-medium text-text-dark block">Display Order</label>
-                    <input
-                      type="number"
-                      className="w-20 bg-transparent text-sm text-text-dark focus:outline-none"
-                      value={formData.order || 0}
-                      onChange={(e) =>
-                        setFormData({ ...formData, order: parseInt(e.target.value) || 0 })
-                      }
-                      min="0"
-                    />
+                {/* Display Order */}
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-br from-secondary-500/10 to-transparent border-2 border-secondary-500/30">
+                  <div className="w-12 h-12 rounded-xl bg-secondary-500/20 flex items-center justify-center">
+                    <RiListOrdered className="text-secondary-400" size={24} />
+                  </div>
+                  <div className="flex-1">
+                    <label className="text-sm font-semibold text-text-dark block">Display Order</label>
+                    <div className="flex items-center gap-2 mt-1">
+                      <input
+                        type="number"
+                        className="w-20 bg-white/10 border border-border-dark rounded-lg px-3 py-1.5 text-sm text-text-dark focus:outline-none focus:border-secondary-500/50 text-center"
+                        value={formData.order || 0}
+                        onChange={(e) =>
+                          setFormData({ ...formData, order: parseInt(e.target.value) || 0 })
+                        }
+                        min="0"
+                      />
+                      <span className="text-xs text-muted-dark">Priority</span>
+                    </div>
                   </div>
                 </div>
               </div>
