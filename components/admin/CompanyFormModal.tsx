@@ -386,7 +386,7 @@ export function CompanyFormModal({
                     </label>
                     <div className="flex flex-wrap gap-2">
                       {[
-                        { value: "from-primary-500 to-secondary-400", from: "#127A8A", to: "#4D9DA9", label: "Primary" },
+                        { value: "from-primary-500 to-secondary-400", from: "#127A8A", to: "#E1B15E", label: "Primary" },
                         { value: "from-primary-500 to-primary-600", from: "#127A8A", to: "#0d5c6b", label: "Teal Dark" },
                         { value: "from-secondary-400 to-secondary-600", from: "#E1B15E", to: "#c99a4e", label: "Gold" },
                         { value: "from-blue-500 to-cyan-500", from: "#3b82f6", to: "#06b6d4", label: "Cyan" },
