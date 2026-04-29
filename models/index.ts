@@ -93,6 +93,40 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
+// Company model - Marvel Group and Orbit Companies
+const CompanySchema = new Schema(
+  {
+    name: { type: String, required: true },
+    slug: { type: String, required: true, unique: true },
+    tagline: { type: String, required: true },
+    year: { type: String, required: true },
+    country: { type: String, required: true },
+    flag: { type: String, required: true },
+    description: { type: String, required: true },
+    color: { type: String, default: "from-primary-500 to-secondary-400" },
+    icon: { type: String },
+    logo: { type: String },
+    isMain: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
+    focusAreas: [
+      {
+        icon: String,
+        label: String,
+        description: String,
+      },
+    ],
+    gallery: [
+      {
+        src: String,
+        title: String,
+        category: String,
+      },
+    ],
+    order: { type: Number, default: 0 },
+  },
+  { timestamps: true }
+);
+
 export const Lead = models.Lead || model("Lead", LeadSchema);
 export const Project = models.Project || model("Project", ProjectSchema);
 export const Testimonial = models.Testimonial || model("Testimonial", TestimonialSchema);
@@ -100,3 +134,4 @@ export const Product = models.Product || model("Product", ProductSchema);
 export const PartnerLogo = models.PartnerLogo || model("PartnerLogo", PartnerLogoSchema);
 export const Settings = models.Settings || model("Settings", SettingsSchema);
 export const User = models.User || model("User", UserSchema);
+export const Company = models.Company || model("Company", CompanySchema);

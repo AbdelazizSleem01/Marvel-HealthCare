@@ -361,11 +361,11 @@ export default function CompaniesSection() {
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5, type: "spring", stiffness: 100 }}
-            className="fixed top-0 left-14 right-0 z-50 px-4 pointer-events-none"
+            className="fixed top-4 left-24 right-0 z-50 px-4 pointer-events-none"
           >
-            <div className="max-w-xl lg:max-w-4xl  mx-auto w-full pointer-events-auto">
-              <div className="rounded-b-2xl glass-light dark:glass-dark border-x border-b border-border-light dark:border-border-dark/50 shadow-2xl overflow-hidden backdrop-blur-xl mt-0">
-                <div className="flex items-center justify-around p-1 lg:p-1.5">
+            <div className="max-w-xl lg:max-w-4xl mx-auto w-full pointer-events-auto">
+              <div className="rounded-2xl glass-light dark:glass-dark border-x border-b border-border-light dark:border-border-dark/50 shadow-2xl overflow-hidden backdrop-blur-xl mt-0">
+                <div className="flex items-center justify-between p-0.5 lg:p-1">
                   {[
                     { id: "services", onClick: () => handleStateChange(setShowServices, true), icon: RiSettings4Line, label: "Services", color: "primary", isActive: showServices },
                     { id: "expertise", onClick: () => handleStateChange(setShowExpertise, true), icon: RiHeartPulseLine, label: "Therapeutic Areas", color: "primary", isActive: showExpertise },
@@ -383,16 +383,16 @@ export default function CompaniesSection() {
                     const content = (
                       <>
                         <motion.div
-                          whileHover={{ scale: 1.1, y: -2 }}
+                          whileHover={{ scale: 1.1, y: -1 }}
                           whileTap={{ scale: 0.95 }}
-                          className={`w-9 h-9 lg:w-11 lg:h-11 rounded-xl flex items-center justify-center border transition-all ${active
+                          className={`w-9 h-9 lg:w-10 lg:h-10 rounded-xl flex items-center justify-center border transition-all ${active
                             ? "bg-primary-500 text-white border-primary-400 shadow-[0_0_15px_rgba(18,122,138,0.4)]"
                             : `bg-gradient-to-br ${isSecondary ? "from-secondary-500/20 to-secondary-600/20 text-secondary-500" : "from-primary-500/20 to-secondary-500/20 text-primary-500"} border-border-light dark:border-white/5 group-hover:border-primary-500/30`
                             }`}
                         >
-                          <Icon size={20} className="lg:size-22" />
+                          <Icon size={17} className="lg:size-22" />
                         </motion.div>
-                        <span className={`whitespace-nowrap text-[9px] lg:text-[10px] font-bold uppercase tracking-wide transition-all ${active ? "text-primary-500 opacity-100" : "text-text-light dark:text-text-dark opacity-80 group-hover:opacity-100 group-hover:text-primary-500"
+                        <span className={`whitespace-nowrap text-[9px] lg:text-[9px] font-bold uppercase tracking-wide transition-all ${active ? "text-primary-500 opacity-100" : "text-text-light dark:text-text-dark opacity-80 group-hover:opacity-100 group-hover:text-primary-500"
                           }`}>
                           {item.label}
                         </span>
@@ -434,34 +434,38 @@ export default function CompaniesSection() {
 
 
 
-        {/* ─── Desktop/Tablet: Flags Row (Fixed, above toolbar) ─── */}
+        {/* ─── Desktop/Tablet: Flags Bar (Fixed, similar style to toolbar) ─── */}
         {!isMobile && (
           <motion.div
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
-            className="fixed top-7 left-5 lg:left-8  z-[60] flex items-center gap-3 lg:gap-4 pointer-events-auto"
+            className="fixed top-4 left-2 lg:left-4 z-[60] pointer-events-auto "
           >
-            {COUNTRIES.map((country, idx) => (
-              <motion.button
-                key={country.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: [0, -4, 0] }}
-                transition={{
-                  y: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: idx * 0.25 },
-                  opacity: { duration: 0.5, delay: idx * 0.12 },
-                }}
-                whileHover={{ scale: 1.18 }}
-                whileTap={{ scale: 0.92 }}
-                onClick={() => handleStateChange(setSelectedCountry, country)}
-                className="group relative flex items-center justify-center transition-all duration-300"
-              >
-                <div className="w-10 h-7 lg:w-12 lg:h-8 rounded-lg overflow-hidden shadow-lg border-2 border-transparent group-hover:border-primary-500/60 transition-all duration-300 relative z-10">
-                  <ReactCountryFlag countryCode={country.flag} svg style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                </div>
-                <div className="absolute inset-0 rounded-lg bg-primary-500/25 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
-              </motion.button>
-            ))}
+            <div className="rounded-xl p-2 glass-light dark:glass-dark border border-border-light dark:border-border-dark/50 shadow-xl backdrop-blur-xl flex items-center gap-1.5 lg:gap-2">
+              {COUNTRIES.map((country, idx) => (
+                <motion.button
+                  key={country.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: [0, -4, 0] }}
+                  transition={{
+                    y: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: idx * 0.25 },
+                    opacity: { duration: 0.5, delay: idx * 0.12 },
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => handleStateChange(setSelectedCountry, country)}
+                  className="group relative flex items-center gap-1.5 px-1.5 py-1 rounded-lg bg-white/50 dark:bg-white/10 border border-white/20 dark:border-white/10 shadow-sm hover:shadow-lg hover:border-primary-500/40 transition-all duration-300"
+                >
+                  <div className="w-8 h-8 lg:w-10 lg:h-8 rounded overflow-hidden shadow-lg">
+                    <ReactCountryFlag countryCode={country.flag} svg style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  </div>
+                  <span className="text-[10px] font-semibold text-text-light dark:text-text-dark group-hover:text-primary-500 transition-colors">
+                    {country.flag}
+                  </span>
+                </motion.button>
+              ))}
+            </div>
           </motion.div>
         )}
 
@@ -829,7 +833,7 @@ export default function CompaniesSection() {
                     </div>
                     <div className="flex gap-1 p-1 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark mb-3">
                       {[
-                        { id: "pharma", label: "Pharma", icon: RiBriefcaseLine },
+                        { id: "pharma", label: "Pharma ", icon: RiBriefcaseLine },
                         { id: "vendors", label: "Tech", icon: RiComputerLine },
                         { id: "societies", label: "Medical", icon: RiBuildingLine },
                       ].map((tab) => (
@@ -905,29 +909,32 @@ export default function CompaniesSection() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 80 }}
                 transition={SPRING_CONFIG}
-                className="fixed right-4 top-[5%] -translate-y-1/2 z-40 flex items-center h-[80vh] rounded-2xl overflow-visible shadow-2xl"
+                className="fixed right-4 top-[5%] -translate-y-1/2 z-40 flex items-center h-[80vh] rounded-2xl overflow-visible gap-2"
               >
                 {/* Vertical Tabs Sidebar - with overflow visible */}
-                <div className="flex flex-col gap-2 p-2 glass-light dark:glass-dark border-y border-l border-border-light/50 dark:border-border-dark/50 rounded-l-2xl shadow-xl z-10 relative h-full overflow-visible min-w-[50px]">
+                <div className="flex flex-col gap-1 p-1.5 glass-light dark:glass-dark border border-border-light/50 dark:border-border-dark/50 rounded-xl shadow-xl z-10 relative h-fit overflow-visible min-w-[44px]">
                   {[
-                    { id: "all", label: `All`, count: 95, icon: RiGlobalLine },
-                    { id: "pharma", label: `Pharma`, count: 46, icon: RiBriefcaseLine },
-                    { id: "vendors", label: `Vendors`, count: 18, icon: RiComputerLine },
-                    { id: "societies", label: `Societies`, count: 31, icon: RiBuildingLine },
+                    { id: "all", line1: "All", line2: "Partners", count: 95, icon: RiGlobalLine },
+                    { id: "pharma", line1: "Pharma", line2: "Companies", count: 46, icon: RiBriefcaseLine },
+                    { id: "vendors", line1: "Tech", line2: "Vendors", count: 18, icon: RiComputerLine },
+                    { id: "societies", line1: "Medical", line2: "Societies", count: 31, icon: RiBuildingLine },
                   ].map((tab) => (
                     <motion.button
                       key={tab.id}
                       onClick={() => setActiveClientTab(tab.id as any)}
                       whileHover={{ x: -2 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`flex flex-col items-center gap-2 py-4 px-2 rounded-xl transition-all duration-300 ${activeClientTab === tab.id ? "bg-gradient-to-b from-primary-500 to-secondary-500 text-white shadow-lg" : "text-muted-light dark:text-muted-dark hover:text-primary-500"}`}
+                      className={`flex flex-col items-center gap-1 py-2 px-1.5 rounded-lg transition-all duration-300 ${activeClientTab === tab.id ? "bg-gradient-to-b from-primary-500 to-secondary-500 text-white shadow-lg" : "text-muted-light dark:text-muted-dark hover:text-primary-500"}`}
                     >
-                      <tab.icon size={18} />
-                      <div className="flex flex-col items-center gap-0.5">
-                        <span className="text-[9px] font-bold uppercase tracking-wider [writing-mode:vertical-lr] rotate-180 leading-tight">
-                          {tab.label}
+                      <tab.icon size={16} />
+                      <div className="flex flex-col items-center gap-0 leading-tight">
+                        <span className="text-[9px] font-bold leading-none">
+                          {tab.line1}
                         </span>
-                        <span className={`text-[10px] font-bold ${activeClientTab === tab.id ? 'text-white' : 'text-primary-500'}`}>
+                        <span className="text-[9px] font-bold leading-none">
+                          {tab.line2}
+                        </span>
+                        <span className={`text-[9px] font-bold mt-0.5 ${activeClientTab === tab.id ? 'text-white' : 'text-primary-500'}`}>
                           {tab.count}
                         </span>
                       </div>
@@ -936,8 +943,8 @@ export default function CompaniesSection() {
                 </div>
 
                 {/* Client Logos List - Smooth CSS Auto Scrolling */}
-                <div 
-                  className="w-16 lg:w-20 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-2xl border-y border-r border-border-light/50 dark:border-border-dark/50 rounded-r-2xl flex flex-col items-center h-[70vh] overflow-hidden relative"
+                <div
+                  className="w-16 lg:w-20 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-2xl border border-border-light/50 dark:border-border-dark/50 rounded-2xl flex flex-col items-center h-[70vh] overflow-hidden relative shadow-lg"
                   onMouseEnter={() => setIsPaused(true)}
                   onMouseLeave={() => setIsPaused(false)}
                 >
@@ -1820,7 +1827,7 @@ function DynamicContentBox({
 // Unified Desktop Views (Dashboard Style)
 // ─────────────────────────────────────────────
 
-function BoxWrapper({ children, onClose, title, subtitle, icon: Icon, color = "from-primary-500 to-secondary-500" }: { children: React.ReactNode, onClose?: () => void, title: string, subtitle?: string, icon?: any, color?: string }) {
+function BoxWrapper({ children, onClose, title, subtitle, icon: Icon, color = "from-primary-500 to-secondary-500", gradientHeader = false, location, countryFlag = "EG", year = "2015" }: { children: React.ReactNode, onClose?: () => void, title: string, subtitle?: string, icon?: any, color?: string, gradientHeader?: boolean, location?: string, countryFlag?: string, year?: string }) {
   return (
     <motion.div
       initial={{ opacity: 0, x: 30, scale: 0.98 }}
@@ -1828,33 +1835,83 @@ function BoxWrapper({ children, onClose, title, subtitle, icon: Icon, color = "f
       exit={{ opacity: 0, x: -20, scale: 0.98 }}
       className="flex-1 flex flex-col glass-light dark:glass-dark rounded-3xl border border-border-light/30 dark:border-border-dark/30 shadow-2xl overflow-hidden backdrop-blur-2xl"
     >
-      <div className="p-5 border-b border-border-light/20 dark:border-border-dark/20 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          {Icon && (
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-lg overflow-hidden ${typeof Icon === 'string' ? 'p-2' : ''}`}>
-              {typeof Icon === 'string' ? (
-                <Image src={Icon} alt={title} height={40} width={40} className="w-full h-full object-contain" />
-              ) : (
-                <Icon size={24} />
+      {gradientHeader ? (
+        <div className={`relative bg-gradient-to-r ${color} p-5 overflow-hidden`}>
+          {/* World Map Background */}
+          <div 
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage: "url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center right',
+              backgroundRepeat: 'no-repeat',
+              filter: 'blur(1px)',
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-transparent" />
+          <div className="relative flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              {Icon && (
+                <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center shadow-xl p-2 shrink-0">
+                  {typeof Icon === 'string' ? (
+                    <Image src={Icon} alt={title} height={48} width={48} className="w-full h-full object-contain" />
+                  ) : (
+                    <Icon size={32} className="text-primary-500" />
+                  )}
+                </div>
               )}
+              <div>
+                <h3 className="text-2xl font-bold text-white">{title}</h3>
+                {subtitle && <p className="text-sm text-white/90 font-medium">{subtitle}</p>}
+                {location && (
+                  <div className="flex items-center gap-1.5 mt-1 text-white/90 text-xs">
+                    <ReactCountryFlag countryCode={countryFlag} svg className="!w-4 !h-3 rounded-sm shadow-sm" />
+                    <span>· Est. {year}</span>
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-          <div>
-            <h3 className="text-xl font-bold text-text-light dark:text-text-dark">{title}</h3>
-            {subtitle && <p className="text-sm text-muted-light dark:text-muted-dark">{subtitle}</p>}
+            {onClose && (
+              <motion.button
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={onClose}
+                className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-all shadow-sm"
+              >
+                <RiCloseLine size={20} />
+              </motion.button>
+            )}
           </div>
         </div>
-        {onClose && (
-          <motion.button
-            whileHover={{ scale: 1.1, rotate: 90 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={onClose}
-            className="w-10 h-10 rounded-xl bg-surface-light dark:bg-surface-dark flex items-center justify-center text-muted-light dark:text-muted-dark hover:bg-red-500 hover:text-white transition-all shadow-sm"
-          >
-            <RiCloseLine size={20} />
-          </motion.button>
-        )}
-      </div>
+      ) : (
+        <div className="p-5 border-b border-border-light/20 dark:border-border-dark/20 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {Icon && (
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-lg overflow-hidden ${typeof Icon === 'string' ? 'p-2' : ''}`}>
+                {typeof Icon === 'string' ? (
+                  <Image src={Icon} alt={title} height={40} width={40} className="w-full h-full object-contain" />
+                ) : (
+                  <Icon size={24} />
+                )}
+              </div>
+            )}
+            <div>
+              <h3 className="text-xl font-bold text-text-light dark:text-text-dark">{title}</h3>
+              {subtitle && <p className="text-sm text-muted-light dark:text-muted-dark">{subtitle}</p>}
+            </div>
+          </div>
+          {onClose && (
+            <motion.button
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={onClose}
+              className="w-10 h-10 rounded-xl bg-surface-light dark:bg-surface-dark flex items-center justify-center text-muted-light dark:text-muted-dark hover:bg-red-500 hover:text-white transition-all shadow-sm"
+            >
+              <RiCloseLine size={20} />
+            </motion.button>
+          )}
+        </div>
+      )}
       <div className="flex-1 overflow-y-auto custom-scrollbar p-5">
         {children}
       </div>
@@ -1862,9 +1919,9 @@ function BoxWrapper({ children, onClose, title, subtitle, icon: Icon, color = "f
   );
 }
 
-function AboutMarvelView() {
+function AboutMarvelView({ onClose }: { onClose: () => void }) {
   const timeline = [
-    { year: "2015", event: "Founded in Cairo & UAE." },
+    { year: "2013", event: "Founded in Cairo & UAE." },
     { year: "2019", event: "Med-ADD launched in KSA." },
     { year: "2021", event: "50+ Pharma clients reached." },
     { year: "2023", event: "100+ Brands milestone." },
@@ -1872,10 +1929,20 @@ function AboutMarvelView() {
   ];
 
   return (
-    <BoxWrapper title="Marvel Group" subtitle="Where Medicine Meets Mastery" icon="/Logo.png">
+    <BoxWrapper
+      title="Marvel Group"
+      subtitle="Where Medicine Meets Mastery"
+      icon="/Logo.png"
+      color="from-primary-500 to-secondary-500"
+      gradientHeader={true}
+      location="Egypt / UAE / KSA - Est. 2013"
+      countryFlag="EG"
+      year="2013"
+      onClose={onClose}
+    >
       <div className="space-y-8">
         <p className="text-lg text-text-light dark:text-text-dark leading-relaxed font-medium">
-          Marvel Group is the MENA region's most trusted <span className="text-primary-500">med-tech ecosystem</span>, powering healthcare innovation since 2015.
+          Marvel Group is the MENA region's most trusted <span className="text-primary-500">med-tech ecosystem</span>, powering healthcare innovation since 2013.
         </p>
 
         <div className="grid grid-cols-2 gap-4">
@@ -1963,40 +2030,141 @@ function ClientInfoView({ client, onClose }: { client: SegmentedClient, onClose:
 }
 
 function CompanyInfoView({ company, onClose }: { company: Company, onClose: () => void }) {
+  const locationText = `${company.country} · Est. ${company.year}`;
   return (
-    <BoxWrapper title={company.name} subtitle={company.tagline} onClose={onClose} color={company.color}>
-      <div className={`h-32 rounded-2xl bg-gradient-to-r ${company.color} relative overflow-hidden mb-6`}>
-        <div className="absolute inset-0 bg-black/10" />
-        <div className="absolute bottom-4 left-4 flex items-center gap-3">
-          <div className="w-14 h-14 rounded-xl bg-white flex items-center justify-center shadow-xl p-2">
-            {company.logo ? <img src={company.logo} alt={company.name} className="w-full h-full object-contain" /> : <span className="text-2xl">{company.icon}</span>}
-          </div>
-          <div>
-            <div className="text-white font-bold text-lg leading-tight">{company.name}</div>
-            <div className="text-white/80 text-xs flex items-center gap-1.5">
-              <ReactCountryFlag countryCode={company.flag} svg /> {company.country} · Est. {company.year}
-            </div>
-          </div>
-        </div>
-      </div>
+    <BoxWrapper
+      title={company.name}
+      subtitle={company.tagline}
+      onClose={onClose}
+      color={company.color}
+      gradientHeader={true}
+      icon={company.logo || company.icon}
+      location={locationText}
+      countryFlag={company.flag}
+      year={company.year}
+    >
 
       <p className="text-sm text-text-light dark:text-text-dark leading-relaxed mb-6">
         {company.description || "Leading the healthcare industry with innovative solutions and medical excellence."}
       </p>
 
-      <div className="space-y-4">
-        <h4 className="text-xs font-bold text-muted-light dark:text-muted-dark uppercase tracking-widest">Key Focus Areas</h4>
-        <div className="grid grid-cols-2 gap-3">
-          {["Medical Writing", "Clinical Data", "Digital Health", "Creative Comms"].map(area => (
-            <div key={area} className="flex items-center gap-2 p-3 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10">
-              <RiCheckLine className="text-primary-500" size={14} />
-              <span className="text-xs font-medium text-text-light dark:text-text-dark">{area}</span>
-            </div>
+      <div className="space-y-3">
+        <h4 className="text-xs font-bold text-primary-500 uppercase tracking-widest">Key Focus Areas</h4>
+        <div className="flex gap-3 overflow-x-auto pb-1 custom-scrollbar">
+          {(() => {
+            // Company-specific focus areas
+            const focusAreasMap: Record<string, Array<{icon: any, label: string, desc: string}>> = {
+              "bait-alebdaa": [
+                { icon: RiPaletteLine, label: "Creative Design", desc: "Visual excellence" },
+                { icon: RiPaletteLine, label: "Branding", desc: "Brand strategy" },
+                { icon: RiVideoLine, label: "Production", desc: "Video content" },
+                { icon: RiStackLine, label: "Marketing", desc: "Campaign design" },
+                { icon: RiImageLine, label: "Artwork", desc: "Medical art" },
+              ],
+              "tebzone": [
+                { icon: RiComputerLine, label: "eCommerce", desc: "Health marketplace" },
+                { icon: RiComputerLine, label: "Platform", desc: "Digital solutions" },
+                { icon: RiCodeBoxLine, label: "Technology", desc: "Health tech" },
+                { icon: RiComputerLine, label: "Mobile", desc: "App solutions" },
+                { icon: RiGlobalLine, label: "Network", desc: "Connect HCPs" },
+              ],
+              "med-add": [
+                { icon: RiGraduationCapLine, label: "CME Programs", desc: "Accredited edu" },
+                { icon: RiBrainLine, label: "AI Learning", desc: "Smart training" },
+                { icon: RiUserSettingsLine, label: "Development", desc: "Skill building" },
+                { icon: RiAwardLine, label: "Certificates", desc: "Accreditation" },
+                { icon: RiTeamLine, label: "Workshops", desc: "Hands-on" },
+              ],
+              "med-vi": [
+                { icon: RiVideoLine, label: "3D Animation", desc: "Medical viz" },
+                { icon: RiStackLine, label: "AR/VR", desc: "Immersive" },
+                { icon: RiComputerLine, label: "Interactive", desc: "Digital exp" },
+                { icon: RiImageLine, label: "Visuals", desc: "Graphics" },
+                { icon: RiVideoLine, label: "Production", desc: "Video content" },
+              ],
+              "med-lab": [
+                { icon: RiMicroscopeLine, label: "R&D", desc: "Innovation" },
+                { icon: RiMicroscopeLine, label: "Lab Solutions", desc: "Research" },
+                { icon: RiCodeBoxLine, label: "Technology", desc: "Development" },
+                { icon: RiStarLine, label: "Incubation", desc: "Startups" },
+                { icon: RiStackLine, label: "Products", desc: "New tech" },
+              ],
+              "meduscript": [
+                { icon: RiFileTextLine, label: "Medical Writing", desc: "Content" },
+                { icon: RiShieldCheckLine, label: "Regulatory", desc: "Compliance" },
+                { icon: RiFileTextLine, label: "Manuscripts", desc: "Publications" },
+                { icon: RiHealthBookLine, label: "Documentation", desc: "Reports" },
+                { icon: RiCheckLine, label: "Review", desc: "QC editing" },
+              ],
+            };
+            // Default focus areas for unknown companies
+            const defaultAreas = [
+              { icon: RiHeartPulseLine, label: "Healthcare", desc: "Solutions" },
+              { icon: RiTeamLine, label: "Experts", desc: "Professionals" },
+              { icon: RiAwardLine, label: "Quality", desc: "Excellence" },
+              { icon: RiGlobalLine, label: "Network", desc: "MENA region" },
+            ];
+            const focusAreas = focusAreasMap[company.id] || defaultAreas;
+            return focusAreas.map((item, idx) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+                className="flex flex-col items-center gap-2 p-3 min-w-[85px] rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10 hover:border-primary-500/30 hover:shadow-lg transition-all cursor-pointer group"
+              >
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center group-hover:from-primary-500 group-hover:to-secondary-500 transition-all shadow-sm">
+                  <item.icon size={22} className="text-primary-500 group-hover:text-white transition-colors" />
+                </div>
+                <span className="text-[10px] font-bold text-text-light dark:text-text-dark text-center leading-tight">
+                  {item.label}
+                </span>
+                <span className="text-[9px] text-muted-light dark:text-muted-dark text-center leading-tight">
+                  {item.desc}
+                </span>
+              </motion.div>
+            ));
+          })()}
+        </div>
+      </div>
+
+      {/* Work Gallery Section */}
+      <div className="mt-6">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-xs font-bold text-primary-500 uppercase tracking-widest">Work Gallery</h4>
+          <button className="flex items-center gap-1 text-[10px] text-muted-light dark:text-muted-dark hover:text-primary-500 transition-colors">
+            VIEW ALL <RiArrowRightLine size={12} />
+          </button>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {galleryImages.slice(0, 4).map((img, idx) => (
+            <motion.div
+              key={img.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              className="group relative aspect-[16/10] rounded-lg overflow-hidden cursor-pointer shadow-md hover:shadow-lg transition-all"
+            >
+              <img 
+                src={img.src} 
+                alt={img.title} 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-2">
+                <span className="text-[8px] font-bold text-primary-300 uppercase tracking-wider">
+                  {img.category}
+                </span>
+                <h5 className="text-white font-bold text-[11px] leading-tight mt-0.5 line-clamp-2">
+                  {img.title}
+                </h5>
+              </div>
+            </motion.div>
           ))}
         </div>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-6">
         <Link href="/contact" className={`flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-gradient-to-r ${company.color} text-white text-sm font-bold shadow-lg`}>
           Partner with {company.name} <RiArrowRightLine size={16} />
         </Link>
