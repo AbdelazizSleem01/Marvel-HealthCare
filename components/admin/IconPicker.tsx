@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { RiCloseLine, RiSearchLine } from "react-icons/ri";
-import { iconComponents, availableIcons } from "./iconData";
+import { iconComponents, availableIcons, IconDef } from "./iconData";
 
 interface IconPickerProps {
   isOpen: boolean;
@@ -16,9 +16,9 @@ export function IconPicker({ isOpen, onClose, onSelect }: IconPickerProps) {
   const inputCls =
     "w-full bg-white/5 border border-border-dark rounded-xl px-4 py-3 text-sm text-text-dark placeholder:text-muted-dark focus:outline-none focus:border-primary-500/60 transition-all";
 
-  const filteredIcons = iconSearch
+  const filteredIcons: IconDef[] = iconSearch
     ? availableIcons.filter(
-        (icon: { name: string; category: string }) =>
+        (icon: IconDef) =>
           icon.name.toLowerCase().includes(iconSearch.toLowerCase()) ||
           icon.category.toLowerCase().includes(iconSearch.toLowerCase())
       )
@@ -96,7 +96,7 @@ export function IconPicker({ isOpen, onClose, onSelect }: IconPickerProps) {
         {/* Icons Grid */}
         <div className="p-4 overflow-y-auto max-h-[50vh] custom-scrollbar">
           <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
-            {filteredIcons.map((icon) => {
+            {filteredIcons.map((icon: IconDef) => {
               const IconComponent = iconComponents[icon.name];
               return (
                 <button
