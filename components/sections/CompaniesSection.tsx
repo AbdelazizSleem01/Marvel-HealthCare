@@ -15,7 +15,9 @@ import {
   RiSunLine, RiMoonLine,
   RiArrowLeftLine, RiArrowRightSLine, RiArrowLeftSLine,
   RiGroupLine,
-  RiImageLine
+  RiImageLine, RiLinkedinBoxLine, RiBookReadLine, RiLightbulbFlashLine,
+  RiShapesLine, RiSettings3Line, RiDatabase2Line, RiFlashlightLine, RiArticleLine,
+  RiBookOpenLine, RiMessage2Line
 } from "react-icons/ri";
 import Link from "next/link";
 import Image from "next/image";
@@ -1523,44 +1525,158 @@ function ClientWorkPopup({ client, onClose }: { client: SegmentedClient; onClose
 }
 
 // ─────────────────────────────────────────────
-// Company Modal
+// Company Modal - Shows Real Data from API
 // ─────────────────────────────────────────────
-function CompanyModal({ company, onClose }: { company: Company; onClose: () => void }) {
+function CompanyModal({ company, onClose }: { company: any; onClose: () => void }) {
+  // Get icon component from iconComponents map
+  const getIconComponent = (iconName: string) => {
+    const iconMap: Record<string, any> = {
+      RiStarLine, RiPaletteLine, RiVideoLine, RiImageLine, RiGlobalLine,
+      RiGraduationCapLine, RiBookReadLine, RiLightbulbFlashLine, RiAwardLine, RiTeamLine,
+      RiEyeLine, RiShapesLine, RiHospitalLine, RiUserHeartLine, RiBrainLine,
+      RiSettings3Line, RiDatabase2Line, RiFlashlightLine, RiArticleLine,
+      RiShieldCheckLine, RiFileTextLine, RiBookOpenLine, RiBriefcaseLine,
+      RiMessage2Line, RiBuildingLine, RiMailLine, RiLinkedinBoxLine,
+    };
+    return iconMap[iconName] || RiStarLine;
+  };
+
   return (
     <ModalBackdrop onClose={onClose}>
-      <div className="w-full md:max-w-lg glass-light dark:glass-dark rounded-3xl border border-border-light dark:border-border-dark shadow-2xl overflow-hidden max-h-[85vh] overflow-y-auto">
-        <div className={`h-20 md:h-24 bg-gradient-to-r ${company.color} relative`}>
+      <div className="w-full md:max-w-2xl glass-light dark:glass-dark rounded-3xl border border-border-light dark:border-border-dark shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className={`h-24 md:h-32 bg-gradient-to-r ${company.color} relative`}>
           <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={onClose} className="absolute top-3 md:top-4 right-3 md:right-4 w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors">
             <RiCloseLine size={18} />
           </motion.button>
-          <div className="absolute -bottom-3 md:-bottom-4 left-4 md:left-6 w-7 h-5 md:w-8 md:h-6 rounded overflow-hidden shadow-md">
+          <div className="absolute -bottom-4 md:-bottom-6 left-4 md:left-6 w-8 h-6 md:w-10 md:h-7 rounded overflow-hidden shadow-md">
             <ReactCountryFlag countryCode={company.flag} svg style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
         </div>
 
-        <div className="p-4 md:p-6 pt-6 md:pt-8">
-          <div className="flex items-start gap-3 md:gap-4 mb-3 md:mb-4">
+        <div className="p-4 md:p-8 pt-8 md:pt-12">
+          {/* Company Header */}
+          <div className="flex items-start gap-3 md:gap-4 mb-4 md:mb-6">
             {company.logo ? (
-              <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-white flex items-center justify-center shadow-lg overflow-hidden p-1.5 md:p-2 shrink-0">
+              <div className="w-14 h-14 md:w-20 md:h-20 rounded-xl md:rounded-2xl bg-white flex items-center justify-center shadow-lg overflow-hidden p-2 md:p-3 shrink-0">
                 <img src={company.logo} alt={company.name} className="w-full h-full object-contain" />
               </div>
             ) : (
-              <div className={`w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br ${company.color} flex items-center justify-center text-white text-xl md:text-2xl font-bold shadow-lg shrink-0`}>{company.icon}</div>
+              <div className={`w-14 h-14 md:w-20 md:h-20 rounded-xl md:rounded-2xl bg-gradient-to-br ${company.color} flex items-center justify-center text-white text-2xl md:text-3xl font-bold shadow-lg shrink-0`}>
+                {company.name?.charAt(0)}
+              </div>
             )}
-            <div className="min-w-0">
-              <h3 className="font-display text-xl md:text-2xl font-bold text-text-light dark:text-text-dark">{company.name}</h3>
-              <p className={`text-xs md:text-sm font-semibold uppercase tracking-wider bg-gradient-to-r ${company.color} bg-clip-text text-transparent`}>{company.tagline}</p>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-display text-xl md:text-3xl font-bold text-text-light dark:text-text-dark">{company.name}</h3>
+              <p className={`text-xs md:text-sm font-semibold uppercase tracking-wider bg-gradient-to-r ${company.color} bg-clip-text text-transparent mb-1`}>{company.tagline}</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[10px] md:text-xs font-mono text-muted-light dark:text-muted-dark bg-black/5 dark:bg-white/5 px-2 md:px-3 py-0.5 rounded-full">Est. {company.year}</span>
+                <span className="text-[10px] md:text-xs text-muted-light dark:text-muted-dark">{company.country}</span>
+                {company.isMain && (
+                  <span className="text-[10px] md:text-xs bg-primary-500/20 text-primary-500 px-2 py-0.5 rounded-full font-medium">Main Company</span>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 mb-3 md:mb-4">
-            <span className="text-[10px] md:text-xs font-mono text-muted-light dark:text-muted-dark bg-black/5 dark:bg-white/5 px-2 md:px-3 py-0.5 md:py-1 rounded-full">Est. {company.year}</span>
-            <span className="text-[10px] md:text-xs text-muted-light dark:text-muted-dark">{company.country}</span>
-          </div>
+          {/* Description */}
+          <p className="text-sm md:text-base text-muted-light dark:text-muted-dark leading-relaxed mb-5 md:mb-6">{company.description}</p>
 
-          <p className="text-sm text-muted-light dark:text-muted-dark leading-relaxed mb-4 md:mb-6">{company.description}</p>
+          {/* Statistics */}
+          {company.customStats && company.customStats.length > 0 && (
+            <div className="mb-5 md:mb-6">
+              <h4 className="text-xs md:text-sm font-bold text-text-light dark:text-text-dark uppercase tracking-wider mb-3">Key Statistics</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
+                {company.customStats.map((stat: any) => (
+                  <div key={stat.id} className="glass-light dark:glass-dark rounded-xl p-3 border border-border-light dark:border-border-dark">
+                    <div className="text-lg md:text-xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
+                      {stat.value}{stat.suffix}
+                    </div>
+                    <div className="text-[10px] md:text-xs text-muted-light dark:text-muted-dark">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-3">
+          {/* Focus Areas */}
+          {company.focusAreas && company.focusAreas.length > 0 && (
+            <div className="mb-5 md:mb-6">
+              <h4 className="text-xs md:text-sm font-bold text-text-light dark:text-text-dark uppercase tracking-wider mb-3">Focus Areas</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
+                {company.focusAreas.map((area: any, idx: number) => {
+                  const IconComp = getIconComponent(area.icon);
+                  return (
+                    <div key={idx} className="flex items-start gap-2 md:gap-3 p-2 md:p-3 rounded-xl bg-white/50 dark:bg-white/5 border border-border-light dark:border-border-dark">
+                      <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg bg-gradient-to-br ${company.color} flex items-center justify-center shrink-0`}>
+                        <IconComp className="text-white" size={16} />
+                      </div>
+                      <div>
+                        <div className="text-xs md:text-sm font-semibold text-text-light dark:text-text-dark">{area.label}</div>
+                        <div className="text-[10px] md:text-xs text-muted-light dark:text-muted-dark">{area.description}</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Gallery */}
+          {company.gallery && company.gallery.length > 0 && (
+            <div className="mb-5 md:mb-6">
+              <h4 className="text-xs md:text-sm font-bold text-text-light dark:text-text-dark uppercase tracking-wider mb-3">Gallery</h4>
+              <div className="grid grid-cols-3 gap-2 md:gap-3">
+                {company.gallery.map((img: any, idx: number) => (
+                  <div key={idx} className="aspect-square rounded-xl overflow-hidden bg-white/50 dark:bg-white/5 border border-border-light dark:border-border-dark">
+                    <img src={img.src} alt={img.title} className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Team Members */}
+          {company.employees && company.employees.length > 0 && (
+            <div className="mb-5 md:mb-6">
+              <h4 className="text-xs md:text-sm font-bold text-text-light dark:text-text-dark uppercase tracking-wider mb-3">Team</h4>
+              <div className="flex flex-wrap gap-2">
+                {company.employees.map((emp: any, idx: number) => (
+                  <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/50 dark:bg-white/5 border border-border-light dark:border-border-dark">
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-xs font-bold">
+                      {emp.name.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="text-xs font-medium text-text-light dark:text-text-dark">{emp.name}</div>
+                      <div className="text-[10px] text-muted-light dark:text-muted-dark">{emp.position}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Social Media */}
+          {company.socialMedia && Object.keys(company.socialMedia).length > 0 && (
+            <div className="mb-5 md:mb-6">
+              <h4 className="text-xs md:text-sm font-bold text-text-light dark:text-text-dark uppercase tracking-wider mb-3">Connect</h4>
+              <div className="flex gap-2">
+                {company.socialMedia.linkedin && (
+                  <a href={company.socialMedia.linkedin} target="_blank" rel="noopener noreferrer" className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-[#0077b5]/10 border border-[#0077b5]/20 flex items-center justify-center text-[#0077b5] hover:bg-[#0077b5]/20 transition-all">
+                    <RiLinkedinBoxLine size={18} />
+                  </a>
+                )}
+                {company.socialMedia.email && (
+                  <a href={`mailto:${company.socialMedia.email}`} className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-primary-500/10 border border-primary-500/20 flex items-center justify-center text-primary-500 hover:bg-primary-500/20 transition-all">
+                    <RiMailLine size={18} />
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-3 pt-2 border-t border-border-light dark:border-border-dark">
             <Link href="/contact" className={`flex-1 flex items-center justify-center gap-2 px-4 md:px-6 py-2.5 md:py-3 rounded-xl bg-gradient-to-r ${company.color} text-white text-sm font-semibold hover:opacity-90 transition-all shadow-lg`}>
               <RiMailLine size={16} /> Get in Touch <RiArrowRightLine size={14} />
             </Link>

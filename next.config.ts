@@ -3,8 +3,9 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "demo.marvelwall.com" },
+      { protocol: "https", hostname: "*.vercel.app" },
     ],
+    unoptimized: true,
   },
-  allowedDevOrigins: ["127.0.0.1", "localhost"],
 };
 export default nextConfig;
