@@ -17,7 +17,10 @@ import {
   RiGroupLine,
   RiImageLine, RiLinkedinBoxLine, RiBookReadLine, RiLightbulbFlashLine,
   RiShapesLine, RiSettings3Line, RiDatabase2Line, RiFlashlightLine, RiArticleLine,
-  RiBookOpenLine, RiMessage2Line
+  RiBookOpenLine, RiMessage2Line,
+  // Additional social media icons
+  RiFacebookBoxLine, RiYoutubeLine, RiTwitterXLine, RiInstagramLine,
+  RiSnapchatLine, RiTelegramLine, RiBarChartBoxLine, RiShareLine
 } from "react-icons/ri";
 import Link from "next/link";
 import Image from "next/image";
@@ -70,7 +73,6 @@ const StatValue = ({ value, suffix }: { value: number; suffix: string }) => {
   );
 };
 
-// Hook for responsive breakpoints
 function useBreakpoint() {
   const [bp, setBp] = useState<"mobile" | "tablet" | "desktop">("desktop");
   useEffect(() => {
@@ -376,7 +378,7 @@ export default function CompaniesSection() {
       </div>
 
       {/* ─── Main Layout ─── */}
-      <motion.div layout className={`relative z-10 w-full max-w-7xl mx-auto px-2 sm:px-4 flex ${isMobile ? "flex-col items-center" : "items-center justify-start gap-4 lg:gap-8"}`}>
+      <motion.div layout className={`relative z-50 w-full max-w-7xl mx-auto px-2 sm:px-4 flex ${isMobile ? "flex-col items-center" : "items-center justify-start gap-4 lg:gap-8"}`}>
 
         {/* ─── Desktop/Tablet: Top Toolbar ─── */}
         {!isMobile && (
@@ -384,7 +386,7 @@ export default function CompaniesSection() {
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5, type: "spring", stiffness: 100 }}
-            className="fixed top-4 left-24 right-0 z-50 px-4 pointer-events-none"
+            className="fixed top-4 left-24 right-0 z-40 px-4 pointer-events-none"
           >
             <div className="max-w-xl lg:max-w-4xl mx-auto w-full pointer-events-auto">
               <div className="rounded-2xl glass-light dark:glass-dark border-x border-b border-border-light dark:border-border-dark/50 shadow-2xl overflow-hidden backdrop-blur-xl mt-0">
@@ -463,7 +465,7 @@ export default function CompaniesSection() {
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
-            className="fixed top-4 left-2 lg:left-4 z-[60] pointer-events-auto "
+            className="fixed top-4 left-2 lg:left-4 z-40 pointer-events-auto "
           >
             <div className="rounded-xl p-2 glass-light dark:glass-dark border border-border-light dark:border-border-dark/50 shadow-xl backdrop-blur-xl flex items-center gap-1.5 lg:gap-2">
               {COUNTRIES.map((country, idx) => (
@@ -533,7 +535,7 @@ export default function CompaniesSection() {
 
           {/* Orbital layout */}
           <div
-            className={`relative flex items-center justify-center pointer-events-auto ${isMobile ? "w-full h-[340px] -mt-44" : isTablet ? "w-full h-[400px] -mt-8" : "w-full h-[500px] -mt-12"}`}
+            className={`relative z-[100] flex items-center justify-center pointer-events-auto ${isMobile ? "w-full h-[340px] -mt-44" : isTablet ? "w-full h-[400px] -mt-8" : "w-full h-[500px] -mt-12"}`}
             onMouseEnter={() => !isMobile && setIsHovering(true)}
             onMouseLeave={() => !isMobile && setIsHovering(false)}
           >
@@ -585,20 +587,14 @@ export default function CompaniesSection() {
               whileTap={{ scale: 0.96 }}
               onClick={() => {
                 if (!isMobile) {
-                  // Show Marvel Group info
-                  const marvelGroup = {
-                    id: "marvel-group",
-                    name: "Marvel Group",
-                    tagline: "Where Medicine Meets Mastery",
-                    year: "2015",
-                    country: "Egypt / UAE / KSA",
-                    flag: "EG",
-                    description: "Marvel Group is the MENA region's most trusted med-tech ecosystem, powering healthcare innovation since 2015. We are a full-service healthcare solutions provider combining medical education, creative communication, digital platforms, and cutting-edge technology to transform patient care across the region.",
-                    color: "from-primary-500 to-secondary-400",
-                    icon: "M",
-                    logo: "/Logo.png",
-                  };
-                  handleStateChange(setSelectedCompany, marvelGroup);
+                  // Find main company (Marvel Group) from API data
+                  const mainCompany = companies.find((c: any) => c.isMain === true);
+                  if (mainCompany) {
+                    handleStateChange(setSelectedCompany, mainCompany);
+                  } else if (companies.length > 0) {
+                    // Fallback to first company if no main company found
+                    handleStateChange(setSelectedCompany, companies[0]);
+                  }
                 }
               }}
             >
@@ -632,8 +628,8 @@ export default function CompaniesSection() {
               </div>
             )}
 
-            {/* Company Orbitals */}
-            {!loadingCompanies && companies.map((company, index) => {
+            {/* Company Orbitals - Exclude main company */}
+            {!loadingCompanies && companies.filter((c: any) => !c.isMain).map((company, index) => {
               const position = orbitConfig.positions[index];
               if (!position) return null;
               const angleRad = ((position.angle + rotation * 0.22) * Math.PI) / 180;
@@ -646,7 +642,7 @@ export default function CompaniesSection() {
               return (
                 <div
                   key={company.id}
-                  className={`absolute left-1/2 top-1/2 mt-4 transition-all duration-300 ${isHovered ? "z-[60]" : "z-20"}`}
+                  className={`absolute left-1/2 top-1/2 mt-4 transition-all duration-300 ${isHovered ? "z-[9999]" : "z-20"}`}
                   style={{
                     width: orbitConfig.nodeSize,
                     height: orbitConfig.nodeSize,
@@ -689,7 +685,7 @@ export default function CompaniesSection() {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.8 }}
                             transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                            className="absolute left-1/2 -translate-x-1/2 -top-16 pointer-events-none z-[100]"
+                            className="absolute left-1/2 -translate-x-1/2 -top-16 pointer-events-none z-[9999]"
                           >
                             <div className="bg-surface-light/95 dark:bg-surface-dark/95 backdrop-blur-md px-4 py-2 rounded-2xl shadow-2xl border border-primary-500/30 whitespace-nowrap">
                               <span className="text-sm font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">{company.name}</span>
@@ -876,25 +872,27 @@ export default function CompaniesSection() {
                       ))}
                     </div>
                     <div className="space-y-2 max-h-[40vh] overflow-y-auto">
-                      {(() => {
-                        const list = activeClientTab === "all"
-                          ? [...segmentedClients.pharma, ...segmentedClients.vendors, ...segmentedClients.societies]
-                          : segmentedClients[activeClientTab];
-                        return list?.slice(0, 5).map((client: any, idx: number) => (
-                          <motion.button key={client.id} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.05 }} onClick={() => { handleStateChange(setSelectedClient, client); setShowMobileRight(false); }} className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark active:border-primary-500/40 transition-all text-left">
-                            <div className="w-9 h-9 rounded-lg bg-white dark:bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
-                              {client.logo ? <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-0.5" /> : <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-[10px] font-bold">{client.name.slice(0, 2).toUpperCase()}</div>}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <h4 className="font-medium text-xs text-text-light dark:text-text-dark truncate">{client.name}</h4>
-                              <p className="text-[10px] text-muted-light dark:text-muted-dark flex items-center gap-1">
-                                <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-3" /> {client.country}
-                              </p>
-                            </div>
-                            <RiArrowRightLine size={12} className="text-muted-light dark:text-muted-dark shrink-0" />
-                          </motion.button>
-                        ));
-                      })()}
+                      <div className="contents">
+                        {(() => {
+                          const list = activeClientTab === "all"
+                            ? [...segmentedClients.pharma, ...segmentedClients.vendors, ...segmentedClients.societies]
+                            : segmentedClients[activeClientTab];
+                          return list?.slice(0, 5).map((client: any, idx: number) => (
+                            <motion.button key={client.id} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.05 }} onClick={() => { handleStateChange(setSelectedClient, client); setShowMobileRight(false); }} className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark active:border-primary-500/40 transition-all text-left">
+                              <div className="w-9 h-9 rounded-lg bg-white dark:bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+                                {client.logo ? <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-0.5" /> : <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-[10px] font-bold">{client.name.slice(0, 2).toUpperCase()}</div>}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <h4 className="font-medium text-xs text-text-light dark:text-text-dark truncate">{client.name}</h4>
+                                <p className="text-[10px] text-muted-light dark:text-muted-dark flex items-center gap-1">
+                                  <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-3" /> {client.country}
+                                </p>
+                              </div>
+                              <RiArrowRightLine size={12} className="text-muted-light dark:text-muted-dark shrink-0" />
+                            </motion.button>
+                          ));
+                        })()}
+                      </div>
                     </div>
                     <p className="text-[10px] text-center text-muted-light dark:text-muted-dark mt-2 pt-2 border-t border-border-light dark:border-border-dark">
                       {activeClientTab === "all"
@@ -1019,43 +1017,45 @@ export default function CompaniesSection() {
                         minHeight: 'fit-content',
                       }}
                     >
-                      {(() => {
-                        const originalList = activeClientTab === "all"
-                          ? [...segmentedClients.pharma, ...segmentedClients.vendors, ...segmentedClients.societies]
-                          : segmentedClients[activeClientTab];
-                        const list = [...originalList, ...originalList];
+                      <div className="contents">
+                        {(() => {
+                          const originalList = activeClientTab === "all"
+                            ? [...segmentedClients.pharma, ...segmentedClients.vendors, ...segmentedClients.societies]
+                            : segmentedClients[activeClientTab];
+                          const list = [...originalList, ...originalList];
 
-                        return list?.map((client, idx) => (
-                        <motion.button
-                          key={`${client.id}-${idx}`}
-                          whileHover={{ scale: 1.12, x: -3 }}
-                          whileTap={{ scale: 0.92 }}
-                          onClick={() => handleStateChange(setSelectedClient, client)}
-                          className="group relative flex items-center justify-center shrink-0 w-10 h-10 lg:w-12 lg:h-12"
-                        >
-                          <div className="w-full h-full rounded-xl bg-white dark:bg-white flex items-center justify-center overflow-hidden shadow-sm border border-border-light/50 dark:border-border-dark/20 group-hover:border-primary-500/50 transition-all">
-                            {client.logo ? (
-                              <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-1.5" />
-                            ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-[10px] font-bold">
-                                {client.name.slice(0, 2).toUpperCase()}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Hover Tooltip */}
-                          <div className="absolute right-full mr-4 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 z-50">
-                            <div className="bg-surface-light dark:bg-surface-dark px-3 py-2 rounded-xl shadow-2xl border border-border-light dark:border-border-dark whitespace-nowrap">
-                              <div className="font-bold text-sm text-text-light dark:text-text-dark">{client.name}</div>
-                              <div className="text-[10px] text-muted-light dark:text-muted-dark flex items-center gap-1 mt-0.5">
-                                <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-2.5" /> {client.country}
-                              </div>
-                              <div className="absolute right-[-6px] top-1/2 -translate-y-1/2 w-3 h-3 bg-surface-light dark:bg-surface-dark rotate-45 border-r border-t border-border-light dark:border-border-dark" />
+                          return list?.map((client, idx) => (
+                          <motion.button
+                            key={`${client.id}-${idx}`}
+                            whileHover={{ scale: 1.12, x: -3 }}
+                            whileTap={{ scale: 0.92 }}
+                            onClick={() => handleStateChange(setSelectedClient, client)}
+                            className="group relative flex items-center justify-center shrink-0 w-10 h-10 lg:w-12 lg:h-12"
+                          >
+                            <div className="w-full h-full rounded-xl bg-white dark:bg-white flex items-center justify-center overflow-hidden shadow-sm border border-border-light/50 dark:border-border-dark/20 group-hover:border-primary-500/50 transition-all">
+                              {client.logo ? (
+                                <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-1.5" />
+                              ) : (
+                                <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-[10px] font-bold">
+                                  {client.name.slice(0, 2).toUpperCase()}
+                                </div>
+                              )}
                             </div>
-                          </div>
-                        </motion.button>
-                      ));
-                    })()}
+
+                            {/* Hover Tooltip */}
+                            <div className="absolute right-full mr-4 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 z-50">
+                              <div className="bg-surface-light dark:bg-surface-dark px-3 py-2 rounded-xl shadow-2xl border border-border-light dark:border-border-dark whitespace-nowrap">
+                                <div className="font-bold text-sm text-text-light dark:text-text-dark">{client.name}</div>
+                                <div className="text-[10px] text-muted-light dark:text-muted-dark flex items-center gap-1 mt-0.5">
+                                  <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-2.5" /> {client.country}
+                                </div>
+                                <div className="absolute right-[-6px] top-1/2 -translate-y-1/2 w-3 h-3 bg-surface-light dark:bg-surface-dark rotate-45 border-r border-t border-border-light dark:border-border-dark" />
+                              </div>
+                            </div>
+                          </motion.button>
+                          ));
+                        })()}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1113,33 +1113,35 @@ export default function CompaniesSection() {
 
                 {/* Client List */}
                 <div className="space-y-2">
-                  {(() => {
-                    const list = activeClientTab === "all"
-                      ? [...segmentedClients.pharma, ...segmentedClients.vendors, ...segmentedClients.societies]
-                      : segmentedClients[activeClientTab];
-                    return list?.map((client: any, idx: number) => (
+                  <div className="contents">
+                    {(() => {
+                      const list = activeClientTab === "all"
+                        ? [...segmentedClients.pharma, ...segmentedClients.vendors, ...segmentedClients.societies]
+                        : segmentedClients[activeClientTab];
+                      return list?.map((client: any, idx: number) => (
 
-                      <motion.button
-                        key={client.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.03 }}
-                        onClick={() => { setSelectedClient(client); setShowMobileNetwork(false); }}
-                        className="w-full flex items-center gap-3 p-3 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark active:border-primary-500/40 transition-all text-left"
-                      >
-                        <div className="w-10 h-10 rounded-lg bg-white dark:bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
-                          {client.logo ? <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-1" /> : <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-xs font-bold">{client.name.slice(0, 2).toUpperCase()}</div>}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <h4 className="font-medium text-sm text-text-light dark:text-text-dark truncate">{client.name}</h4>
-                          <p className="text-xs text-muted-light dark:text-muted-dark flex items-center gap-1">
-                            <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-3" /> {client.country}
-                          </p>
-                        </div>
-                        <RiArrowRightLine size={14} className="text-muted-light dark:text-muted-dark shrink-0" />
-                      </motion.button>
-                    ));
-                  })()}
+                        <motion.button
+                          key={client.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: idx * 0.03 }}
+                          onClick={() => { setSelectedClient(client); setShowMobileNetwork(false); }}
+                          className="w-full flex items-center gap-3 p-3 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark active:border-primary-500/40 transition-all text-left"
+                        >
+                          <div className="w-10 h-10 rounded-lg bg-white dark:bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+                            {client.logo ? <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-1" /> : <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-xs font-bold">{client.name.slice(0, 2).toUpperCase()}</div>}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-medium text-sm text-text-light dark:text-text-dark truncate">{client.name}</h4>
+                            <p className="text-xs text-muted-light dark:text-muted-dark flex items-center gap-1">
+                              <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-3" /> {client.country}
+                            </p>
+                          </div>
+                          <RiArrowRightLine size={14} className="text-muted-light dark:text-muted-dark shrink-0" />
+                        </motion.button>
+                      ));
+                    })()}
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -1176,7 +1178,6 @@ export default function CompaniesSection() {
 function ModalBackdrop({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
   return (
     <motion.div
-      key="modal-overlay"
       variants={overlayVariants}
       initial="hidden"
       animate="visible"
@@ -1582,7 +1583,28 @@ function CompanyModal({ company, onClose }: { company: any; onClose: () => void 
           {/* Description */}
           <p className="text-sm md:text-base text-muted-light dark:text-muted-dark leading-relaxed mb-5 md:mb-6">{company.description}</p>
 
-          {/* Statistics */}
+          {/* Legacy Stats (if no customStats) */}
+          {company.stats && (!company.customStats || company.customStats.length === 0) && (
+            <div className="mb-5 md:mb-6">
+              <h4 className="text-xs md:text-sm font-bold text-text-light dark:text-text-dark uppercase tracking-wider mb-3">Overview</h4>
+              <div className="grid grid-cols-3 gap-2 md:gap-3">
+                <div className="glass-light dark:glass-dark rounded-xl p-3 border border-border-light dark:border-border-dark">
+                  <div className="text-lg md:text-xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">{company.stats.employees || 0}</div>
+                  <div className="text-[10px] md:text-xs text-muted-light dark:text-muted-dark">Employees</div>
+                </div>
+                <div className="glass-light dark:glass-dark rounded-xl p-3 border border-border-light dark:border-border-dark">
+                  <div className="text-lg md:text-xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">{company.stats.projects || 0}</div>
+                  <div className="text-[10px] md:text-xs text-muted-light dark:text-muted-dark">Projects</div>
+                </div>
+                <div className="glass-light dark:glass-dark rounded-xl p-3 border border-border-light dark:border-border-dark">
+                  <div className="text-lg md:text-xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">{company.stats.clients || 0}</div>
+                  <div className="text-[10px] md:text-xs text-muted-light dark:text-muted-dark">Clients</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Custom Statistics */}
           {company.customStats && company.customStats.length > 0 && (
             <div className="mb-5 md:mb-6">
               <h4 className="text-xs md:text-sm font-bold text-text-light dark:text-text-dark uppercase tracking-wider mb-3">Key Statistics</h4>
@@ -1625,11 +1647,19 @@ function CompanyModal({ company, onClose }: { company: any; onClose: () => void 
           {/* Gallery */}
           {company.gallery && company.gallery.length > 0 && (
             <div className="mb-5 md:mb-6">
-              <h4 className="text-xs md:text-sm font-bold text-text-light dark:text-text-dark uppercase tracking-wider mb-3">Gallery</h4>
+              <h4 className="text-xs md:text-sm font-bold text-text-light dark:text-text-dark uppercase tracking-wider mb-3">
+                Gallery ({company.gallery.length} {company.gallery.length === 1 ? 'image' : 'images'})
+              </h4>
               <div className="grid grid-cols-3 gap-2 md:gap-3">
                 {company.gallery.map((img: any, idx: number) => (
-                  <div key={idx} className="aspect-square rounded-xl overflow-hidden bg-white/50 dark:bg-white/5 border border-border-light dark:border-border-dark">
-                    <img src={img.src} alt={img.title} className="w-full h-full object-cover" />
+                  <div key={idx} className="group relative aspect-square rounded-xl overflow-hidden bg-white/50 dark:bg-white/5 border border-border-light dark:border-border-dark">
+                    <img src={img.src} alt={img.title} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+                    {(img.title || img.category) && (
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {img.title && <div className="text-[10px] text-white font-medium truncate">{img.title}</div>}
+                        {img.category && <div className="text-[9px] text-white/70">{img.category}</div>}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -1639,16 +1669,23 @@ function CompanyModal({ company, onClose }: { company: any; onClose: () => void 
           {/* Team Members */}
           {company.employees && company.employees.length > 0 && (
             <div className="mb-5 md:mb-6">
-              <h4 className="text-xs md:text-sm font-bold text-text-light dark:text-text-dark uppercase tracking-wider mb-3">Team</h4>
+              <h4 className="text-xs md:text-sm font-bold text-text-light dark:text-text-dark uppercase tracking-wider mb-3">Team ({company.employees.length})</h4>
               <div className="flex flex-wrap gap-2">
                 {company.employees.map((emp: any, idx: number) => (
-                  <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/50 dark:bg-white/5 border border-border-light dark:border-border-dark">
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-xs font-bold">
-                      {emp.name.charAt(0)}
-                    </div>
+                  <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/50 dark:bg-white/5 border border-border-light dark:border-border-dark">
+                    {emp.image ? (
+                      <img src={emp.image} alt={emp.name} className="w-8 h-8 rounded-full object-cover" />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-xs font-bold">
+                        {emp.name.charAt(0)}
+                      </div>
+                    )}
                     <div>
                       <div className="text-xs font-medium text-text-light dark:text-text-dark">{emp.name}</div>
                       <div className="text-[10px] text-muted-light dark:text-muted-dark">{emp.position}</div>
+                      {emp.department && (
+                        <div className="text-[9px] text-primary-500">{emp.department}</div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -1660,17 +1697,27 @@ function CompanyModal({ company, onClose }: { company: any; onClose: () => void 
           {company.socialMedia && Object.keys(company.socialMedia).length > 0 && (
             <div className="mb-5 md:mb-6">
               <h4 className="text-xs md:text-sm font-bold text-text-light dark:text-text-dark uppercase tracking-wider mb-3">Connect</h4>
-              <div className="flex gap-2">
-                {company.socialMedia.linkedin && (
-                  <a href={company.socialMedia.linkedin} target="_blank" rel="noopener noreferrer" className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-[#0077b5]/10 border border-[#0077b5]/20 flex items-center justify-center text-[#0077b5] hover:bg-[#0077b5]/20 transition-all">
-                    <RiLinkedinBoxLine size={18} />
+              <div className="flex flex-wrap gap-2">
+                {[
+                  company.socialMedia.linkedin && { key: 'linkedin', href: company.socialMedia.linkedin, icon: RiLinkedinBoxLine, color: 'bg-[#0077b5]/10 border-[#0077b5]/20 text-[#0077b5] hover:bg-[#0077b5]/20' },
+                  company.socialMedia.whatsapp && { key: 'whatsapp', href: `https://wa.me/${company.socialMedia.whatsapp}`, icon: RiWhatsappLine, color: 'bg-[#25d366]/10 border-[#25d366]/20 text-[#25d366] hover:bg-[#25d366]/20', isExternal: true },
+                  company.socialMedia.email && { key: 'email', href: `mailto:${company.socialMedia.email}`, icon: RiMailLine, color: 'bg-primary-500/10 border-primary-500/20 text-primary-500 hover:bg-primary-500/20' },
+                  company.socialMedia.facebook && { key: 'facebook', href: company.socialMedia.facebook, icon: RiFacebookBoxLine, color: 'bg-[#1877f2]/10 border-[#1877f2]/20 text-[#1877f2] hover:bg-[#1877f2]/20' },
+                  company.socialMedia.youtube && { key: 'youtube', href: company.socialMedia.youtube, icon: RiYoutubeLine, color: 'bg-[#ff0000]/10 border-[#ff0000]/20 text-[#ff0000] hover:bg-[#ff0000]/20' },
+                  company.socialMedia.x && { key: 'x', href: company.socialMedia.x, icon: RiTwitterXLine, color: 'bg-black/10 dark:bg-white/10 border-black/20 dark:border-white/20 text-black dark:text-white hover:bg-black/20 dark:hover:bg-white/20' },
+                  company.socialMedia.instagram && { key: 'instagram', href: company.socialMedia.instagram, icon: RiInstagramLine, color: 'bg-gradient-to-br from-[#833ab4]/10 via-[#fd1d1d]/10 to-[#fcb045]/10 border-[#fd1d1d]/20 text-[#e4405f] hover:from-[#833ab4]/20 hover:via-[#fd1d1d]/20 hover:to-[#fcb045]/20' },
+                  company.socialMedia.telegram && { key: 'telegram', href: company.socialMedia.telegram, icon: RiTelegramLine, color: 'bg-[#0088cc]/10 border-[#0088cc]/20 text-[#0088cc] hover:bg-[#0088cc]/20' },
+                ].filter(Boolean).map((social: any) => (
+                  <a 
+                    key={social.key}
+                    href={social.href} 
+                    target={social.isExternal !== false ? "_blank" : undefined} 
+                    rel={social.isExternal !== false ? "noopener noreferrer" : undefined}
+                    className={`w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all ${social.color}`}
+                  >
+                    <social.icon size={18} />
                   </a>
-                )}
-                {company.socialMedia.email && (
-                  <a href={`mailto:${company.socialMedia.email}`} className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-primary-500/10 border border-primary-500/20 flex items-center justify-center text-primary-500 hover:bg-primary-500/20 transition-all">
-                    <RiMailLine size={18} />
-                  </a>
-                )}
+                ))}
               </div>
             </div>
           )}
@@ -2176,7 +2223,24 @@ function ClientInfoView({ client, onClose }: { client: SegmentedClient, onClose:
   );
 }
 
-function CompanyInfoView({ company, onClose }: { company: Company, onClose: () => void }) {
+function CompanyInfoView({ company, onClose }: { company: any, onClose: () => void }) {
+  // Get icon component from iconComponents map
+  const getIconComponent = (iconName: string) => {
+    const iconMap: Record<string, any> = {
+      RiStarLine, RiPaletteLine, RiVideoLine, RiImageLine, RiGlobalLine,
+      RiGraduationCapLine, RiBookReadLine, RiLightbulbFlashLine, RiAwardLine, RiTeamLine,
+      RiEyeLine, RiShapesLine, RiHospitalLine, RiUserHeartLine, RiBrainLine,
+      RiSettings3Line, RiDatabase2Line, RiFlashlightLine, RiArticleLine,
+      RiShieldCheckLine, RiFileTextLine, RiBookOpenLine, RiBriefcaseLine,
+      RiMessage2Line, RiBuildingLine, RiMailLine, RiLinkedinBoxLine,
+      RiComputerLine, RiCodeBoxLine, RiStackLine, RiUserSettingsLine,
+      RiMicroscopeLine, RiHeartPulseLine, RiHealthBookLine, RiCheckLine,
+      RiWhatsappLine, RiFacebookBoxLine, RiYoutubeLine, RiTwitterXLine,
+      RiInstagramLine, RiTelegramLine
+    };
+    return iconMap[iconName] || RiStarLine;
+  };
+
   const locationText = `${company.country} · Est. ${company.year}`;
   return (
     <BoxWrapper
@@ -2195,121 +2259,174 @@ function CompanyInfoView({ company, onClose }: { company: Company, onClose: () =
         {company.description || "Leading the healthcare industry with innovative solutions and medical excellence."}
       </p>
 
-      <div className="space-y-3">
-        <h4 className="text-xs font-bold text-primary-500 uppercase tracking-widest">Key Focus Areas</h4>
-        <div className="flex gap-3 overflow-x-auto pb-1 custom-scrollbar">
-          {(() => {
-            // Company-specific focus areas
-            const focusAreasMap: Record<string, Array<{icon: any, label: string, desc: string}>> = {
-              "bait-alebdaa": [
-                { icon: RiPaletteLine, label: "Creative Design", desc: "Visual excellence" },
-                { icon: RiPaletteLine, label: "Branding", desc: "Brand strategy" },
-                { icon: RiVideoLine, label: "Production", desc: "Video content" },
-                { icon: RiStackLine, label: "Marketing", desc: "Campaign design" },
-                { icon: RiImageLine, label: "Artwork", desc: "Medical art" },
-              ],
-              "tebzone": [
-                { icon: RiComputerLine, label: "eCommerce", desc: "Health marketplace" },
-                { icon: RiComputerLine, label: "Platform", desc: "Digital solutions" },
-                { icon: RiCodeBoxLine, label: "Technology", desc: "Health tech" },
-                { icon: RiComputerLine, label: "Mobile", desc: "App solutions" },
-                { icon: RiGlobalLine, label: "Network", desc: "Connect HCPs" },
-              ],
-              "med-add": [
-                { icon: RiGraduationCapLine, label: "CME Programs", desc: "Accredited edu" },
-                { icon: RiBrainLine, label: "AI Learning", desc: "Smart training" },
-                { icon: RiUserSettingsLine, label: "Development", desc: "Skill building" },
-                { icon: RiAwardLine, label: "Certificates", desc: "Accreditation" },
-                { icon: RiTeamLine, label: "Workshops", desc: "Hands-on" },
-              ],
-              "med-vi": [
-                { icon: RiVideoLine, label: "3D Animation", desc: "Medical viz" },
-                { icon: RiStackLine, label: "AR/VR", desc: "Immersive" },
-                { icon: RiComputerLine, label: "Interactive", desc: "Digital exp" },
-                { icon: RiImageLine, label: "Visuals", desc: "Graphics" },
-                { icon: RiVideoLine, label: "Production", desc: "Video content" },
-              ],
-              "med-lab": [
-                { icon: RiMicroscopeLine, label: "R&D", desc: "Innovation" },
-                { icon: RiMicroscopeLine, label: "Lab Solutions", desc: "Research" },
-                { icon: RiCodeBoxLine, label: "Technology", desc: "Development" },
-                { icon: RiStarLine, label: "Incubation", desc: "Startups" },
-                { icon: RiStackLine, label: "Products", desc: "New tech" },
-              ],
-              "meduscript": [
-                { icon: RiFileTextLine, label: "Medical Writing", desc: "Content" },
-                { icon: RiShieldCheckLine, label: "Regulatory", desc: "Compliance" },
-                { icon: RiFileTextLine, label: "Manuscripts", desc: "Publications" },
-                { icon: RiHealthBookLine, label: "Documentation", desc: "Reports" },
-                { icon: RiCheckLine, label: "Review", desc: "QC editing" },
-              ],
-            };
-            // Default focus areas for unknown companies
-            const defaultAreas = [
-              { icon: RiHeartPulseLine, label: "Healthcare", desc: "Solutions" },
-              { icon: RiTeamLine, label: "Experts", desc: "Professionals" },
-              { icon: RiAwardLine, label: "Quality", desc: "Excellence" },
-              { icon: RiGlobalLine, label: "Network", desc: "MENA region" },
-            ];
-            const focusAreas = focusAreasMap[company.id] || defaultAreas;
-            return focusAreas.map((item, idx) => (
+      {/* Focus Areas from API */}
+      {company.focusAreas && company.focusAreas.length > 0 && (
+        <div className="space-y-3">
+          <h4 className="text-xs font-bold text-primary-500 uppercase tracking-widest">Key Focus Areas</h4>
+          <div className="flex gap-3 overflow-x-auto pb-1 custom-scrollbar">
+            {company.focusAreas.map((area: any, idx: number) => {
+              const IconComp = getIconComponent(area.icon);
+              return (
+                <motion.div
+                  key={area.label || idx}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="flex flex-col items-center gap-2 p-3 min-w-[85px] rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10 hover:border-primary-500/30 hover:shadow-lg transition-all cursor-pointer group"
+                >
+                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${company.color} flex items-center justify-center group-hover:opacity-90 transition-all shadow-sm`}>
+                    <IconComp size={22} className="text-white" />
+                  </div>
+                  <span className="text-[10px] font-bold text-text-light dark:text-text-dark text-center leading-tight">
+                    {area.label}
+                  </span>
+                  <span className="text-[9px] text-muted-light dark:text-muted-dark text-center leading-tight">
+                    {area.description}
+                  </span>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Gallery from API */}
+      {company.gallery && company.gallery.length > 0 && (
+        <div className="mt-6">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-xs font-bold text-primary-500 uppercase tracking-widest flex items-center gap-2">
+              <RiImageLine size={14} /> Work Gallery
+              <span className="px-1.5 py-0.5 rounded-full bg-primary-500/10 text-primary-500 text-[10px] font-bold">{company.gallery.length}</span>
+            </h4>
+          </div>
+          <div className="grid grid-cols-2 gap-2.5">
+            {company.gallery.slice(0, 4).map((img: any, idx: number) => (
               <motion.div
-                key={item.label}
+                key={img.src || idx}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.05 }}
-                className="flex flex-col items-center gap-2 p-3 min-w-[85px] rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10 hover:border-primary-500/30 hover:shadow-lg transition-all cursor-pointer group"
+                transition={{ delay: idx * 0.1 }}
+                className="group relative aspect-[16/10] rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 ring-1 ring-black/5 dark:ring-white/10"
               >
-                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center group-hover:from-primary-500 group-hover:to-secondary-500 transition-all shadow-sm">
-                  <item.icon size={22} className="text-primary-500 group-hover:text-white transition-colors" />
+                <img 
+                  src={img.src} 
+                  alt={img.title || 'Gallery image'} 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+                <div className="absolute top-2 right-2">
+                  <span className="px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-[8px] font-bold text-white uppercase tracking-wider">
+                    {img.category}
+                  </span>
                 </div>
-                <span className="text-[10px] font-bold text-text-light dark:text-text-dark text-center leading-tight">
-                  {item.label}
-                </span>
-                <span className="text-[9px] text-muted-light dark:text-muted-dark text-center leading-tight">
-                  {item.desc}
-                </span>
+                <div className="absolute bottom-0 left-0 right-0 p-2.5">
+                  <h5 className="text-white font-bold text-[11px] leading-tight line-clamp-2 drop-shadow-lg">
+                    {img.title}
+                  </h5>
+                </div>
               </motion.div>
-            ));
-          })()}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Work Gallery Section */}
-      <div className="mt-6">
-        <div className="flex items-center justify-between mb-3">
-          <h4 className="text-xs font-bold text-primary-500 uppercase tracking-widest">Work Gallery</h4>
-          <button className="flex items-center gap-1 text-[10px] text-muted-light dark:text-muted-dark hover:text-primary-500 transition-colors">
-            VIEW ALL <RiArrowRightLine size={12} />
-          </button>
+      {/* Custom Statistics */}
+      {company.customStats && company.customStats.length > 0 && (
+        <div className="mt-6">
+          <h4 className="text-xs font-bold text-primary-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+            <RiBarChartBoxLine size={14} /> Key Statistics
+          </h4>
+          <div className="flex flex-wrap gap-2.5">
+            {company.customStats.map((stat: any, idx: number) => (
+              <motion.div 
+                key={stat.id} 
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.08 }}
+                className="relative flex-1 min-w-[calc(25%-0.75rem)] p-3 rounded-2xl bg-gradient-to-br from-surface-light to-surface-light/50 dark:from-surface-dark dark:to-surface-dark/50 border border-border-light/50 dark:border-white/10 overflow-hidden group hover:border-primary-500/30 transition-all text-center"
+              >
+                <div className="absolute top-0 right-0 w-10 h-10 bg-gradient-to-br from-primary-500/5 to-secondary-500/5 rounded-bl-full" />
+                <div className="relative">
+                  <div className="text-xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent leading-tight">
+                    {stat.value}{stat.suffix}
+                  </div>
+                  <div className="text-[10px] text-muted-light dark:text-muted-dark mt-0.5 font-medium">{stat.label}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          {galleryImages.slice(0, 4).map((img, idx) => (
-            <motion.div
-              key={img.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className="group relative aspect-[16/10] rounded-lg overflow-hidden cursor-pointer shadow-md hover:shadow-lg transition-all"
-            >
-              <img 
-                src={img.src} 
-                alt={img.title} 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-2">
-                <span className="text-[8px] font-bold text-primary-300 uppercase tracking-wider">
-                  {img.category}
-                </span>
-                <h5 className="text-white font-bold text-[11px] leading-tight mt-0.5 line-clamp-2">
-                  {img.title}
-                </h5>
-              </div>
-            </motion.div>
-          ))}
+      )}
+
+      {/* Team Members */}
+      {company.employees && company.employees.length > 0 && (
+        <div className="mt-6">
+          <h4 className="text-xs font-bold text-primary-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+            <RiTeamLine size={14} /> Team
+            <span className="px-1.5 py-0.5 rounded-full bg-primary-500/10 text-primary-500 text-[10px] font-bold">{company.employees.length}</span>
+          </h4>
+          <div className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
+            {company.employees.map((emp: any, idx: number) => (
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                className="flex-shrink-0 w-28 flex flex-col items-center p-3 rounded-2xl bg-gradient-to-b from-surface-light to-surface-light/50 dark:from-surface-dark dark:to-surface-dark/50 border border-border-light/50 dark:border-white/10 hover:border-primary-500/30 hover:shadow-lg transition-all group"
+              >
+                {emp.image ? (
+                  <img src={emp.image} alt={emp.name} className="w-16 h-16 rounded-2xl object-cover ring-2 ring-primary-500/20 group-hover:ring-primary-500/50 transition-all shadow-md" />
+                ) : (
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-primary-500/20">
+                    {emp.name.charAt(0)}
+                  </div>
+                )}
+                <div className="text-center mt-2 w-full">
+                  <div className="text-[11px] font-bold text-text-light dark:text-text-dark leading-tight truncate">{emp.name}</div>
+                  <div className="text-[9px] text-muted-light dark:text-muted-dark truncate">{emp.position}</div>
+                  {emp.department && (
+                    <span className="inline-block mt-1 px-1.5 py-0.5 rounded-md bg-primary-500/10 text-primary-500 text-[8px] font-bold truncate max-w-full">
+                      {emp.department}
+                    </span>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Social Media */}
+      {company.socialMedia && Object.keys(company.socialMedia).length > 0 && (
+        <div className="mt-6">
+          <h4 className="text-xs font-bold text-primary-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+            <RiShareLine size={14} /> Connect
+          </h4>
+          <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
+            {[
+              company.socialMedia.linkedin && { key: 'linkedin', label: 'LinkedIn', href: company.socialMedia.linkedin, icon: RiLinkedinBoxLine, color: '#0077b5', bg: 'bg-[#0077b5]/10 border-[#0077b5]/20 hover:bg-[#0077b5] hover:text-white' },
+              company.socialMedia.whatsapp && { key: 'whatsapp', label: 'WhatsApp', href: `https://wa.me/${company.socialMedia.whatsapp}`, icon: RiWhatsappLine, color: '#25d366', bg: 'bg-[#25d366]/10 border-[#25d366]/20 hover:bg-[#25d366] hover:text-white', isExternal: true },
+              company.socialMedia.email && { key: 'email', label: 'Email', href: `mailto:${company.socialMedia.email}`, icon: RiMailLine, color: '#127a86', bg: 'bg-primary-500/10 border-primary-500/20 hover:bg-primary-500 hover:text-white' },
+              company.socialMedia.facebook && { key: 'facebook', label: 'Facebook', href: company.socialMedia.facebook, icon: RiFacebookBoxLine, color: '#1877f2', bg: 'bg-[#1877f2]/10 border-[#1877f2]/20 hover:bg-[#1877f2] hover:text-white' },
+              company.socialMedia.youtube && { key: 'youtube', label: 'YouTube', href: company.socialMedia.youtube, icon: RiYoutubeLine, color: '#ff0000', bg: 'bg-[#ff0000]/10 border-[#ff0000]/20 hover:bg-[#ff0000] hover:text-white' },
+              company.socialMedia.x && { key: 'x', label: 'X', href: company.socialMedia.x, icon: RiTwitterXLine, color: '#000000', bg: 'bg-black/10 dark:bg-white/10 border-black/20 dark:border-white/20 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black' },
+              company.socialMedia.instagram && { key: 'instagram', label: 'Instagram', href: company.socialMedia.instagram, icon: RiInstagramLine, color: '#e4405f', bg: 'bg-[#e4405f]/10 border-[#e4405f]/20 hover:bg-[#e4405f] hover:text-white' },
+              company.socialMedia.telegram && { key: 'telegram', label: 'Telegram', href: company.socialMedia.telegram, icon: RiTelegramLine, color: '#0088cc', bg: 'bg-[#0088cc]/10 border-[#0088cc]/20 hover:bg-[#0088cc] hover:text-white' },
+            ].filter(Boolean).map((social: any) => (
+              <a 
+                key={social.key}
+                href={social.href} 
+                target={social.isExternal !== false ? "_blank" : undefined} 
+                rel={social.isExternal !== false ? "noopener noreferrer" : undefined}
+                className={`flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border transition-all ${social.bg}`}
+              >
+                <social.icon size={16} style={{ color: social.color }} />
+                <span className="text-[10px] font-bold whitespace-nowrap" style={{ color: social.color }}>{social.label}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="mt-6">
         <Link href="/contact" className={`flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-gradient-to-r ${company.color} text-white text-sm font-bold shadow-lg`}>

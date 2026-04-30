@@ -10,7 +10,7 @@ export async function GET(
   try {
     const { id } = await params;
     await connectDB();
-    const company = await Company.findById(id);
+    const company = await Company.findById(id).lean();
 
     if (!company) {
       return NextResponse.json(
@@ -19,7 +19,8 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({ success: true, company });
+    const mapped = { ...company, id: company._id?.toString() };
+    return NextResponse.json({ success: true, company: mapped });
   } catch (error) {
     console.error("Error fetching company:", error);
     return NextResponse.json(
@@ -57,7 +58,7 @@ export async function PUT(
       id,
       { $set: body },
       { new: true, runValidators: true }
-    );
+    ).lean();
 
     if (!company) {
       return NextResponse.json(
@@ -66,7 +67,8 @@ export async function PUT(
       );
     }
 
-    return NextResponse.json({ success: true, company });
+    const mapped = { ...company, id: company._id?.toString() };
+    return NextResponse.json({ success: true, company: mapped });
   } catch (error) {
     console.error("Error updating company:", error);
     return NextResponse.json(

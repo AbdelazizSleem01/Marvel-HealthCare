@@ -6,8 +6,9 @@ import { Company } from "@/models";
 export async function GET() {
   try {
     await connectDB();
-    const companies = await Company.find({}).sort({ order: 1, createdAt: -1 });
-    return NextResponse.json({ success: true, companies });
+    const companies = await Company.find({}).sort({ order: 1, createdAt: -1 }).lean();
+    const mapped = companies.map((c: any) => ({ ...c, id: c._id?.toString() }));
+    return NextResponse.json({ success: true, companies: mapped });
   } catch (error) {
     console.error("Error fetching companies:", error);
     return NextResponse.json(

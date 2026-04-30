@@ -1,10 +1,11 @@
 "use client";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
 import ChatWidget from "@/components/ui/ChatWidget";
 import SectionTitle from "@/components/ui/SectionTitle";
-import { companies, branches, accreditations, therapeuticAreas } from "@/data";
+import { branches, accreditations, therapeuticAreas } from "@/data";
 import { RiShieldCheckLine, RiTeamLine, RiGlobalLine, RiLightbulbLine } from "react-icons/ri";
 
 const values = [
@@ -27,6 +28,27 @@ const timeline = [
 ];
 
 export default function AboutPage() {
+  const [companies, setCompanies] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const response = await fetch('/api/companies');
+        const data = await response.json();
+        if (data.success) {
+          setCompanies(data.companies);
+        }
+      } catch (error) {
+        console.error('Error fetching companies:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCompanies();
+  }, []);
+
   return (
     <>
       <Navbar />
@@ -97,19 +119,25 @@ export default function AboutPage() {
 
             {/* Companies overview */}
             <SectionTitle tag="The Group" title="Our Companies" />
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10 mb-24">
-              {companies.map((c) => (
-                <div key={c.id} className="glass-light dark:glass-dark rounded-xl p-5 border border-border-light dark:border-border-dark flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${c.color} flex items-center justify-center text-white font-bold shrink-0`}>
-                    {c.icon}
+            {loading ? (
+              <div className="flex items-center justify-center py-10">
+                <div className="w-8 h-8 border-2 border-primary-500/30 border-t-primary-500 rounded-full animate-spin" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10 mb-24">
+                {companies.filter((c: any) => !c.isMain).map((c: any) => (
+                  <div key={c.id} className="glass-light dark:glass-dark rounded-xl p-5 border border-border-light dark:border-border-dark flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${c.color} flex items-center justify-center text-white font-bold shrink-0`}>
+                      {c.logo ? <img src={c.logo} alt={c.name} className="w-6 h-6 object-contain" /> : c.icon?.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-text-light dark:text-text-dark text-sm">{c.name}</div>
+                      <div className="text-xs text-muted-light dark:text-muted-dark">{c.country} · {c.year}</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="font-semibold text-text-light dark:text-text-dark text-sm">{c.name}</div>
-                    <div className="text-xs text-muted-light dark:text-muted-dark">{c.country} · {c.year}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
 
             {/* Accreditations */}
             <SectionTitle tag="Recognition" title="Our Accreditations" />

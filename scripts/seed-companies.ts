@@ -1,7 +1,55 @@
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
+
 import connectDB from "@/lib/mongodb";
 import { Company } from "@/models";
 
 const companiesData = [
+  // Main Company - Marvel Group
+  {
+    id: "marvel-group",
+    name: "Marvel Group",
+    slug: "marvel-group",
+    tagline: "Where Medicine Meets Mastery",
+    year: "2015",
+    country: "Egypt / UAE / KSA",
+    flag: "EG",
+    description: "Marvel Group is the MENA region's most trusted med-tech ecosystem, powering healthcare innovation since 2015. We are a full-service healthcare solutions provider combining medical education, creative communication, digital platforms, and cutting-edge technology to transform patient care across the region.",
+    color: "from-primary-500 to-secondary-400",
+    icon: "M",
+    logo: "/Logo.png",
+    isMain: true,
+    isActive: true,
+    order: 0,
+    focusAreas: [
+      { icon: "RiGlobalLine", label: "Healthcare Ecosystem", description: "Integrated healthcare solutions across MENA region" },
+      { icon: "RiGraduationCapLine", label: "Medical Education", description: "CME programs and professional development" },
+      { icon: "RiPaletteLine", label: "Creative Communication", description: "Healthcare marketing and brand development" },
+      { icon: "RiComputerLine", label: "Digital Platforms", description: "Health-tech solutions and e-commerce" },
+      { icon: "RiVideoLine", label: "Medical Visualization", description: "3D animation and AR/VR medical content" },
+      { icon: "RiMicroscopeLine", label: "Innovation Lab", description: "R&D and medical technology incubation" },
+    ],
+    gallery: [
+      { src: "/Logo.png", title: "Marvel Group HQ", category: "Office" },
+      { src: "/marvel-images/Bait.png", title: "Creative Studio", category: "Studio" },
+    ],
+    socialMedia: {
+      linkedin: "https://linkedin.com/company/marvel-group",
+      email: "info@marvel-group.com",
+      whatsapp: "+20123456789",
+    },
+    customStats: [
+      { id: "stat-1", label: "Years Experience", value: 10, suffix: "+" },
+      { id: "stat-2", label: "Team Members", value: 200, suffix: "+" },
+      { id: "stat-3", label: "Projects Delivered", value: 500, suffix: "+" },
+      { id: "stat-4", label: "Client Partners", value: 150, suffix: "+" },
+    ],
+    employees: [
+      { name: "Dr. Amr", position: "CEO & Founder", department: "Leadership" },
+      { name: "Sarah", position: "COO", department: "Operations" },
+      { name: "Michael", position: "CTO", department: "Technology" },
+    ],
+  },
   {
     id: "bait-alebdaa",
     name: "Bait Alebdaa",
@@ -14,7 +62,7 @@ const companiesData = [
     color: "from-primary-500 to-secondary-400",
     icon: "RiStarLine",
     logo: "/marvel-images/Bait.png",
-    isMain: true,
+    isMain: false,
     isActive: true,
     order: 1,
     focusAreas: [
