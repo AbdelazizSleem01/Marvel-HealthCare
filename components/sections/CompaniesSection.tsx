@@ -46,6 +46,115 @@ const TOOLBAR_ITEMS = [
   { id: "contact", label: "Contact", icon: RiMailLine, color: "primary", visible: true },
 ];
 
+// ─── CONFIGURABLE SERVICES ───
+// Add, edit, or delete services and their bullet points here
+const SERVICES_DATA = [
+  { 
+    id: "cme", 
+    icon: "RiGraduationCapLine", 
+    title: "CME", 
+    visible: true,
+    services: [
+      { name: "Curriculum Design", desc: "Comprehensive CME program structuring" },
+      { name: "Content Development", desc: "Medical education content creation" },
+      { name: "Slide Decks", desc: "Professional presentation materials" },
+      { name: "Gamification", desc: "Case studies, patient profiles, interactivity" },
+      { name: "Speakers", desc: "Expert faculty management" },
+      { name: "Accreditation", desc: "CPD, DHA, SCFHS certificates" },
+      { name: "Endorsed Materials", desc: "Officially recognized content" },
+    ] 
+  },
+  { 
+    id: "research", 
+    icon: "RiFileTextLine", 
+    title: "Research", 
+    visible: true,
+    services: [
+      { name: "Study Design", desc: "Clinical and observational research" },
+      { name: "Data Analysis", desc: "Statistical and qualitative analysis" },
+      { name: "Manuscript Writing", desc: "Peer-reviewed publication support" },
+      { name: "Literature Review", desc: "Comprehensive evidence synthesis" },
+      { name: "Abstracts & Posters", desc: "Conference submission support" },
+    ] 
+  },
+  { 
+    id: "elearning", 
+    icon: "RiComputerLine", 
+    title: "eLearning", 
+    visible: true,
+    services: [
+      { name: "LMS Development", desc: "Learning management systems" },
+      { name: "Interactive Modules", desc: "Engaging digital content" },
+      { name: "VR Training", desc: "Virtual reality medical simulations" },
+      { name: "Mobile Apps", desc: "Healthcare education apps" },
+      { name: "Assessment Tools", desc: "Online testing & certification" },
+    ] 
+  },
+  { 
+    id: "artwork", 
+    icon: "RiPaletteLine", 
+    title: "Marketing", 
+    visible: true,
+    services: [
+      { name: "Brand Identity", desc: "Logo and visual system design" },
+      { name: "Marketing Campaigns", desc: "Multi-channel promotion strategies" },
+      { name: "Medical Illustration", desc: "Anatomical and scientific art" },
+      { name: "Video Production", desc: "Educational and promotional videos" },
+      { name: "Social Media", desc: "Digital marketing management" },
+    ] 
+  },
+  { 
+    id: "training", 
+    icon: "RiUserSettingsLine", 
+    title: "Training", 
+    visible: true,
+    services: [
+      { name: "Workshops", desc: "Hands-on skill development" },
+      { name: "Certification Programs", desc: "Professional credentials" },
+      { name: "On-site Training", desc: "In-person education delivery" },
+      { name: "Train-the-Trainer", desc: "Faculty development programs" },
+    ] 
+  },
+  { 
+    id: "it", 
+    icon: "RiCodeBoxLine", 
+    title: "IT", 
+    visible: true,
+    services: [
+      { name: "Custom Software", desc: "Bespoke healthcare applications" },
+      { name: "CRM Systems", desc: "Customer relationship platforms" },
+      { name: "Data Analytics", desc: "Healthcare intelligence dashboards" },
+      { name: "AI Integration", desc: "Machine learning solutions" },
+    ] 
+  },
+  { 
+    id: "visuals", 
+    icon: "RiVideoLine", 
+    title: "Visuals", 
+    visible: true,
+    services: [
+      { name: "3D Medical Animation", desc: "Complex medical concepts visualization" },
+      { name: "VR Training", desc: "Virtual reality medical simulations" },
+      { name: "Video Production", desc: "Professional healthcare videos" },
+      { name: "Interactive Media", desc: "Engaging digital experiences" },
+      { name: "Motion Graphics", desc: "Animated medical illustrations" },
+    ] 
+  },
+  { 
+    id: "events", 
+    icon: "RiCalendarEventLine", 
+    title: "Events", 
+    visible: true,
+    services: [
+      { name: "Conference Planning", desc: "Full-service medical conferences" },
+      { name: "Virtual Events", desc: "Online webinars & summits" },
+      { name: "Hybrid Events", desc: "In-person + digital combined" },
+      { name: "Exhibition Booths", desc: "Trade show presence design" },
+      { name: "Speaker Management", desc: "Keynote & panel coordination" },
+    ] 
+  },
+];
+
 const overlayVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { duration: 0.25 } },
@@ -1377,7 +1486,7 @@ function ServicesModal({ activeTab, setActiveTab, onClose }: {
                               </div>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
-                              {service.services.map((item, i) => (
+                              {service.services.map((item: any, i: number) => (
                                 <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="flex items-start gap-2 md:gap-3 p-3 md:p-4 rounded-xl bg-black/5 dark:bg-white/5 hover:bg-primary-500/5 transition-colors">
                                   <div className="w-4 h-4 md:w-5 md:h-5 rounded-full bg-primary-500/20 flex items-center justify-center shrink-0 mt-0.5"><RiCheckLine className="text-primary-500" size={10} /></div>
                                   <div><h5 className="font-medium text-xs md:text-sm text-text-light dark:text-text-dark">{item.name}</h5><p className="text-[10px] md:text-xs text-muted-light dark:text-muted-dark mt-0.5">{item.desc}</p></div>
@@ -2509,16 +2618,27 @@ function ServicesInfoView({ activeTab, setActiveTab, onClose }: { activeTab: "co
     else if (activeTab === "featured") setSelectedService("accreditation");
   }, [activeTab]);
 
-  const comprehensiveServices = [
-    { id: "cme", icon: RiGraduationCapLine, title: "CME", services: [{ name: "Curriculum Design", desc: "Comprehensive CME program structuring" }, { name: "Content Development", desc: "Medical education content creation" }, { name: "Slide Decks", desc: "Professional presentation materials" }, { name: "Gamification", desc: "Case studies, patient profiles, interactivity" }, { name: "Speakers", desc: "Expert faculty management" }, { name: "Accreditation", desc: "CPD, DHA, SCFHS certificates" }, { name: "Endorsed Materials", desc: "Officially recognized content" }] },
-    { id: "research", icon: RiFileTextLine, title: "Research", services: [{ name: "Study Design", desc: "Clinical and observational research" }, { name: "Data Analysis", desc: "Statistical and qualitative analysis" }, { name: "Manuscript Writing", desc: "Peer-reviewed publication support" }, { name: "Literature Review", desc: "Comprehensive evidence synthesis" }, { name: "Abstracts & Posters", desc: "Conference submission support" }] },
-    { id: "elearning", icon: RiComputerLine, title: "eLearning", services: [{ name: "LMS Development", desc: "Learning management systems" }, { name: "Interactive Modules", desc: "Engaging digital content" }, { name: "VR Training", desc: "Virtual reality medical simulations" }, { name: "Mobile Apps", desc: "Healthcare education apps" }, { name: "Assessment Tools", desc: "Online testing & certification" }] },
-    { id: "artwork", icon: RiPaletteLine, title: "Marketing", services: [{ name: "Brand Identity", desc: "Logo and visual system design" }, { name: "Marketing Campaigns", desc: "Multi-channel promotion strategies" }, { name: "Medical Illustration", desc: "Anatomical and scientific art" }, { name: "Video Production", desc: "Educational and promotional videos" }, { name: "Social Media", desc: "Digital marketing management" }] },
-    { id: "training", icon: RiUserSettingsLine, title: "Training", services: [{ name: "Workshops", desc: "Hands-on skill development" }, { name: "Certification Programs", desc: "Professional credentials" }, { name: "On-site Training", desc: "In-person education delivery" }, { name: "Train-the-Trainer", desc: "Faculty development programs" }] },
-    { id: "it", icon: RiCodeBoxLine, title: "IT", services: [{ name: "Custom Software", desc: "Bespoke healthcare applications" }, { name: "CRM Systems", desc: "Customer relationship platforms" }, { name: "Data Analytics", desc: "Healthcare intelligence dashboards" }, { name: "AI Integration", desc: "Machine learning solutions" }] },
-    { id: "visuals", icon: RiVideoLine, title: "Visuals", services: [{ name: "3D Medical Animation", desc: "Complex medical concepts visualization" }, { name: "VR Training", desc: "Virtual reality medical simulations" }, { name: "Video Production", desc: "Professional healthcare videos" }, { name: "Interactive Media", desc: "Engaging digital experiences" }, { name: "Motion Graphics", desc: "Animated medical illustrations" }] },
-    { id: "events", icon: RiCalendarEventLine, title: "Events", services: [{ name: "Conference Planning", desc: "Full-service medical conferences" }, { name: "Virtual Events", desc: "Online webinars & summits" }, { name: "Hybrid Events", desc: "In-person + digital combined" }, { name: "Exhibition Booths", desc: "Trade show presence design" }, { name: "Speaker Management", desc: "Keynote & panel coordination" }] },
-  ];
+  // Icon mapping from SERVICES_DATA icon strings to actual components
+  const iconMap: Record<string, any> = {
+    RiGraduationCapLine,
+    RiFileTextLine,
+    RiComputerLine,
+    RiPaletteLine,
+    RiUserSettingsLine,
+    RiCodeBoxLine,
+    RiVideoLine,
+    RiCalendarEventLine,
+  };
+
+  // Convert SERVICES_DATA to component-compatible format
+  const comprehensiveServices = SERVICES_DATA
+    .filter((s: any) => s.visible)
+    .map((s: any) => ({
+      id: s.id,
+      icon: iconMap[s.icon] || RiCheckLine,
+      title: s.title,
+      services: s.services,
+    }));
 
   const featuredServices = [
     { id: "accreditation", icon: RiStarLine, title: "Accreditation", badge: "Certified", color: "from-primary-500 to-secondary-400", description: "Comprehensive accreditation programs recognized worldwide", features: [{ name: "CPD-UK", desc: "UK Continuous Professional Development" }, { name: "DHA Approved", desc: "Dubai Health Authority accredited" }, { name: "SCFHS Certified", desc: "Saudi Commission for Health Specialties" }, { name: "RCSEd Endorsed", desc: "Royal College of Surgeons of Edinburgh" }, { name: "CME Credits", desc: "Continuing Medical Education credits" }, { name: "Global Recognition", desc: "Internationally accepted certificates" }] },
@@ -2571,7 +2691,7 @@ function ServicesInfoView({ activeTab, setActiveTab, onClose }: { activeTab: "co
                 if (!service) return null;
                 return (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-2xl bg-primary-500/5 border border-primary-500/10">
-                    {service.services.map((item, i) => (
+                    {service.services.map((item: any, i: number) => (
                       <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-white/50 dark:bg-black/20 border border-white/50 dark:border-white/5">
                         <RiCheckLine className="text-primary-500 shrink-0 mt-0.5" size={14} />
                         <div><h5 className="font-bold text-xs text-text-light dark:text-text-dark">{item.name}</h5><p className="text-[10px] text-muted-light dark:text-muted-dark mt-0.5 leading-relaxed">{item.desc}</p></div>
