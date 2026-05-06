@@ -32,6 +32,20 @@ import ChatWidget from "@/components/ui/ChatWidget";
 
 const SPRING_CONFIG = { type: "spring" as const, damping: 30, stiffness: 260 };
 
+// ─── CONFIGURABLE TOOLBAR ───
+// Set 'visible: false' to hide any button, edit 'label' to change name
+const TOOLBAR_ITEMS = [
+  { id: "services", label: "Services", icon: RiSettings4Line, color: "primary", visible: true },
+  { id: "products", label: "Products", icon: RiBriefcaseLine, color: "primary", visible: true },
+  { id: "expertise", label: "Expertise", icon: RiHeartPulseLine, color: "primary", visible: true },
+  { id: "accreds", label: "Accreds", icon: RiAwardLine, color: "primary", visible: true },
+  { id: "reviews", label: "Reviews", icon: RiTeamLine, color: "primary", visible: true },
+  { id: "people", label: "People", icon: RiGroupLine, color: "primary", visible: true },
+  { id: "gallery", label: "Gallery", icon: RiImageLine, color: "primary", visible: true },
+  { id: "theme", label: "Theme", icon: null, color: "primary", visible: true },
+  { id: "contact", label: "Contact", icon: RiMailLine, color: "primary", visible: true },
+];
+
 const overlayVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { duration: 0.25 } },
@@ -201,6 +215,7 @@ export default function CompaniesSection() {
   const [isPaused, setIsPaused] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showGallery, setShowGallery] = useState(false);
+  const [showProducts, setShowProducts] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   // Stats cycling logic
@@ -386,38 +401,49 @@ export default function CompaniesSection() {
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5, type: "spring", stiffness: 100 }}
-            className="fixed top-4 left-24 right-0 z-40 px-4 pointer-events-none"
+            className="fixed top-3 left-28 right-4 z-40 px-2 pointer-events-none"
           >
-            <div className="max-w-xl lg:max-w-4xl mx-auto w-full pointer-events-auto">
-              <div className="rounded-2xl glass-light dark:glass-dark border-x border-b border-border-light dark:border-border-dark/50 shadow-2xl overflow-hidden backdrop-blur-xl mt-0">
-                <div className="flex items-center justify-between p-0.5 lg:p-1">
-                  {[
-                    { id: "services", onClick: () => handleStateChange(setShowServices, true), icon: RiSettings4Line, label: "Services", color: "primary", isActive: showServices },
-                    { id: "expertise", onClick: () => handleStateChange(setShowExpertise, true), icon: RiHeartPulseLine, label: "Therapeutic Areas", color: "primary", isActive: showExpertise },
-                    { id: "accreds", onClick: () => handleStateChange(setShowAccreditations, true), icon: RiAwardLine, label: "Accreds", color: "primary", isActive: showAccreditations },
-                    { id: "reviews", onClick: () => handleStateChange(setShowTestimonials, true), icon: RiTeamLine, label: "Reviews", color: "primary", isActive: showTestimonials },
-                    { id: "people", onClick: () => handleStateChange(setShowPeople, true), icon: RiGroupLine, label: "People Behind", color: "primary", isActive: showPeople },
-                    { id: "gallery", onClick: () => handleStateChange(setShowGallery, true), icon: RiImageLine, label: "Work Gallery", color: "primary", isActive: showGallery },
-                    { id: "theme", onClick: () => setTheme(theme === "dark" ? "light" : "dark"), icon: mounted ? (theme === "dark" ? RiSunLine : RiMoonLine) : RiSunLine, label: mounted ? (theme === "dark" ? "Light" : "Dark") : "Theme", color: "primary", isActive: false },
-                    { id: "contact", href: "/contact", icon: RiMailLine, label: "Contact", color: "primary", isActive: false },
-                  ].map((item, idx) => {
-                    const Icon = item.icon;
+            <div className="max-w-lg xl:max-w-3xl mx-auto w-full pointer-events-auto">
+              <div className="rounded-xl glass-light dark:glass-dark border border-border-light dark:border-border-dark/50 shadow-xl overflow-hidden backdrop-blur-xl">
+                <div className="flex items-center justify-between py-1 px-0.5">
+                  {TOOLBAR_ITEMS.filter((item) => item.visible).map((item, idx) => {
                     const isSecondary = item.color === "secondary";
-                    const active = item.isActive;
+                    const active = 
+                      (item.id === "services" && showServices) ||
+                      (item.id === "expertise" && showExpertise) ||
+                      (item.id === "accreds" && showAccreditations) ||
+                      (item.id === "reviews" && showTestimonials) ||
+                      (item.id === "people" && showPeople) ||
+                      (item.id === "gallery" && showGallery);
+                    
+                    // Dynamic icon for theme
+                    const Icon = item.id === "theme" 
+                      ? (mounted ? (theme === "dark" ? RiSunLine : RiMoonLine) : RiSunLine)
+                      : item.icon;
+                    
+                    const handleClick = () => {
+                      if (item.id === "services") handleStateChange(setShowServices, true);
+                      else if (item.id === "expertise") handleStateChange(setShowExpertise, true);
+                      else if (item.id === "accreds") handleStateChange(setShowAccreditations, true);
+                      else if (item.id === "reviews") handleStateChange(setShowTestimonials, true);
+                      else if (item.id === "people") handleStateChange(setShowPeople, true);
+                      else if (item.id === "gallery") handleStateChange(setShowGallery, true);
+                      else if (item.id === "theme") setTheme(theme === "dark" ? "light" : "dark");
+                    };
 
                     const content = (
                       <>
                         <motion.div
-                          whileHover={{ scale: 1.1, y: -1 }}
-                          whileTap={{ scale: 0.95 }}
-                          className={`w-9 h-9 lg:w-10 lg:h-10 rounded-xl flex items-center justify-center border transition-all ${active
-                            ? "bg-primary-500 text-white border-primary-400 shadow-[0_0_15px_rgba(18,122,138,0.4)]"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.92 }}
+                          className={`w-7 h-7 lg:w-8 lg:h-8 rounded-lg flex items-center justify-center border transition-all ${active
+                            ? "bg-primary-500 text-white border-primary-400 shadow-[0_0_12px_rgba(18,122,138,0.4)]"
                             : `bg-gradient-to-br ${isSecondary ? "from-secondary-500/20 to-secondary-600/20 text-secondary-500" : "from-primary-500/20 to-secondary-500/20 text-primary-500"} border-border-light dark:border-white/5 group-hover:border-primary-500/30`
                             }`}
                         >
-                          <Icon size={17} className="lg:size-22" />
+                          {Icon && <Icon size={15} />}
                         </motion.div>
-                        <span className={`whitespace-nowrap text-[9px] lg:text-[9px] font-bold uppercase tracking-wide transition-all ${active ? "text-primary-500 opacity-100" : "text-text-light dark:text-text-dark opacity-80 group-hover:opacity-100 group-hover:text-primary-500"
+                        <span className={`whitespace-nowrap text-[8px] font-bold uppercase tracking-wide transition-all ${active ? "text-primary-500 opacity-100" : "text-text-light dark:text-text-dark opacity-80 group-hover:opacity-100 group-hover:text-primary-500"
                           }`}>
                           {item.label}
                         </span>
@@ -429,20 +455,20 @@ export default function CompaniesSection() {
                         key={item.id}
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.6 + idx * 0.05 }}
-                        className="flex-1"
+                        transition={{ delay: 0.6 + idx * 0.04 }}
+                        className="flex-1 min-w-0"
                       >
-                        {item.href ? (
+                        {item.id === "contact" || item.id === "products" ? (
                           <Link
-                            href={item.href}
-                            className="group flex flex-col items-center gap-1.5 py-1 px-1 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-xl transition-all duration-300"
+                            href={`/${item.id}`}
+                            className="group flex flex-col items-center gap-1 py-0.5 px-0.5 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-lg transition-all duration-300"
                           >
                             {content}
                           </Link>
                         ) : (
                           <button
-                            onClick={item.onClick}
-                            className="group flex flex-col items-center gap-1.5 py-1 px-1 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-xl transition-all duration-300 w-full"
+                            onClick={handleClick}
+                            className="group flex flex-col items-center gap-1 py-0.5 px-0.5 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-lg transition-all duration-300 w-full"
                           >
                             {content}
                           </button>
