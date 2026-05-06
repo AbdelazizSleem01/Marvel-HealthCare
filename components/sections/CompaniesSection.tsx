@@ -306,7 +306,7 @@ export default function CompaniesSection() {
   const [showChat, setShowChat] = useState(false);
   const [showExpertise, setShowExpertise] = useState(false);
   const [showPeople, setShowPeople] = useState(false);
-  const [activeTab, setActiveTab] = useState<"comprehensive" | "featured" | "products">("comprehensive");
+  const [activeTab, setActiveTab] = useState<"comprehensive" | "featured">("comprehensive");
   const [selectedCountry, setSelectedCountry] = useState<(typeof COUNTRIES)[0] | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
@@ -343,7 +343,7 @@ export default function CompaniesSection() {
   const BASE_DURATION = 60;
   
   // Compute if any info panel is currently shown
-  const isInfoPanelShown = selectedCompany || selectedClient || selectedCountry || showServices || showExpertise || showAccreditations || showTestimonials || showChat || showPeople || showGallery;
+  const isInfoPanelShown = selectedCompany || selectedClient || selectedCountry || showServices || showExpertise || showAccreditations || showTestimonials || showChat || showPeople || showGallery || showProducts;
 
   const resetDesktopStates = () => {
     setSelectedCompany(null);
@@ -356,6 +356,7 @@ export default function CompaniesSection() {
     setShowChat(false);
     setShowPeople(false);
     setShowGallery(false);
+    setShowProducts(false);
     setOrbitExpanded(true); // Return orbit to center when closing panels
   };
 
@@ -537,6 +538,7 @@ export default function CompaniesSection() {
                       else if (item.id === "reviews") handleStateChange(setShowTestimonials, true);
                       else if (item.id === "people") handleStateChange(setShowPeople, true);
                       else if (item.id === "gallery") handleStateChange(setShowGallery, true);
+                      else if (item.id === "products") handleStateChange(setShowProducts, true);
                       else if (item.id === "theme") setTheme(theme === "dark" ? "light" : "dark");
                     };
 
@@ -567,7 +569,7 @@ export default function CompaniesSection() {
                         transition={{ delay: 0.6 + idx * 0.04 }}
                         className="flex-1 min-w-0"
                       >
-                        {item.id === "contact" || item.id === "products" ? (
+                        {item.id === "contact" ? (
                           <Link
                             href={`/${item.id}`}
                             className="group flex flex-col items-center gap-1 py-0.5 px-0.5 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-lg transition-all duration-300"
@@ -881,6 +883,7 @@ export default function CompaniesSection() {
             showChat={showChat}
             showPeople={showPeople}
             showGallery={showGallery}
+            showProducts={showProducts}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             activeTestimonial={activeTestimonial}
@@ -895,6 +898,7 @@ export default function CompaniesSection() {
             setShowChat={setShowChat}
             setShowPeople={setShowPeople}
             setShowGallery={setShowGallery}
+            setShowProducts={setShowProducts}
             resetDesktopStates={resetDesktopStates}
           />
         )}
@@ -1296,6 +1300,7 @@ export default function CompaniesSection() {
           {showChat && <ChatModal onClose={() => setShowChat(false)} />}
           {showExpertise && <ExpertiseModal onClose={() => setShowExpertise(false)} />}
           {showGallery && <GalleryModal currentIndex={currentImageIndex} setCurrentIndex={setCurrentImageIndex} onClose={() => setShowGallery(false)} />}
+          {showProducts && <ProductsModal onClose={() => setShowProducts(false)} />}
         </AnimatePresence>
       )}
 
@@ -1393,8 +1398,8 @@ function CountryModal({ country, onClose }: { country: any; onClose: () => void 
 // Services Modal — responsive sidebar→tabs
 // ─────────────────────────────────────────────
 function ServicesModal({ activeTab, setActiveTab, onClose }: {
-  activeTab: "comprehensive" | "featured" | "products";
-  setActiveTab: (tab: "comprehensive" | "featured" | "products") => void;
+  activeTab: "comprehensive" | "featured";
+  setActiveTab: (tab: "comprehensive" | "featured") => void;
   onClose: () => void;
 }) {
   const [selectedService, setSelectedService] = useState("cme");
@@ -1421,79 +1426,6 @@ function ServicesModal({ activeTab, setActiveTab, onClose }: {
     { id: "digital", icon: RiComputerLine, title: "Digital", badge: "Innovative", color: "from-primary-500 to-secondary-400", description: "Cutting-edge AI-driven platforms", features: [{ name: "AI Integration", desc: "Machine learning powered tools" }, { name: "Automation", desc: "Streamlined workflows" }, { name: "Analytics Dashboard", desc: "Real-time data insights" }, { name: "Cloud Based", desc: "Secure cloud infrastructure" }, { name: "Mobile Ready", desc: "Works on all devices" }, { name: "API Access", desc: "Connect with other systems" }] },
   ];
 
-  // ─── CONFIGURABLE PRODUCTS ───
-  // Similar to featuredServices with link button and notes support
-  const PRODUCTS_DATA = [
-    { 
-      id: "tebzone", 
-      icon: RiStackLine, 
-      title: "TebZone", 
-      badge: "LIVE", 
-      badgeColor: "bg-green-500/10 text-green-500",
-      color: "from-primary-500 to-secondary-400",
-      description: "Healthcare marketplace connecting patients and suppliers.", 
-      notes: "Seamless ordering experience with real-time inventory tracking.",
-      features: [
-        { name: "Medicine Marketplace", desc: "Wide range of healthcare products" },
-        { name: "Prescription Upload", desc: "Easy prescription management" },
-        { name: "Real-time Tracking", desc: "Track orders live" },
-        { name: "Secure Payments", desc: "Encrypted transactions" }
-      ],
-      link: { label: "Visit TebZone", url: "https://tebzone.com", visible: true }
-    },
-    { 
-      id: "medadd", 
-      icon: RiComputerLine, 
-      title: "Med-ADD", 
-      badge: "LIVE", 
-      badgeColor: "bg-green-500/10 text-green-500",
-      color: "from-secondary-400 to-primary-500",
-      description: "Pharmaceutical sales force training with adaptive AI.", 
-      notes: "AI-powered role-play scenarios for effective training.",
-      features: [
-        { name: "AI Role-play", desc: "Interactive training scenarios" },
-        { name: "Performance Analytics", desc: "Track training progress" },
-        { name: "Compliance Tracking", desc: "Ensure regulatory compliance" },
-        { name: "Interactive Modules", desc: "Engaging learning content" }
-      ],
-      link: { label: "Explore Med-ADD", url: "#", visible: true }
-    },
-    { 
-      id: "medvi", 
-      icon: RiVideoLine, 
-      title: "Med-Vi", 
-      badge: "LIVE", 
-      badgeColor: "bg-green-500/10 text-green-500",
-      color: "from-primary-500 to-secondary-400",
-      description: "Medical education and HCP engagement platform.", 
-      notes: "CPD-accredited content with immersive VR experiences.",
-      features: [
-        { name: "CPD-Accredited", desc: "Earn continuing education credits" },
-        { name: "Interactive Cases", desc: "Real-world medical scenarios" },
-        { name: "HCP Analytics", desc: "Engagement insights" },
-        { name: "VR Simulations", desc: "Immersive training" }
-      ],
-      link: { label: "Learn More", url: "#", visible: true }
-    },
-    { 
-      id: "medlab", 
-      icon: RiMicroscopeLine, 
-      title: "Med-Lab", 
-      badge: "Coming Soon", 
-      badgeColor: "bg-orange-500/10 text-orange-500",
-      color: "from-secondary-400 to-primary-500",
-      description: "Next-gen laboratory information management system.", 
-      notes: "Launching Q3 2025 - Join our early access program.",
-      features: [
-        { name: "Sample Tracking", desc: "End-to-end sample management" },
-        { name: "QC Management", desc: "Quality control workflows" },
-        { name: "Reports Dashboard", desc: "Analytics & insights" },
-        { name: "LIMS Integration", desc: "Connect with existing systems" }
-      ],
-      link: { label: "Join Waitlist", url: "#", visible: true }
-    },
-  ];
-
   return (
     <ModalBackdrop onClose={onClose}>
       <div className="w-full md:max-w-6xl max-h-[90vh] glass-light dark:glass-dark rounded-3xl border border-border-light dark:border-border-dark shadow-2xl overflow-hidden flex flex-col">
@@ -1507,7 +1439,7 @@ function ServicesModal({ activeTab, setActiveTab, onClose }: {
 
         {/* Main Tabs */}
         <div className="flex items-center gap-1.5 md:gap-2 p-3 md:p-4 border-b border-border-light dark:border-border-dark bg-surface-light/50 dark:bg-surface-dark/50 overflow-x-auto shrink-0">
-          {[{ id: "comprehensive", label: "Services", icon: RiServiceLine }, { id: "featured", label: "Featured", icon: RiStarLine }, { id: "products", label: "Products", icon: RiStackLine }].map((tab) => (
+          {[{ id: "comprehensive", label: "Services", icon: RiServiceLine }, { id: "featured", label: "Featured", icon: RiStarLine }].map((tab) => (
             <motion.button key={tab.id} whileTap={{ scale: 0.96 }} onClick={() => setActiveTab(tab.id as any)} className={`flex items-center gap-1.5 px-3 md:px-4 py-2 rounded-xl font-medium whitespace-nowrap text-xs md:text-sm transition-all duration-300 ${activeTab === tab.id ? "bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg" : "text-muted-light dark:text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark"}`}>
               <tab.icon size={16} /> {tab.label}
             </motion.button>
@@ -1623,49 +1555,139 @@ function ServicesModal({ activeTab, setActiveTab, onClose }: {
               </motion.div>
             )}
 
-            {activeTab === "products" && (
-              <motion.div key="products" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.22 }} className="flex flex-col p-4 md:p-6">
-                <div className="text-center mb-4 md:mb-8">
-                  <p className="text-xs uppercase tracking-widest text-primary-500 mb-1 md:mb-2">Our Products</p>
-                  <h3 className="font-display text-2xl md:text-3xl font-bold text-text-light dark:text-text-dark">Built for Healthcare.</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                  {PRODUCTS_DATA.filter((p: any) => p.visible !== false).map((product: any, i: number) => (
-                    <motion.div key={product.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} whileHover={{ y: -4 }} className="p-4 md:p-6 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary-500/30 transition-all duration-300 relative overflow-hidden">
-                      <div className="absolute top-3 md:top-4 right-3 md:right-4">
-                        <span className={`px-2 md:px-3 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-bold flex items-center gap-1 ${product.badgeColor}`}>
-                          {product.badge === "LIVE" && <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />}
-                          {product.badge}
-                        </span>
-                      </div>
-                      <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br ${product.color} flex items-center justify-center text-white font-bold text-sm md:text-lg mb-3 md:mb-4`}>
-                        <product.icon size={20} />
-                      </div>
-                      <h3 className="font-display text-lg md:text-xl font-bold text-text-light dark:text-text-dark mb-1">{product.title}</h3>
-                      <p className="text-[10px] md:text-xs text-muted-light dark:text-muted-dark mb-2 md:mb-3 leading-relaxed">{product.description}</p>
-                      {product.notes && (
-                        <p className="text-[10px] md:text-xs text-primary-500 italic mb-2 md:mb-3">{product.notes}</p>
-                      )}
-                      <ul className="space-y-1.5 md:space-y-2">
-                        {product.features.map((f: any, fi: number) => (
-                          <li key={fi} className="flex items-center gap-2 text-xs md:text-sm text-muted-light dark:text-muted-dark"><RiCheckLine className="text-secondary-500 shrink-0" size={12} /> {f.name}</li>
-                        ))}
-                      </ul>
-                      {product.link?.visible && (
-                        <a href={product.link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 mt-3 px-3 py-1.5 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500 text-white text-[10px] font-bold hover:opacity-90 transition-opacity">
-                          {product.link.label} <RiArrowRightLine size={10} />
-                        </a>
-                      )}
-                    </motion.div>
-                  ))}
-                </div>
-                <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-border-light dark:border-border-dark flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <p className="text-xs md:text-sm text-muted-light dark:text-muted-dark">Explore our full range of solutions</p>
-                  <Link href="/contact" onClick={onClose} className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-primary-500 to-secondary-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity w-full sm:w-auto justify-center">Contact Us <RiArrowRightLine size={16} /></Link>
+          </AnimatePresence>
+        </div>
+      </div>
+    </ModalBackdrop>
+  );
+}
+
+// ─── CONFIGURABLE PRODUCTS ───
+// Similar to featuredServices with link button and notes support
+const PRODUCTS_DATA = [
+  {
+    id: "tebzone",
+    icon: RiStackLine,
+    title: "TebZone",
+    badge: "LIVE",
+    badgeColor: "bg-green-500/10 text-green-500",
+    color: "from-primary-500 to-secondary-400",
+    description: "Healthcare marketplace connecting patients and suppliers.",
+    notes: "Seamless ordering experience with real-time inventory tracking.",
+    features: [
+      { name: "Medicine Marketplace", desc: "Wide range of healthcare products" },
+      { name: "Prescription Upload", desc: "Easy prescription management" },
+      { name: "Real-time Tracking", desc: "Track orders live" },
+      { name: "Secure Payments", desc: "Encrypted transactions" }
+    ],
+    link: { label: "Visit TebZone", url: "https://tebzone.com", visible: true }
+  },
+  {
+    id: "medadd",
+    icon: RiComputerLine,
+    title: "Med-ADD",
+    badge: "LIVE",
+    badgeColor: "bg-green-500/10 text-green-500",
+    color: "from-secondary-400 to-primary-500",
+    description: "Pharmaceutical sales force training with adaptive AI.",
+    notes: "AI-powered role-play scenarios for effective training.",
+    features: [
+      { name: "AI Role-play", desc: "Interactive training scenarios" },
+      { name: "Performance Analytics", desc: "Track training progress" },
+      { name: "Compliance Tracking", desc: "Ensure regulatory compliance" },
+      { name: "Interactive Modules", desc: "Engaging learning content" }
+    ],
+    link: { label: "Explore Med-ADD", url: "#", visible: true }
+  },
+  {
+    id: "medvi",
+    icon: RiVideoLine,
+    title: "Med-Vi",
+    badge: "LIVE",
+    badgeColor: "bg-green-500/10 text-green-500",
+    color: "from-primary-500 to-secondary-400",
+    description: "Medical education and HCP engagement platform.",
+    notes: "CPD-accredited content with immersive VR experiences.",
+    features: [
+      { name: "CPD-Accredited", desc: "Earn continuing education credits" },
+      { name: "Interactive Cases", desc: "Real-world medical scenarios" },
+      { name: "HCP Analytics", desc: "Engagement insights" },
+      { name: "VR Simulations", desc: "Immersive training" }
+    ],
+    link: { label: "Learn More", url: "#", visible: true }
+  },
+  {
+    id: "medlab",
+    icon: RiMicroscopeLine,
+    title: "Med-Lab",
+    badge: "Coming Soon",
+    badgeColor: "bg-orange-500/10 text-orange-500",
+    color: "from-secondary-400 to-primary-500",
+    description: "Next-gen laboratory information management system.",
+    notes: "Launching Q3 2025 - Join our early access program.",
+    features: [
+      { name: "Sample Tracking", desc: "End-to-end sample management" },
+      { name: "QC Management", desc: "Quality control workflows" },
+      { name: "Reports Dashboard", desc: "Analytics & insights" },
+      { name: "LIMS Integration", desc: "Connect with existing systems" }
+    ],
+    link: { label: "Join Waitlist", url: "#", visible: true }
+  },
+];
+
+// ─────────────────────────────────────────────
+// Products Modal — Mobile
+// ─────────────────────────────────────────────
+function ProductsModal({ onClose }: { onClose: () => void }) {
+  return (
+    <ModalBackdrop onClose={onClose}>
+      <div className="w-full md:max-w-2xl max-h-[85vh] glass-light dark:glass-dark rounded-3xl border border-border-light dark:border-border-dark shadow-2xl overflow-hidden flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 md:p-6 border-b border-border-light dark:border-border-dark shrink-0">
+          <div>
+            <h2 className="font-display text-lg md:text-2xl font-bold text-text-light dark:text-text-dark">Our Products</h2>
+            <p className="text-xs text-muted-light dark:text-muted-dark">Built for Healthcare</p>
+          </div>
+          <motion.button whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }} onClick={onClose} className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-surface-light dark:bg-surface-dark hover:bg-primary-500/20 flex items-center justify-center text-muted-light dark:text-muted-dark hover:text-primary-500 transition-colors">
+            <RiCloseLine size={22} />
+          </motion.button>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="space-y-4">
+            {PRODUCTS_DATA.filter((p: any) => p.visible !== false).map((product: any, i: number) => (
+              <motion.div key={product.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="p-4 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary-500/30 transition-all">
+                <div className="flex items-start gap-4">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${product.color} flex items-center justify-center text-white shadow-lg shrink-0`}>
+                    <product.icon size={20} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-bold text-sm text-text-light dark:text-text-dark">{product.title}</h4>
+                      <span className={`px-2 py-0.5 rounded-full text-[8px] font-bold ${product.badgeColor}`}>{product.badge}</span>
+                    </div>
+                    <p className="text-[11px] text-muted-light dark:text-muted-dark mb-2">{product.description}</p>
+                    {product.notes && (
+                      <p className="text-[10px] text-primary-500 italic mb-2">{product.notes}</p>
+                    )}
+                    <ul className="space-y-1.5 mb-3">
+                      {product.features.map((f: any, fi: number) => (
+                        <li key={fi} className="flex items-center gap-2 text-xs text-muted-light dark:text-muted-dark">
+                          <RiCheckLine className="text-secondary-500 shrink-0" size={12} /> {f.name}
+                        </li>
+                      ))}
+                    </ul>
+                    {product.link?.visible && (
+                      <a href={product.link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500 text-white text-[10px] font-bold hover:opacity-90 transition-opacity">
+                        {product.link.label} <RiArrowRightLine size={10} />
+                      </a>
+                    )}
+                  </div>
                 </div>
               </motion.div>
-            )}
-          </AnimatePresence>
+            ))}
+          </div>
         </div>
       </div>
     </ModalBackdrop>
@@ -2192,14 +2214,14 @@ function ExpertiseModal({ onClose }: { onClose: () => void }) {
 // ─────────────────────────────────────────────
 function DynamicContentBox({
   selectedClient, selectedCompany, selectedCountry,
-  showServices, showExpertise, showAccreditations, showTestimonials, showChat, showPeople, showGallery,
+  showServices, showExpertise, showAccreditations, showTestimonials, showChat, showPeople, showGallery, showProducts,
   activeTab, setActiveTab, activeTestimonial, setActiveTestimonial,
   setSelectedClient, setSelectedCompany, setSelectedCountry,
-  setShowServices, setShowExpertise, setShowAccreditations, setShowTestimonials, setShowChat, setShowPeople, setShowGallery,
+  setShowServices, setShowExpertise, setShowAccreditations, setShowTestimonials, setShowChat, setShowPeople, setShowGallery, setShowProducts,
   resetDesktopStates
 }: any) {
   // Check if any panel is currently shown
-  const hasContent = selectedClient || selectedCompany || selectedCountry || showServices || showExpertise || showAccreditations || showTestimonials || showChat || showPeople || showGallery;
+  const hasContent = selectedClient || selectedCompany || selectedCountry || showServices || showExpertise || showAccreditations || showTestimonials || showChat || showPeople || showGallery || showProducts;
   
   return (
     <div className={`flex-1 min-w-[600px] max-w-3xl z-20 h-[70vh] flex flex-col mt-16 -ml-24 ${hasContent ? 'pointer-events-auto' : 'pointer-events-none'}`}>
@@ -2219,6 +2241,7 @@ function DynamicContentBox({
           if (showPeople) return <PeopleBehindView key="people" onClose={handleClose} />;
           if (showChat) return <ChatInfoView key="chat" onClose={handleClose} />;
           if (showGallery) return <GalleryInfoView key="gallery" onClose={handleClose} />;
+          if (showProducts) return <ProductsInfoView key="products" onClose={handleClose} />;
 
           return null; // Empty when no panel selected - orbit stays in center
         })()}
@@ -2685,7 +2708,7 @@ function CountryInfoView({ country, onClose }: { country: any, onClose: () => vo
   );
 }
 
-function ServicesInfoView({ activeTab, setActiveTab, onClose }: { activeTab: "comprehensive" | "featured" | "products", setActiveTab: (t: any) => void, onClose: () => void }) {
+function ServicesInfoView({ activeTab, setActiveTab, onClose }: { activeTab: "comprehensive" | "featured", setActiveTab: (t: any) => void, onClose: () => void }) {
   const [selectedService, setSelectedService] = useState("cme");
 
   useEffect(() => {
@@ -2721,83 +2744,9 @@ function ServicesInfoView({ activeTab, setActiveTab, onClose }: { activeTab: "co
     { id: "digital", icon: RiComputerLine, title: "Digital", badge: "Innovative", color: "from-primary-500 to-secondary-400", description: "Cutting-edge AI-driven platforms", features: [{ name: "AI Integration", desc: "Machine learning powered tools" }, { name: "Automation", desc: "Streamlined workflows" }, { name: "Analytics Dashboard", desc: "Real-time data insights" }, { name: "Cloud Based", desc: "Secure cloud infrastructure" }, { name: "Mobile Ready", desc: "Works on all devices" }, { name: "API Access", desc: "Connect with other systems" }] },
   ];
 
-  // ─── CONFIGURABLE PRODUCTS ───
-  // Similar to featuredServices with link button and notes support
-  const PRODUCTS_DATA = [
-    { 
-      id: "tebzone", 
-      icon: RiStackLine, 
-      title: "TebZone", 
-      badge: "LIVE", 
-      badgeColor: "bg-green-500/10 text-green-500",
-      color: "from-primary-500 to-secondary-400",
-      description: "Healthcare marketplace connecting patients and suppliers.", 
-      notes: "Seamless ordering experience with real-time inventory tracking.",
-      features: [
-        { name: "Medicine Marketplace", desc: "Wide range of healthcare products" },
-        { name: "Prescription Upload", desc: "Easy prescription management" },
-        { name: "Real-time Tracking", desc: "Track orders live" },
-        { name: "Secure Payments", desc: "Encrypted transactions" }
-      ],
-      link: { label: "Visit TebZone", url: "https://tebzone.com", visible: true }
-    },
-    { 
-      id: "medadd", 
-      icon: RiComputerLine, 
-      title: "Med-ADD", 
-      badge: "LIVE", 
-      badgeColor: "bg-green-500/10 text-green-500",
-      color: "from-secondary-400 to-primary-500",
-      description: "Pharmaceutical sales force training with adaptive AI.", 
-      notes: "AI-powered role-play scenarios for effective training.",
-      features: [
-        { name: "AI Role-play", desc: "Interactive training scenarios" },
-        { name: "Performance Analytics", desc: "Track training progress" },
-        { name: "Compliance Tracking", desc: "Ensure regulatory compliance" },
-        { name: "Interactive Modules", desc: "Engaging learning content" }
-      ],
-      link: { label: "Explore Med-ADD", url: "#", visible: true }
-    },
-    { 
-      id: "medvi", 
-      icon: RiVideoLine, 
-      title: "Med-Vi", 
-      badge: "LIVE", 
-      badgeColor: "bg-green-500/10 text-green-500",
-      color: "from-primary-500 to-secondary-400",
-      description: "Medical education and HCP engagement platform.", 
-      notes: "CPD-accredited content with immersive VR experiences.",
-      features: [
-        { name: "CPD-Accredited", desc: "Earn continuing education credits" },
-        { name: "Interactive Cases", desc: "Real-world medical scenarios" },
-        { name: "HCP Analytics", desc: "Engagement insights" },
-        { name: "VR Simulations", desc: "Immersive training" }
-      ],
-      link: { label: "Learn More", url: "#", visible: true }
-    },
-    { 
-      id: "medlab", 
-      icon: RiMicroscopeLine, 
-      title: "Med-Lab", 
-      badge: "Coming Soon", 
-      badgeColor: "bg-orange-500/10 text-orange-500",
-      color: "from-secondary-400 to-primary-500",
-      description: "Next-gen laboratory information management system.", 
-      notes: "Launching Q3 2025 - Join our early access program.",
-      features: [
-        { name: "Sample Tracking", desc: "End-to-end sample management" },
-        { name: "QC Management", desc: "Quality control workflows" },
-        { name: "Reports Dashboard", desc: "Analytics & insights" },
-        { name: "LIMS Integration", desc: "Connect with existing systems" }
-      ],
-      link: { label: "Join Waitlist", url: "#", visible: true }
-    },
-  ];
-
   const tabs = [
     { id: "comprehensive", label: "Services", icon: RiServiceLine },
     { id: "featured", label: "Featured", icon: RiStarLine },
-    { id: "products", label: "Products", icon: RiStackLine },
   ];
 
   return (
@@ -2870,55 +2819,59 @@ function ServicesInfoView({ activeTab, setActiveTab, onClose }: { activeTab: "co
               ))}
             </motion.div>
           )}
-
-          {activeTab === "products" && (
-            <motion.div key="products" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
-              {PRODUCTS_DATA.filter((p: any) => p.visible !== false).map((p: any, idx: number) => (
-                <motion.div 
-                  key={p.id} 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="group p-4 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10 hover:border-primary-500/30 transition-all"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.color} flex items-center justify-center text-white shadow-lg shrink-0`}>
-                      <p.icon size={20} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-bold text-sm text-text-light dark:text-text-dark">{p.title}</h4>
-                        <span className={`px-2 py-0.5 rounded-full text-[8px] font-bold ${p.badgeColor}`}>{p.badge}</span>
-                      </div>
-                      <p className="text-[11px] text-muted-light dark:text-muted-dark mb-2">{p.description}</p>
-                      {p.notes && (
-                        <p className="text-[10px] text-primary-500 italic mb-2">{p.notes}</p>
-                      )}
-                      <div className="grid grid-cols-2 gap-2 mb-3">
-                        {p.features.map((f: any, k: number) => (
-                          <div key={k} className="flex items-center gap-2 p-1.5 rounded-lg bg-black/5 dark:bg-white/5">
-                            <RiCheckLine className="text-primary-500 shrink-0" size={10} />
-                            <span className="text-[9px] font-medium text-text-light dark:text-text-dark truncate">{f.name}</span>
-                          </div>
-                        ))}
-                      </div>
-                      {p.link?.visible && (
-                        <a 
-                          href={p.link.url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500 text-white text-[10px] font-bold hover:opacity-90 transition-opacity"
-                        >
-                          {p.link.label} <RiArrowRightLine size={10} />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
         </AnimatePresence>
+      </div>
+    </BoxWrapper>
+  );
+}
+
+function ProductsInfoView({ onClose }: { onClose: () => void }) {
+  return (
+    <BoxWrapper title="Our Products" subtitle="Built for Healthcare" onClose={onClose} icon={RiBriefcaseLine}>
+      <div className="space-y-4">
+        {PRODUCTS_DATA.filter((p: any) => p.visible !== false).map((p: any, idx: number) => (
+          <motion.div
+            key={p.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.1 }}
+            className="group p-4 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10 hover:border-primary-500/30 transition-all"
+          >
+            <div className="flex items-start gap-4">
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.color} flex items-center justify-center text-white shadow-lg shrink-0`}>
+                <p.icon size={20} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h4 className="font-bold text-sm text-text-light dark:text-text-dark">{p.title}</h4>
+                  <span className={`px-2 py-0.5 rounded-full text-[8px] font-bold ${p.badgeColor}`}>{p.badge}</span>
+                </div>
+                <p className="text-[11px] text-muted-light dark:text-muted-dark mb-2">{p.description}</p>
+                {p.notes && (
+                  <p className="text-[10px] text-primary-500 italic mb-2">{p.notes}</p>
+                )}
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  {p.features.map((f: any, k: number) => (
+                    <div key={k} className="flex items-center gap-2 p-1.5 rounded-lg bg-black/5 dark:bg-white/5">
+                      <RiCheckLine className="text-primary-500 shrink-0" size={10} />
+                      <span className="text-[9px] font-medium text-text-light dark:text-text-dark truncate">{f.name}</span>
+                    </div>
+                  ))}
+                </div>
+                {p.link?.visible && (
+                  <a
+                    href={p.link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500 text-white text-[10px] font-bold hover:opacity-90 transition-opacity"
+                  >
+                    {p.link.label} <RiArrowRightLine size={10} />
+                  </a>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </BoxWrapper>
   );

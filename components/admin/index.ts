@@ -6,6 +6,7 @@ export { CompanyFormModal } from "./CompanyFormModal";
 export { IconPicker } from "./IconPicker";
 export { FlagPicker } from "./FlagPicker";
 export { OverviewTab } from "./OverviewTab";
+export { SettingsTab } from "./SettingsTab";
 export { iconComponents, availableIcons, type IconDef } from "./iconData";
 export type { Lead } from "./types";
 export { statusStyles } from "./types";
