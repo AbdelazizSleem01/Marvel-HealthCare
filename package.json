@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "seed": "npx tsx scripts/seed-companies.ts"
+    "lint": "next lint",
+    "seed": "npx tsx scripts/seed-companies.ts",
+    "seed-site": "npx tsx scripts/seed-site-config.ts"
   },
   "dependencies": {
     "autoprefixer": "^10.5.0",

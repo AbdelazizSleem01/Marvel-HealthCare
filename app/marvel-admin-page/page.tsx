@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession, SessionProvider } from "next-auth/react";
-import { RiDashboardLine, RiMailLine, RiBuildingLine, RiSettingsLine } from "react-icons/ri";
+import { RiDashboardLine, RiMailLine, RiBuildingLine, RiSettingsLine, RiServiceLine, RiBriefcaseLine, RiToolsLine } from "react-icons/ri";
 import Swal from "sweetalert2";
 import {
   AdminLayout,
@@ -11,7 +11,9 @@ import {
   CompaniesTab,
   CompanyFormModal,
   OverviewTab,
-  SettingsTab,
+  ServicesPage,
+  ProductsPage,
+  ToolbarPage,
 } from "@/components/admin";
 import { useAdminStore, Company, FocusArea, GalleryImage } from "@/stores/adminStore";
 import { Lead, statusStyles } from "@/components/admin";
@@ -280,7 +282,9 @@ function AdminDashboard() {
       count: companies.length,
     },
     { id: "overview", label: "Overview", icon: RiDashboardLine, count: null },
-    { id: "settings", label: "Settings", icon: RiSettingsLine, count: null },
+    { id: "services", label: "Services", icon: RiServiceLine, count: null },
+    { id: "products", label: "Products", icon: RiBriefcaseLine, count: null },
+    { id: "toolbar", label: "Toolbar", icon: RiToolsLine, count: null },
   ];
 
   return (
@@ -308,7 +312,11 @@ function AdminDashboard() {
         />
       )}
 
-      {activeTab === "settings" && <SettingsTab />}
+      {activeTab === "services" && <ServicesPage />}
+
+      {activeTab === "products" && <ProductsPage />}
+
+      {activeTab === "toolbar" && <ToolbarPage />}
 
       <CompanyFormModal
         isOpen={showCompanyForm}

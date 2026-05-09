@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { segmentedClients, bigNumbers } from "@/data";
 import {
   RiCloseLine, RiArrowRightLine, RiMailLine, RiSettings4Line, RiServiceLine,
@@ -20,7 +20,8 @@ import {
   RiBookOpenLine, RiMessage2Line,
   // Additional social media icons
   RiFacebookBoxLine, RiYoutubeLine, RiTwitterXLine, RiInstagramLine,
-  RiSnapchatLine, RiTelegramLine, RiBarChartBoxLine, RiShareLine
+  RiSnapchatLine, RiTelegramLine, RiBarChartBoxLine, RiShareLine,
+  RiToolsLine
 } from "react-icons/ri";
 import Link from "next/link";
 import Image from "next/image";
@@ -29,131 +30,11 @@ import ReactCountryFlag from "react-country-flag";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import type { Company, SegmentedClient } from "@/types";
 import ChatWidget from "@/components/ui/ChatWidget";
+import { iconComponents } from "@/components/admin/iconData";
 
 const SPRING_CONFIG = { type: "spring" as const, damping: 30, stiffness: 260 };
 
-// ─── CONFIGURABLE TOOLBAR ───
-// Set 'visible: false' to hide any button, edit 'label' to change name
-const TOOLBAR_ITEMS = [
-  { id: "services", label: "Services", icon: RiSettings4Line, color: "primary", visible: true },
-  { id: "products", label: "Products", icon: RiBriefcaseLine, color: "primary", visible: true },
-  { id: "expertise", label: "Expertise", icon: RiHeartPulseLine, color: "primary", visible: true },
-  { id: "accreds", label: "Accreds", icon: RiAwardLine, color: "primary", visible: true },
-  { id: "reviews", label: "Reviews", icon: RiTeamLine, color: "primary", visible: true },
-  { id: "people", label: "People", icon: RiGroupLine, color: "primary", visible: true },
-  { id: "gallery", label: "Gallery", icon: RiImageLine, color: "primary", visible: true },
-  { id: "theme", label: "Theme", icon: null, color: "primary", visible: true },
-  { id: "contact", label: "Contact", icon: RiMailLine, color: "primary", visible: true },
-];
 
-// ─── CONFIGURABLE SERVICES ───
-// Add, edit, or delete services and their bullet points here
-const SERVICES_DATA = [
-  { 
-    id: "cme", 
-    icon: "RiGraduationCapLine", 
-    title: "CME", 
-    visible: true,
-    services: [
-      { name: "Curriculum Design", desc: "Comprehensive CME program structuring" },
-      { name: "Content Development", desc: "Medical education content creation" },
-      { name: "Slide Decks", desc: "Professional presentation materials" },
-      { name: "Gamification", desc: "Case studies, patient profiles, interactivity" },
-      { name: "Speakers", desc: "Expert faculty management" },
-      { name: "Accreditation", desc: "CPD, DHA, SCFHS certificates" },
-      { name: "Endorsed Materials", desc: "Officially recognized content" },
-    ] 
-  },
-  { 
-    id: "research", 
-    icon: "RiFileTextLine", 
-    title: "Research", 
-    visible: true,
-    services: [
-      { name: "Study Design", desc: "Clinical and observational research" },
-      { name: "Data Analysis", desc: "Statistical and qualitative analysis" },
-      { name: "Manuscript Writing", desc: "Peer-reviewed publication support" },
-      { name: "Literature Review", desc: "Comprehensive evidence synthesis" },
-      { name: "Abstracts & Posters", desc: "Conference submission support" },
-    ] 
-  },
-  { 
-    id: "elearning", 
-    icon: "RiComputerLine", 
-    title: "eLearning", 
-    visible: true,
-    services: [
-      { name: "LMS Development", desc: "Learning management systems" },
-      { name: "Interactive Modules", desc: "Engaging digital content" },
-      { name: "VR Training", desc: "Virtual reality medical simulations" },
-      { name: "Mobile Apps", desc: "Healthcare education apps" },
-      { name: "Assessment Tools", desc: "Online testing & certification" },
-    ] 
-  },
-  { 
-    id: "artwork", 
-    icon: "RiPaletteLine", 
-    title: "Marketing", 
-    visible: true,
-    services: [
-      { name: "Brand Identity", desc: "Logo and visual system design" },
-      { name: "Marketing Campaigns", desc: "Multi-channel promotion strategies" },
-      { name: "Medical Illustration", desc: "Anatomical and scientific art" },
-      { name: "Video Production", desc: "Educational and promotional videos" },
-      { name: "Social Media", desc: "Digital marketing management" },
-    ] 
-  },
-  { 
-    id: "training", 
-    icon: "RiUserSettingsLine", 
-    title: "Training", 
-    visible: true,
-    services: [
-      { name: "Workshops", desc: "Hands-on skill development" },
-      { name: "Certification Programs", desc: "Professional credentials" },
-      { name: "On-site Training", desc: "In-person education delivery" },
-      { name: "Train-the-Trainer", desc: "Faculty development programs" },
-    ] 
-  },
-  { 
-    id: "it", 
-    icon: "RiCodeBoxLine", 
-    title: "IT", 
-    visible: true,
-    services: [
-      { name: "Custom Software", desc: "Bespoke healthcare applications" },
-      { name: "CRM Systems", desc: "Customer relationship platforms" },
-      { name: "Data Analytics", desc: "Healthcare intelligence dashboards" },
-      { name: "AI Integration", desc: "Machine learning solutions" },
-    ] 
-  },
-  { 
-    id: "visuals", 
-    icon: "RiVideoLine", 
-    title: "Visuals", 
-    visible: true,
-    services: [
-      { name: "3D Medical Animation", desc: "Complex medical concepts visualization" },
-      { name: "VR Training", desc: "Virtual reality medical simulations" },
-      { name: "Video Production", desc: "Professional healthcare videos" },
-      { name: "Interactive Media", desc: "Engaging digital experiences" },
-      { name: "Motion Graphics", desc: "Animated medical illustrations" },
-    ] 
-  },
-  { 
-    id: "events", 
-    icon: "RiCalendarEventLine", 
-    title: "Events", 
-    visible: true,
-    services: [
-      { name: "Conference Planning", desc: "Full-service medical conferences" },
-      { name: "Virtual Events", desc: "Online webinars & summits" },
-      { name: "Hybrid Events", desc: "In-person + digital combined" },
-      { name: "Exhibition Booths", desc: "Trade show presence design" },
-      { name: "Speaker Management", desc: "Keynote & panel coordination" },
-    ] 
-  },
-];
 
 const overlayVariants = {
   hidden: { opacity: 0 },
@@ -271,14 +152,22 @@ export default function CompaniesSection() {
   const isMobile = bp === "mobile";
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  
+
   // Fetch companies from API
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loadingCompanies, setLoadingCompanies] = useState(true);
-  
+
+  // Fetch services and products from API
+  const [services, setServices] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
+  const [toolbarItems, setToolbarItems] = useState<any[]>([]);
+  const [loadingServices, setLoadingServices] = useState(true);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [loadingToolbar, setLoadingToolbar] = useState(true);
+
   useEffect(() => {
     setMounted(true);
-    
+
     // Fetch companies from API
     const fetchCompanies = async () => {
       try {
@@ -293,8 +182,57 @@ export default function CompaniesSection() {
         setLoadingCompanies(false);
       }
     };
-    
+
+    // Fetch services from API
+    const fetchServices = async () => {
+      try {
+        const response = await fetch('/api/services');
+        const data = await response.json();
+        if (data.services) {
+          setServices(data.services);
+        }
+      } catch (error) {
+        console.error('Error fetching services:', error);
+      } finally {
+        setLoadingServices(false);
+      }
+    };
+
+    // Fetch products from API
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/site-products');
+        const data = await response.json();
+        if (data.products) {
+          setProducts(data.products);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
+
+    // Fetch toolbar from API
+    const fetchToolbar = async () => {
+      try {
+        const response = await fetch('/api/toolbar');
+        const data = await response.json();
+        if (data.items) {
+          setToolbarItems(data.items);
+        }
+      } catch (error) {
+        console.error('Error fetching toolbar:', error);
+      } finally {
+        setLoadingToolbar(false);
+      }
+    };
+
+    // Fetch all data
     fetchCompanies();
+    fetchServices();
+    fetchProducts();
+    fetchToolbar();
   }, []);
   const isTablet = bp === "tablet";
 
@@ -319,14 +257,14 @@ export default function CompaniesSection() {
   const [showMobileNetwork, setShowMobileNetwork] = useState(false);
   const [showMobileLeft, setShowMobileLeft] = useState(false);
   const [showMobileRight, setShowMobileRight] = useState(false);
-  
-  const [scrollSpeed, setScrollSpeed] = useState(1); 
+
+  const [scrollSpeed, setScrollSpeed] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showGallery, setShowGallery] = useState(false);
   const [showProducts, setShowProducts] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
+
   // Stats cycling logic
   const [currentStatIndex, setCurrentStatIndex] = useState(0);
 
@@ -336,12 +274,12 @@ export default function CompaniesSection() {
     }, 3000);
     return () => clearInterval(timer);
   }, []);
-  
+
   // Orbit expansion state - true when in center (expanded), false when moved left (compact)
   const [orbitExpanded, setOrbitExpanded] = useState(true);
 
   const BASE_DURATION = 60;
-  
+
   // Compute if any info panel is currently shown
   const isInfoPanelShown = selectedCompany || selectedClient || selectedCountry || showServices || showExpertise || showAccreditations || showTestimonials || showChat || showPeople || showGallery || showProducts;
 
@@ -446,6 +384,27 @@ export default function CompaniesSection() {
       ref={containerRef}
       className={`${isMobile ? "min-h-[90vh] pt-36 overflow-x-hidden" : "h-screen overflow-hidden"} bg-bg-light dark:bg-bg-dark relative flex items-center justify-center`}
     >
+      {/* ─── Theme Toggle Button (Fixed Top Right) ─── */}
+      {mounted && (
+        <motion.button
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, type: "spring", stiffness: 100 }}
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="fixed top-4 right-4 z-50 w-9 h-9 rounded-full glass-light dark:glass-dark border border-border-light dark:border-border-dark/50 shadow-lg backdrop-blur-xl flex items-center justify-center hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 pointer-events-auto"
+        >
+          <motion.div
+            key={theme}
+            initial={{ rotate: -180, opacity: 0 }}
+            animate={{ rotate: 0, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="text-primary-500"
+          >
+            {theme === "dark" ? <RiSunLine size={16} /> : <RiMoonLine size={16} />}
+          </motion.div>
+        </motion.button>
+      )}
+
       {/* ─── Animated Background ─── */}
       <div className="absolute inset-0 pointer-events-none w-full ">
         <motion.div
@@ -511,26 +470,41 @@ export default function CompaniesSection() {
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5, type: "spring", stiffness: 100 }}
-            className="fixed top-3 left-28 right-4 z-40 px-2 pointer-events-none"
+            className="fixed top-3 left-24 right-4 z-40 px-2 pointer-events-none"
           >
-            <div className="max-w-lg xl:max-w-3xl mx-auto w-full pointer-events-auto">
+            <div className="max-w-md xl:max-w-2xl mx-auto w-full pointer-events-auto">
               <div className="rounded-xl glass-light dark:glass-dark border border-border-light dark:border-border-dark/50 shadow-xl overflow-hidden backdrop-blur-xl">
-                <div className="flex items-center justify-between py-1 px-0.5">
-                  {TOOLBAR_ITEMS.filter((item) => item.visible).map((item, idx) => {
+                <div className="flex items-center justify-between py-0.5 px-0.5">
+                  {toolbarItems
+                    .filter((item: any) => item.visible && item.id !== "theme")
+                    .map((item: any, idx: number) => {
                     const isSecondary = item.color === "secondary";
-                    const active = 
+                    const active =
                       (item.id === "services" && showServices) ||
                       (item.id === "expertise" && showExpertise) ||
                       (item.id === "accreds" && showAccreditations) ||
                       (item.id === "reviews" && showTestimonials) ||
                       (item.id === "people" && showPeople) ||
                       (item.id === "gallery" && showGallery);
-                    
+
+                    const iconMap: Record<string, any> = {
+                      RiSettings4Line,
+                      RiBriefcaseLine,
+                      RiHeartPulseLine,
+                      RiAwardLine,
+                      RiTeamLine,
+                      RiGroupLine,
+                      RiImageLine,
+                      RiSunLine,
+                      RiMoonLine,
+                      RiMailLine,
+                    };
+
                     // Dynamic icon for theme
-                    const Icon = item.id === "theme" 
+                    const Icon = item.id === "theme"
                       ? (mounted ? (theme === "dark" ? RiSunLine : RiMoonLine) : RiSunLine)
-                      : item.icon;
-                    
+                      : iconMap[item.icon] || RiSettings4Line;
+
                     const handleClick = () => {
                       if (item.id === "services") handleStateChange(setShowServices, true);
                       else if (item.id === "expertise") handleStateChange(setShowExpertise, true);
@@ -539,7 +513,6 @@ export default function CompaniesSection() {
                       else if (item.id === "people") handleStateChange(setShowPeople, true);
                       else if (item.id === "gallery") handleStateChange(setShowGallery, true);
                       else if (item.id === "products") handleStateChange(setShowProducts, true);
-                      else if (item.id === "theme") setTheme(theme === "dark" ? "light" : "dark");
                     };
 
                     const content = (
@@ -547,14 +520,14 @@ export default function CompaniesSection() {
                         <motion.div
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.92 }}
-                          className={`w-7 h-7 lg:w-8 lg:h-8 rounded-lg flex items-center justify-center border transition-all ${active
+                          className={`w-6 h-6 lg:w-7 lg:h-7 rounded-lg flex items-center justify-center border transition-all ${active
                             ? "bg-primary-500 text-white border-primary-400 shadow-[0_0_12px_rgba(18,122,138,0.4)]"
                             : `bg-gradient-to-br ${isSecondary ? "from-secondary-500/20 to-secondary-600/20 text-secondary-500" : "from-primary-500/20 to-secondary-500/20 text-primary-500"} border-border-light dark:border-white/5 group-hover:border-primary-500/30`
                             }`}
                         >
-                          {Icon && <Icon size={15} />}
+                          {Icon && <Icon size={14} />}
                         </motion.div>
-                        <span className={`whitespace-nowrap text-[8px] font-bold uppercase tracking-wide transition-all ${active ? "text-primary-500 opacity-100" : "text-text-light dark:text-text-dark opacity-80 group-hover:opacity-100 group-hover:text-primary-500"
+                        <span className={`whitespace-nowrap text-[7px] lg:text-[8px] font-bold uppercase tracking-wide transition-all ${active ? "text-primary-500 opacity-100" : "text-text-light dark:text-text-dark opacity-80 group-hover:opacity-100 group-hover:text-primary-500"
                           }`}>
                           {item.label}
                         </span>
@@ -572,14 +545,14 @@ export default function CompaniesSection() {
                         {item.id === "contact" ? (
                           <Link
                             href={`/${item.id}`}
-                            className="group flex flex-col items-center gap-1 py-0.5 px-0.5 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-lg transition-all duration-300"
+                            className="group flex flex-col items-center gap-0.5 py-0.5 px-0.5 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-lg transition-all duration-300"
                           >
                             {content}
                           </Link>
                         ) : (
                           <button
                             onClick={handleClick}
-                            className="group flex flex-col items-center gap-1 py-0.5 px-0.5 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-lg transition-all duration-300 w-full"
+                            className="group flex flex-col items-center gap-0.5 py-0.5 px-0.5 hover:bg-primary-500/5 dark:hover:bg-white/5 rounded-lg transition-all duration-300 w-full"
                           >
                             {content}
                           </button>
@@ -602,27 +575,21 @@ export default function CompaniesSection() {
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
-            className="fixed top-4 left-2 lg:left-4 z-40 pointer-events-auto "
+            className="fixed top-3 left-2 lg:left-3 z-40 pointer-events-auto "
           >
-            <div className="rounded-xl p-2 glass-light dark:glass-dark border border-border-light dark:border-border-dark/50 shadow-xl backdrop-blur-xl flex items-center gap-1.5 lg:gap-2">
+            <div className="rounded-xl p-1.5 glass-light dark:glass-dark border border-border-light dark:border-border-dark/50 shadow-xl backdrop-blur-xl flex items-center gap-1 lg:gap-1.5">
               {COUNTRIES.map((country, idx) => (
                 <motion.button
                   key={country.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: [0, -4, 0] }}
-                  transition={{
-                    y: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: idx * 0.25 },
-                    opacity: { duration: 0.5, delay: idx * 0.12 },
-                  }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+
+
                   onClick={() => handleStateChange(setSelectedCountry, country)}
-                  className="group relative flex items-center gap-1.5 px-1.5 py-1 rounded-lg bg-white/50 dark:bg-white/10 border border-white/20 dark:border-white/10 shadow-sm hover:shadow-lg hover:border-primary-500/40 transition-all duration-300"
+                  className="group relative flex items-center gap-1 px-1 py-1 rounded-lg bg-white/50 dark:bg-white/10 border border-white/20 dark:border-white/10 shadow-sm hover:shadow-lg hover:border-primary-500/40 transition-all duration-300"
                 >
-                  <div className="w-8 h-8 lg:w-10 lg:h-8 rounded overflow-hidden shadow-lg">
+                  <div className="w-7 h-7 lg:w-8 lg:h-7 rounded overflow-hidden shadow-lg">
                     <ReactCountryFlag countryCode={country.flag} svg style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   </div>
-                  <span className="text-[10px] font-semibold text-text-light dark:text-text-dark group-hover:text-primary-500 transition-colors">
+                  <span className="text-[9px] lg:text-[10px] font-semibold text-text-light dark:text-text-dark group-hover:text-primary-500 transition-colors">
                     {country.flag}
                   </span>
                 </motion.button>
@@ -900,6 +867,8 @@ export default function CompaniesSection() {
             setShowGallery={setShowGallery}
             setShowProducts={setShowProducts}
             resetDesktopStates={resetDesktopStates}
+            products={products}
+            services={services}
           />
         )}
 
@@ -1142,13 +1111,13 @@ export default function CompaniesSection() {
                       <span className="text-[10px] font-bold">+</span>
                     </motion.button>
                   </div>
-                  
+
                   {/* Scrolling Container - Fixed height with overflow */}
                   <div className="flex-1 overflow-hidden relative w-full">
-                    <div 
+                    <div
                       ref={scrollRef}
                       className="flex flex-col gap-3 items-center py-4 animate-scroll-up"
-                      style={{ 
+                      style={{
                         animationDuration: `${BASE_DURATION / scrollSpeed}s`,
                         animationTimingFunction: 'linear',
                         animationIterationCount: 'infinite',
@@ -1164,34 +1133,34 @@ export default function CompaniesSection() {
                           const list = [...originalList, ...originalList];
 
                           return list?.map((client, idx) => (
-                          <motion.button
-                            key={`${client.id}-${idx}`}
-                            whileHover={{ scale: 1.12, x: -3 }}
-                            whileTap={{ scale: 0.92 }}
-                            onClick={() => handleStateChange(setSelectedClient, client)}
-                            className="group relative flex items-center justify-center shrink-0 w-10 h-10 lg:w-12 lg:h-12"
-                          >
-                            <div className="w-full h-full rounded-xl bg-white dark:bg-white flex items-center justify-center overflow-hidden shadow-sm border border-border-light/50 dark:border-border-dark/20 group-hover:border-primary-500/50 transition-all">
-                              {client.logo ? (
-                                <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-1.5" />
-                              ) : (
-                                <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-[10px] font-bold">
-                                  {client.name.slice(0, 2).toUpperCase()}
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Hover Tooltip */}
-                            <div className="absolute right-full mr-4 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 z-50">
-                              <div className="bg-surface-light dark:bg-surface-dark px-3 py-2 rounded-xl shadow-2xl border border-border-light dark:border-border-dark whitespace-nowrap">
-                                <div className="font-bold text-sm text-text-light dark:text-text-dark">{client.name}</div>
-                                <div className="text-[10px] text-muted-light dark:text-muted-dark flex items-center gap-1 mt-0.5">
-                                  <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-2.5" /> {client.country}
-                                </div>
-                                <div className="absolute right-[-6px] top-1/2 -translate-y-1/2 w-3 h-3 bg-surface-light dark:bg-surface-dark rotate-45 border-r border-t border-border-light dark:border-border-dark" />
+                            <motion.button
+                              key={`${client.id}-${idx}`}
+                              whileHover={{ scale: 1.12, x: -3 }}
+                              whileTap={{ scale: 0.92 }}
+                              onClick={() => handleStateChange(setSelectedClient, client)}
+                              className="group relative flex items-center justify-center shrink-0 w-10 h-10 lg:w-12 lg:h-12"
+                            >
+                              <div className="w-full h-full rounded-xl bg-white dark:bg-white flex items-center justify-center overflow-hidden shadow-sm border border-border-light/50 dark:border-border-dark/20 group-hover:border-primary-500/50 transition-all">
+                                {client.logo ? (
+                                  <img src={client.logo} alt={client.name} className="w-full h-full object-contain p-1.5" />
+                                ) : (
+                                  <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-[10px] font-bold">
+                                    {client.name.slice(0, 2).toUpperCase()}
+                                  </div>
+                                )}
                               </div>
-                            </div>
-                          </motion.button>
+
+                              {/* Hover Tooltip */}
+                              <div className="absolute right-full mr-4 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 z-50">
+                                <div className="bg-surface-light dark:bg-surface-dark px-3 py-2 rounded-xl shadow-2xl border border-border-light dark:border-border-dark whitespace-nowrap">
+                                  <div className="font-bold text-sm text-text-light dark:text-text-dark">{client.name}</div>
+                                  <div className="text-[10px] text-muted-light dark:text-muted-dark flex items-center gap-1 mt-0.5">
+                                    <ReactCountryFlag countryCode={client.flag} svg className="!w-3 !h-2.5" /> {client.country}
+                                  </div>
+                                  <div className="absolute right-[-6px] top-1/2 -translate-y-1/2 w-3 h-3 bg-surface-light dark:bg-surface-dark rotate-45 border-r border-t border-border-light dark:border-border-dark" />
+                                </div>
+                              </div>
+                            </motion.button>
                           ));
                         })()}
                       </div>
@@ -1294,13 +1263,13 @@ export default function CompaniesSection() {
           {selectedCompany && <CompanyModal company={selectedCompany} onClose={() => setSelectedCompany(null)} />}
           {selectedClient && <ClientWorkPopup client={selectedClient} onClose={() => setSelectedClient(null)} />}
           {selectedCountry && <CountryModal country={selectedCountry} onClose={() => setSelectedCountry(null)} />}
-          {showServices && <ServicesModal activeTab={activeTab} setActiveTab={setActiveTab} onClose={() => setShowServices(false)} />}
+          {showServices && <ServicesModal activeTab={activeTab} setActiveTab={setActiveTab} onClose={() => setShowServices(false)} services={services} />}
           {showAccreditations && <AccreditationsModal onClose={() => setShowAccreditations(false)} />}
           {showTestimonials && <TestimonialsModal activeTestimonial={activeTestimonial} setActiveTestimonial={setActiveTestimonial} onClose={() => setShowTestimonials(false)} />}
           {showChat && <ChatModal onClose={() => setShowChat(false)} />}
           {showExpertise && <ExpertiseModal onClose={() => setShowExpertise(false)} />}
           {showGallery && <GalleryModal currentIndex={currentImageIndex} setCurrentIndex={setCurrentImageIndex} onClose={() => setShowGallery(false)} />}
-          {showProducts && <ProductsModal onClose={() => setShowProducts(false)} />}
+          {showProducts && <ProductsModal onClose={() => setShowProducts(false)} products={products} />}
         </AnimatePresence>
       )}
 
@@ -1397,10 +1366,11 @@ function CountryModal({ country, onClose }: { country: any; onClose: () => void 
 // ─────────────────────────────────────────────
 // Services Modal — responsive sidebar→tabs
 // ─────────────────────────────────────────────
-function ServicesModal({ activeTab, setActiveTab, onClose }: {
+function ServicesModal({ activeTab, setActiveTab, onClose, services }: {
   activeTab: "comprehensive" | "featured";
   setActiveTab: (tab: "comprehensive" | "featured") => void;
   onClose: () => void;
+  services: any[];
 }) {
   const [selectedService, setSelectedService] = useState("cme");
 
@@ -1409,16 +1379,39 @@ function ServicesModal({ activeTab, setActiveTab, onClose }: {
     else if (activeTab === "featured") setSelectedService("accreditation");
   }, [activeTab]);
 
-  const comprehensiveServices = [
-    { id: "cme", icon: RiGraduationCapLine, title: "CME", services: [{ name: "Curriculum Design", desc: "Comprehensive CME program structuring" }, { name: "Content Development", desc: "Medical education content creation" }, { name: "Slide Decks", desc: "Professional presentation materials" }, { name: "Gamification", desc: "Case studies, patient profiles, interactivity" }, { name: "Speakers", desc: "Expert faculty management" }, { name: "Accreditation", desc: "CPD, DHA, SCFHS certificates" }, { name: "Endorsed Materials", desc: "Officially recognized content" }] },
-    { id: "research", icon: RiFileTextLine, title: "Research", services: [{ name: "Study Design", desc: "Clinical and observational research" }, { name: "Data Analysis", desc: "Statistical and qualitative analysis" }, { name: "Manuscript Writing", desc: "Peer-reviewed publication support" }, { name: "Literature Review", desc: "Comprehensive evidence synthesis" }, { name: "Abstracts & Posters", desc: "Conference submission support" }] },
-    { id: "elearning", icon: RiComputerLine, title: "eLearning", services: [{ name: "LMS Development", desc: "Learning management systems" }, { name: "Interactive Modules", desc: "Engaging digital content" }, { name: "VR Training", desc: "Virtual reality medical simulations" }, { name: "Mobile Apps", desc: "Healthcare education apps" }, { name: "Assessment Tools", desc: "Online testing & certification" }] },
-    { id: "artwork", icon: RiPaletteLine, title: "Marketing", services: [{ name: "Brand Identity", desc: "Logo and visual system design" }, { name: "Marketing Campaigns", desc: "Multi-channel promotion strategies" }, { name: "Medical Illustration", desc: "Anatomical and scientific art" }, { name: "Video Production", desc: "Educational and promotional videos" }, { name: "Social Media", desc: "Digital marketing management" }] },
-    { id: "training", icon: RiUserSettingsLine, title: "Training", services: [{ name: "Workshops", desc: "Hands-on skill development" }, { name: "Certification Programs", desc: "Professional credentials" }, { name: "On-site Training", desc: "In-person education delivery" }, { name: "Train-the-Trainer", desc: "Faculty development programs" }] },
-    { id: "it", icon: RiCodeBoxLine, title: "IT", services: [{ name: "Custom Software", desc: "Bespoke healthcare applications" }, { name: "CRM Systems", desc: "Customer relationship platforms" }, { name: "Data Analytics", desc: "Healthcare intelligence dashboards" }, { name: "AI Integration", desc: "Machine learning solutions" }] },
-    { id: "visuals", icon: RiVideoLine, title: "Visuals", services: [{ name: "3D Medical Animation", desc: "Complex medical concepts visualization" }, { name: "VR Training", desc: "Virtual reality medical simulations" }, { name: "Video Production", desc: "Professional healthcare videos" }, { name: "Interactive Media", desc: "Engaging digital experiences" }, { name: "Motion Graphics", desc: "Animated medical illustrations" }] },
-    { id: "events", icon: RiCalendarEventLine, title: "Events", services: [{ name: "Conference Planning", desc: "Full-service medical conferences" }, { name: "Virtual Events", desc: "Online webinars & summits" }, { name: "Hybrid Events", desc: "In-person + digital combined" }, { name: "Exhibition Booths", desc: "Trade show presence design" }, { name: "Speaker Management", desc: "Keynote & panel coordination" }] },
-  ];
+  // Icon mapping from API icon strings to actual components
+  const iconMap: Record<string, any> = {
+    RiGraduationCapLine,
+    RiFileTextLine,
+    RiComputerLine,
+    RiPaletteLine,
+    RiUserSettingsLine,
+    RiCodeBoxLine,
+    RiVideoLine,
+    RiCalendarEventLine,
+    RiStackLine,
+    RiBriefcaseLine,
+    RiHeartPulseLine,
+    RiAwardLine,
+    RiTeamLine,
+    RiGroupLine,
+    RiImageLine,
+    RiSunLine,
+    RiMailLine,
+    RiSettings4Line,
+    RiToolsLine,
+    RiMicroscopeLine,
+  };
+
+  // Convert fetched services to component-compatible format
+  const comprehensiveServices = services
+    .filter((s: any) => s.visible)
+    .map((s: any) => ({
+      id: s.id,
+      icon: iconMap[s.icon] || RiCheckLine,
+      title: s.title,
+      services: s.services,
+    }));
 
   const featuredServices = [
     { id: "accreditation", icon: RiStarLine, title: "Accreditation", badge: "Certified", color: "from-primary-500 to-secondary-400", description: "Comprehensive accreditation programs recognized worldwide", features: [{ name: "CPD-UK", desc: "UK Continuous Professional Development" }, { name: "DHA Approved", desc: "Dubai Health Authority accredited" }, { name: "SCFHS Certified", desc: "Saudi Commission for Health Specialties" }, { name: "RCSEd Endorsed", desc: "Royal College of Surgeons of Edinburgh" }, { name: "CME Credits", desc: "Continuing Medical Education credits" }, { name: "Global Recognition", desc: "Internationally accepted certificates" }] },
@@ -1431,7 +1424,7 @@ function ServicesModal({ activeTab, setActiveTab, onClose }: {
       <div className="w-full md:max-w-6xl max-h-[90vh] glass-light dark:glass-dark rounded-3xl border border-border-light dark:border-border-dark shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 md:p-6 border-b border-border-light dark:border-border-dark shrink-0">
-          <h2 className="font-display text-lg md:text-2xl font-bold text-text-light dark:text-text-dark">Services & Products</h2>
+          <h2 className="font-display text-lg md:text-2xl font-bold text-text-light dark:text-text-dark">Services</h2>
           <motion.button whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }} onClick={onClose} className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-surface-light dark:bg-surface-dark hover:bg-primary-500/20 flex items-center justify-center text-muted-light dark:text-muted-dark hover:text-primary-500 transition-colors">
             <RiCloseLine size={22} />
           </motion.button>
@@ -1562,83 +1555,11 @@ function ServicesModal({ activeTab, setActiveTab, onClose }: {
   );
 }
 
-// ─── CONFIGURABLE PRODUCTS ───
-// Similar to featuredServices with link button and notes support
-const PRODUCTS_DATA = [
-  {
-    id: "tebzone",
-    icon: RiStackLine,
-    title: "TebZone",
-    badge: "LIVE",
-    badgeColor: "bg-green-500/10 text-green-500",
-    color: "from-primary-500 to-secondary-400",
-    description: "Healthcare marketplace connecting patients and suppliers.",
-    notes: "Seamless ordering experience with real-time inventory tracking.",
-    features: [
-      { name: "Medicine Marketplace", desc: "Wide range of healthcare products" },
-      { name: "Prescription Upload", desc: "Easy prescription management" },
-      { name: "Real-time Tracking", desc: "Track orders live" },
-      { name: "Secure Payments", desc: "Encrypted transactions" }
-    ],
-    link: { label: "Visit TebZone", url: "https://tebzone.com", visible: true }
-  },
-  {
-    id: "medadd",
-    icon: RiComputerLine,
-    title: "Med-ADD",
-    badge: "LIVE",
-    badgeColor: "bg-green-500/10 text-green-500",
-    color: "from-secondary-400 to-primary-500",
-    description: "Pharmaceutical sales force training with adaptive AI.",
-    notes: "AI-powered role-play scenarios for effective training.",
-    features: [
-      { name: "AI Role-play", desc: "Interactive training scenarios" },
-      { name: "Performance Analytics", desc: "Track training progress" },
-      { name: "Compliance Tracking", desc: "Ensure regulatory compliance" },
-      { name: "Interactive Modules", desc: "Engaging learning content" }
-    ],
-    link: { label: "Explore Med-ADD", url: "#", visible: true }
-  },
-  {
-    id: "medvi",
-    icon: RiVideoLine,
-    title: "Med-Vi",
-    badge: "LIVE",
-    badgeColor: "bg-green-500/10 text-green-500",
-    color: "from-primary-500 to-secondary-400",
-    description: "Medical education and HCP engagement platform.",
-    notes: "CPD-accredited content with immersive VR experiences.",
-    features: [
-      { name: "CPD-Accredited", desc: "Earn continuing education credits" },
-      { name: "Interactive Cases", desc: "Real-world medical scenarios" },
-      { name: "HCP Analytics", desc: "Engagement insights" },
-      { name: "VR Simulations", desc: "Immersive training" }
-    ],
-    link: { label: "Learn More", url: "#", visible: true }
-  },
-  {
-    id: "medlab",
-    icon: RiMicroscopeLine,
-    title: "Med-Lab",
-    badge: "Coming Soon",
-    badgeColor: "bg-orange-500/10 text-orange-500",
-    color: "from-secondary-400 to-primary-500",
-    description: "Next-gen laboratory information management system.",
-    notes: "Launching Q3 2025 - Join our early access program.",
-    features: [
-      { name: "Sample Tracking", desc: "End-to-end sample management" },
-      { name: "QC Management", desc: "Quality control workflows" },
-      { name: "Reports Dashboard", desc: "Analytics & insights" },
-      { name: "LIMS Integration", desc: "Connect with existing systems" }
-    ],
-    link: { label: "Join Waitlist", url: "#", visible: true }
-  },
-];
 
 // ─────────────────────────────────────────────
 // Products Modal — Mobile
 // ─────────────────────────────────────────────
-function ProductsModal({ onClose }: { onClose: () => void }) {
+function ProductsModal({ onClose, products }: { onClose: () => void; products: any[] }) {
   return (
     <ModalBackdrop onClose={onClose}>
       <div className="w-full md:max-w-2xl max-h-[85vh] glass-light dark:glass-dark rounded-3xl border border-border-light dark:border-border-dark shadow-2xl overflow-hidden flex flex-col">
@@ -1656,11 +1577,18 @@ function ProductsModal({ onClose }: { onClose: () => void }) {
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4 md:p-6">
           <div className="space-y-4">
-            {PRODUCTS_DATA.filter((p: any) => p.visible !== false).map((product: any, i: number) => (
+            {products.filter((p: any) => p.visible !== false).map((product: any, i: number) => (
               <motion.div key={product.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="p-4 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary-500/30 transition-all">
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${product.color} flex items-center justify-center text-white shadow-lg shrink-0`}>
-                    <product.icon size={20} />
+                    {product.icon && iconComponents[product.icon] ? (
+                      (() => {
+                        const IconComp = iconComponents[product.icon];
+                        return <IconComp size={20} className="text-white" />;
+                      })()
+                    ) : (
+                      <RiBriefcaseLine size={20} className="text-white" />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
@@ -1940,10 +1868,10 @@ function CompanyModal({ company, onClose }: { company: any; onClose: () => void 
                   company.socialMedia.instagram && { key: 'instagram', href: company.socialMedia.instagram, icon: RiInstagramLine, color: 'bg-gradient-to-br from-[#833ab4]/10 via-[#fd1d1d]/10 to-[#fcb045]/10 border-[#fd1d1d]/20 text-[#e4405f] hover:from-[#833ab4]/20 hover:via-[#fd1d1d]/20 hover:to-[#fcb045]/20' },
                   company.socialMedia.telegram && { key: 'telegram', href: company.socialMedia.telegram, icon: RiTelegramLine, color: 'bg-[#0088cc]/10 border-[#0088cc]/20 text-[#0088cc] hover:bg-[#0088cc]/20' },
                 ].filter(Boolean).map((social: any) => (
-                  <a 
+                  <a
                     key={social.key}
-                    href={social.href} 
-                    target={social.isExternal !== false ? "_blank" : undefined} 
+                    href={social.href}
+                    target={social.isExternal !== false ? "_blank" : undefined}
                     rel={social.isExternal !== false ? "noopener noreferrer" : undefined}
                     className={`w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all ${social.color}`}
                   >
@@ -2218,11 +2146,11 @@ function DynamicContentBox({
   activeTab, setActiveTab, activeTestimonial, setActiveTestimonial,
   setSelectedClient, setSelectedCompany, setSelectedCountry,
   setShowServices, setShowExpertise, setShowAccreditations, setShowTestimonials, setShowChat, setShowPeople, setShowGallery, setShowProducts,
-  resetDesktopStates
+  resetDesktopStates, products, services
 }: any) {
   // Check if any panel is currently shown
   const hasContent = selectedClient || selectedCompany || selectedCountry || showServices || showExpertise || showAccreditations || showTestimonials || showChat || showPeople || showGallery || showProducts;
-  
+
   return (
     <div className={`flex-1 min-w-[600px] max-w-3xl z-20 h-[70vh] flex flex-col mt-16 -ml-24 ${hasContent ? 'pointer-events-auto' : 'pointer-events-none'}`}>
       <AnimatePresence mode="wait">
@@ -2230,18 +2158,18 @@ function DynamicContentBox({
           const handleClose = () => {
             resetDesktopStates(); // This will expand orbit back to center
           };
-          
+
           if (selectedClient) return <ClientInfoView key="client" client={selectedClient} onClose={handleClose} />;
           if (selectedCompany) return <CompanyInfoView key="company" company={selectedCompany} onClose={handleClose} />;
           if (selectedCountry) return <CountryInfoView key="country" country={selectedCountry} onClose={handleClose} />;
-          if (showServices) return <ServicesInfoView key="services" activeTab={activeTab} setActiveTab={setActiveTab} onClose={handleClose} />;
+          if (showServices) return <ServicesInfoView key="services" activeTab={activeTab} setActiveTab={setActiveTab} onClose={handleClose} services={services} />;
           if (showExpertise) return <ExpertiseInfoView key="expertise" onClose={handleClose} />;
           if (showAccreditations) return <AccreditationsInfoView key="accreds" onClose={handleClose} />;
           if (showTestimonials) return <TestimonialsInfoView key="reviews" activeTestimonial={activeTestimonial} setActiveTestimonial={setActiveTestimonial} onClose={handleClose} />;
           if (showPeople) return <PeopleBehindView key="people" onClose={handleClose} />;
           if (showChat) return <ChatInfoView key="chat" onClose={handleClose} />;
           if (showGallery) return <GalleryInfoView key="gallery" onClose={handleClose} />;
-          if (showProducts) return <ProductsInfoView key="products" onClose={handleClose} />;
+          if (showProducts) return <ProductsInfoView key="products" onClose={handleClose} products={products} />;
 
           return null; // Empty when no panel selected - orbit stays in center
         })()}
@@ -2265,7 +2193,7 @@ function BoxWrapper({ children, onClose, title, subtitle, icon: Icon, color = "f
       {gradientHeader ? (
         <div className={`relative bg-gradient-to-r ${color} p-5 overflow-hidden`}>
           {/* World Map Background */}
-          <div 
+          <div
             className="absolute inset-0 opacity-20"
             style={{
               backgroundImage: "url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg')",
@@ -2541,9 +2469,9 @@ function CompanyInfoView({ company, onClose }: { company: any, onClose: () => vo
                 transition={{ delay: idx * 0.1 }}
                 className="group relative aspect-[16/10] rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 ring-1 ring-black/5 dark:ring-white/10"
               >
-                <img 
-                  src={img.src} 
-                  alt={img.title || 'Gallery image'} 
+                <img
+                  src={img.src}
+                  alt={img.title || 'Gallery image'}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
@@ -2571,8 +2499,8 @@ function CompanyInfoView({ company, onClose }: { company: any, onClose: () => vo
           </h4>
           <div className="flex flex-wrap gap-2.5">
             {company.customStats.map((stat: any, idx: number) => (
-              <motion.div 
-                key={stat.id} 
+              <motion.div
+                key={stat.id}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.08 }}
@@ -2600,8 +2528,8 @@ function CompanyInfoView({ company, onClose }: { company: any, onClose: () => vo
           </h4>
           <div className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
             {company.employees.map((emp: any, idx: number) => (
-              <motion.div 
-                key={idx} 
+              <motion.div
+                key={idx}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
@@ -2646,10 +2574,10 @@ function CompanyInfoView({ company, onClose }: { company: any, onClose: () => vo
               company.socialMedia.instagram && { key: 'instagram', label: 'Instagram', href: company.socialMedia.instagram, icon: RiInstagramLine, color: '#e4405f', bg: 'bg-[#e4405f]/10 border-[#e4405f]/20 hover:bg-[#e4405f] hover:text-white' },
               company.socialMedia.telegram && { key: 'telegram', label: 'Telegram', href: company.socialMedia.telegram, icon: RiTelegramLine, color: '#0088cc', bg: 'bg-[#0088cc]/10 border-[#0088cc]/20 hover:bg-[#0088cc] hover:text-white' },
             ].filter(Boolean).map((social: any) => (
-              <a 
+              <a
                 key={social.key}
-                href={social.href} 
-                target={social.isExternal !== false ? "_blank" : undefined} 
+                href={social.href}
+                target={social.isExternal !== false ? "_blank" : undefined}
                 rel={social.isExternal !== false ? "noopener noreferrer" : undefined}
                 className={`flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border transition-all ${social.bg}`}
               >
@@ -2708,7 +2636,7 @@ function CountryInfoView({ country, onClose }: { country: any, onClose: () => vo
   );
 }
 
-function ServicesInfoView({ activeTab, setActiveTab, onClose }: { activeTab: "comprehensive" | "featured", setActiveTab: (t: any) => void, onClose: () => void }) {
+function ServicesInfoView({ activeTab, setActiveTab, onClose, services }: { activeTab: "comprehensive" | "featured", setActiveTab: (t: any) => void, onClose: () => void; services: any[] }) {
   const [selectedService, setSelectedService] = useState("cme");
 
   useEffect(() => {
@@ -2716,24 +2644,11 @@ function ServicesInfoView({ activeTab, setActiveTab, onClose }: { activeTab: "co
     else if (activeTab === "featured") setSelectedService("accreditation");
   }, [activeTab]);
 
-  // Icon mapping from SERVICES_DATA icon strings to actual components
-  const iconMap: Record<string, any> = {
-    RiGraduationCapLine,
-    RiFileTextLine,
-    RiComputerLine,
-    RiPaletteLine,
-    RiUserSettingsLine,
-    RiCodeBoxLine,
-    RiVideoLine,
-    RiCalendarEventLine,
-  };
-
-  // Convert SERVICES_DATA to component-compatible format
-  const comprehensiveServices = SERVICES_DATA
+  const comprehensiveServices = services
     .filter((s: any) => s.visible)
     .map((s: any) => ({
       id: s.id,
-      icon: iconMap[s.icon] || RiCheckLine,
+      icon: s.icon && iconComponents[s.icon] ? iconComponents[s.icon] : RiCheckLine,
       title: s.title,
       services: s.services,
     }));
@@ -2750,7 +2665,7 @@ function ServicesInfoView({ activeTab, setActiveTab, onClose }: { activeTab: "co
   ];
 
   return (
-    <BoxWrapper title="Services & Products" subtitle="Expert Solutions" onClose={onClose} icon={RiSettings4Line}>
+    <BoxWrapper title="Services" subtitle="Expert Solutions" onClose={onClose} icon={RiSettings4Line}>
       <div className="flex gap-2 mb-6 p-1 bg-surface-light/80 dark:bg-surface-dark/40 rounded-2xl border border-border-light/50 dark:border-white/10">
         {tabs.map(tab => (
           <button
@@ -2770,7 +2685,9 @@ function ServicesInfoView({ activeTab, setActiveTab, onClose }: { activeTab: "co
               <div className="grid grid-cols-4 gap-2">
                 {comprehensiveServices.map((service) => (
                   <button key={service.id} onClick={() => setSelectedService(service.id)} className={`flex flex-col items-center gap-2 p-2 rounded-xl transition-all ${selectedService === service.id ? "bg-primary-500/10 border border-primary-500/20" : "bg-surface-light dark:bg-surface-dark border border-border-light/50 dark:border-white/10 hover:border-primary-500/10"}`}>
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${selectedService === service.id ? "bg-gradient-to-br from-primary-500 to-secondary-500 text-white shadow-md" : "bg-black/5 dark:bg-white/5 text-muted-light dark:text-muted-dark"}`}><service.icon size={18} /></div>
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${selectedService === service.id ? "bg-gradient-to-br from-primary-500 to-secondary-500 text-white shadow-md" : "bg-black/5 dark:bg-white/5 text-muted-light dark:text-muted-dark"}`}>
+                      {React.createElement(service.icon, { size: 18 })}
+                    </div>
                     <span className={`text-[10px] font-bold ${selectedService === service.id ? "text-primary-500" : "text-text-light dark:text-text-dark"}`}>{service.title}</span>
                   </button>
                 ))}
@@ -2825,11 +2742,11 @@ function ServicesInfoView({ activeTab, setActiveTab, onClose }: { activeTab: "co
   );
 }
 
-function ProductsInfoView({ onClose }: { onClose: () => void }) {
+function ProductsInfoView({ onClose, products }: { onClose: () => void; products: any[] }) {
   return (
     <BoxWrapper title="Our Products" subtitle="Built for Healthcare" onClose={onClose} icon={RiBriefcaseLine}>
       <div className="space-y-4">
-        {PRODUCTS_DATA.filter((p: any) => p.visible !== false).map((p: any, idx: number) => (
+        {products.filter((p: any) => p.visible !== false).map((p: any, idx: number) => (
           <motion.div
             key={p.id}
             initial={{ opacity: 0, y: 10 }}
@@ -2839,7 +2756,14 @@ function ProductsInfoView({ onClose }: { onClose: () => void }) {
           >
             <div className="flex items-start gap-4">
               <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.color} flex items-center justify-center text-white shadow-lg shrink-0`}>
-                <p.icon size={20} />
+                {p.icon && iconComponents[p.icon] ? (
+                  (() => {
+                    const IconComp = iconComponents[p.icon];
+                    return <IconComp size={20} className="text-white" />;
+                  })()
+                ) : (
+                  <RiBriefcaseLine size={20} className="text-white" />
+                )}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
@@ -3086,8 +3010,8 @@ const galleryImages = [
   { id: 4, src: "https://images.unsplash.com/photo-1551076805-e1869033e561?w=800&q=80", title: "Medical Research", category: "Research" },
   { id: 5, src: "https://images.unsplash.com/photo-1571772996211-2f02c9727629?w=800&q=80", title: "Team Workshop", category: "Team" },
   { id: 6, src: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&q=80", title: "Product Launch", category: "Events" },
-    { id: 7, src: "https://images.unsplash.com/photo-1581093458791-9d42e3c7e117?w=800&q=80", title: "Lab Research", category: "Research" },
-    { id: 8, src: "https://images.unsplash.com/photo-1578496480157-3d14f496689b?w=800&q=80", title: "Medical Society", category: "Partnerships" },
+  { id: 7, src: "https://images.unsplash.com/photo-1581093458791-9d42e3c7e117?w=800&q=80", title: "Lab Research", category: "Research" },
+  { id: 8, src: "https://images.unsplash.com/photo-1578496480157-3d14f496689b?w=800&q=80", title: "Medical Society", category: "Partnerships" },
 ];
 
 // ─────────────────────────────────────────────
@@ -3156,11 +3080,10 @@ function GalleryInfoView({ onClose }: { onClose: () => void }) {
                 setDirection(idx > currentIdx ? 1 : -1);
                 setCurrentIdx(idx);
               }}
-              className={`relative flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden transition-all ${
-                idx === currentIdx
+              className={`relative flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden transition-all ${idx === currentIdx
                   ? "ring-2 ring-primary-500 ring-offset-2 dark:ring-offset-surface-dark"
                   : "opacity-60 hover:opacity-100"
-              }`}
+                }`}
             >
               <img src={img.src} alt={img.title} className="w-full h-full object-cover" />
             </button>
@@ -3190,10 +3113,10 @@ function ChatInfoView({ onClose }: { onClose: () => void }) {
 // Gallery Modal — Image Carousel (Mobile)
 // ─────────────────────────────────────────────
 
-function GalleryModal({ currentIndex, setCurrentIndex, onClose }: { 
-  currentIndex: number; 
-  setCurrentIndex: (idx: number) => void; 
-  onClose: () => void; 
+function GalleryModal({ currentIndex, setCurrentIndex, onClose }: {
+  currentIndex: number;
+  setCurrentIndex: (idx: number) => void;
+  onClose: () => void;
 }) {
   const [direction, setDirection] = useState(0);
 
@@ -3257,11 +3180,10 @@ function GalleryModal({ currentIndex, setCurrentIndex, onClose }: {
                   setDirection(idx > currentIndex ? 1 : -1);
                   setCurrentIndex(idx);
                 }}
-                className={`relative flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden transition-all ${
-                  idx === currentIndex 
-                    ? "ring-2 ring-primary-500 ring-offset-2 dark:ring-offset-surface-dark" 
+                className={`relative flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden transition-all ${idx === currentIndex
+                    ? "ring-2 ring-primary-500 ring-offset-2 dark:ring-offset-surface-dark"
                     : "opacity-60 hover:opacity-100"
-                }`}
+                  }`}
               >
                 <img src={img.src} alt={img.title} className="w-full h-full object-cover" />
               </button>

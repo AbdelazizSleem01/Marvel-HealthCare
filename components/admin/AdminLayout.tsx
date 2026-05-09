@@ -2,7 +2,7 @@
 
 import { ReactNode, useState } from "react";
 import { signOut } from "next-auth/react";
-import { RiDashboardLine, RiMailLine, RiBuildingLine, RiLogoutBoxLine, RiMenuFoldLine, RiMenuUnfoldLine } from "react-icons/ri";
+import { RiDashboardLine, RiLogoutBoxLine, RiMenuFoldLine, RiMenuUnfoldLine } from "react-icons/ri";
 
 interface NavItem {
   id: string;

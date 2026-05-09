@@ -71,7 +71,10 @@ import {
   RiServerLine,
   RiServiceLine,
   RiSettings3Line,
+  RiSettings4Line,
   RiShieldLine,
+  RiHeartPulseLine,
+  RiAwardLine,
   RiShoppingBagLine,
   RiShoppingCartLine,
   RiSuitcaseLine,
@@ -254,6 +257,9 @@ export const iconComponents: Record<string, ComponentType<{ size?: number; class
   RiTimerLine,
   RiTimeLine,
   RiSettings3Line,
+  RiSettings4Line,
+  RiHeartPulseLine,
+  RiAwardLine,
   RiDashboardLine,
   RiUserLine,
   RiUser2Line,
@@ -526,8 +532,15 @@ export const availableIcons: IconDef[] = [
   
   // Settings
   { name: "RiSettings3Line", category: "Settings" },
+  { name: "RiSettings4Line", category: "Settings" },
   { name: "RiDashboardLine", category: "Settings" },
   { name: "RiSwitchLine", category: "Settings" },
+
+  // Health (Additional)
+  { name: "RiHeartPulseLine", category: "Health" },
+
+  // Awards
+  { name: "RiAwardLine", category: "Awards" },
   
   // Actions
   { name: "RiAddLine", category: "Actions" },

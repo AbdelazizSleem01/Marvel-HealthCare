@@ -1,10 +1,8 @@
 import Link from "next/link";
-import Navbar from "@/components/layout/Navbar";
 
 export default function NotFound() {
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-bg-dark flex items-center justify-center">
         <div className="text-center px-4">
           <div className="font-display font-bold text-[150px] leading-none gradient-text opacity-20 select-none">

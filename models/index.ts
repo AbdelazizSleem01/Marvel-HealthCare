@@ -93,6 +93,81 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
+// Service Item (bullet point) schema
+const ServiceItemSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    desc: { type: String, required: true },
+  },
+  { _id: true }
+);
+
+// Service Category model
+const ServiceSchema = new Schema(
+  {
+    id: { type: String, required: true, unique: true },
+    icon: { type: String, required: true },
+    title: { type: String, required: true },
+    visible: { type: Boolean, default: true },
+    services: [ServiceItemSchema],
+    order: { type: Number, default: 0 },
+  },
+  { timestamps: true }
+);
+
+// Toolbar Button model
+const ToolbarSchema = new Schema(
+  {
+    id: { type: String, required: true, unique: true },
+    label: { type: String, required: true },
+    icon: { type: String, required: true },
+    color: { type: String, default: "primary" },
+    visible: { type: Boolean, default: true },
+    order: { type: Number, default: 0 },
+  },
+  { timestamps: true }
+);
+
+// Product Feature schema
+const ProductFeatureSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    desc: { type: String, required: true },
+  },
+  { _id: true }
+);
+
+// Product Link schema
+const ProductLinkSchema = new Schema(
+  {
+    label: { type: String, required: true },
+    url: { type: String, required: true },
+    visible: { type: Boolean, default: true },
+  },
+  { _id: false }
+);
+
+// Site Product model (for homepage display)
+const SiteProductSchema = new Schema(
+  {
+    id: { type: String, required: true, unique: true },
+    icon: { type: String, required: true },
+    title: { type: String, required: true },
+    badge: { type: String, required: true },
+    badgeColor: { type: String, required: true },
+    color: { type: String, required: true },
+    description: { type: String, required: true },
+    notes: { type: String, default: "" },
+    features: [ProductFeatureSchema],
+    link: { type: ProductLinkSchema, required: true },
+    visible: { type: Boolean, default: true },
+    order: { type: Number, default: 0 },
+    showInToolbar: { type: Boolean, default: false },
+    toolbarId: { type: String, required: false },
+  },
+  { timestamps: true }
+);
+
 // Company model - Marvel Group and Orbit Companies
 const CompanySchema = new Schema(
   {
@@ -172,3 +247,6 @@ export const PartnerLogo = models.PartnerLogo || model("PartnerLogo", PartnerLog
 export const Settings = models.Settings || model("Settings", SettingsSchema);
 export const User = models.User || model("User", UserSchema);
 export const Company = models.Company || model("Company", CompanySchema);
+export const Service = models.Service || model("Service", ServiceSchema);
+export const Toolbar = models.Toolbar || model("Toolbar", ToolbarSchema);
+export const SiteProduct = models.SiteProduct || model("SiteProduct", SiteProductSchema);

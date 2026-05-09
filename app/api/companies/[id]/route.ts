@@ -57,7 +57,7 @@ export async function PUT(
     const company = await Company.findByIdAndUpdate(
       id,
       { $set: body },
-      { new: true, runValidators: true }
+      { returnDocument: "after", runValidators: true }
     ).lean();
 
     if (!company) {
