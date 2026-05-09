@@ -1,6 +1,5 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
 import ChatWidget from "@/components/ui/ChatWidget";
@@ -152,7 +151,6 @@ export default function ContactPage() {
 
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-bg-light dark:bg-bg-dark pt-24">
         {/* Hero */}
         <section className="section-padding relative overflow-hidden">
